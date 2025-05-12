@@ -210,6 +210,7 @@ class _BaseStudentBottomNavbarState extends State<BaseStudentBottomNavbar> {
                 currentIndex: widget.tabController.index,
                 tabIndex: 0,
               ),
+              
               CustomTabWidget(
                 icon: Assets.images.calculationPageIcon.path,
                 activeIcon: Assets.images.calculationPageActiveIcon.path,
