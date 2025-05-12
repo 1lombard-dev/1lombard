@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1079222635401",
+    "project_id": "ustaztilegi-1abc5",
+    "storage_bucket": "ustaztilegi-1abc5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1079222635401:android:1c80a08bba6e3d3cce6f58",
+        "android_client_info": {
+          "package_name": "com.thousand.ustazTilegi"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuPyr8M8kXkWujH0ziZPJXNLhvTnMfqLs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

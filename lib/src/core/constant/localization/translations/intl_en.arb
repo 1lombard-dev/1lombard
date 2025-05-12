@@ -1,0 +1,39 @@
+{
+  "@@locale": "en",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "@custom_colors": {
+    "description": "Custom colors for the application"
+  },
+  "@default_themes": {
+    "description": "Default themes for the application"
+  },
+  "@locales": {
+    "description": "Locales for the application"
+  },
+  "@verySoonWillAppearInTheApplicationAndYouWillAbleCheck": {
+    "description": "The ",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appTitle": "Syila",
+  "custom_colors": "Custom Colors",
+  "default_themes": "Default Themes",
+  "locales": "Locales",
+  "pullDownToRefresh": "Потяните вниз, чтобы обновить",
+  "pullUpToLoadTheData": "Pull up to load the data",
+  "successfullyUpdated": "Successfully updated!",
+  "theServiceIsTemporarilyUnavailable": "The service is temporarily unavailable",
+  "thisSectionIsUnderDevelopment": "Section is under development",
+  "today": "Today",
+  "unknownError": "Unknown error",
+  "update": "Update!",
+  "updateDotDotDot": "Update...",
+  "uploadingDotDotDot": "Uploading...",
+  "verySoonWillAppearInTheApplicationAndYouWillAbleCheck": "The ",
+  "yesterday": "Yesterday"
+}

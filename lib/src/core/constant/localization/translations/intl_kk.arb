@@ -1,0 +1,39 @@
+{
+  "@@locale": "kk",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+  "@custom_colors": {
+    "description": "Custom colors for the application"
+  },
+  "@default_themes": {
+    "description": "Default themes for the application"
+  },
+  "@locales": {
+    "description": "Locales for the application"
+  },
+  "@verySoonWillAppearInTheApplicationAndYouWillAbleCheck": {
+    "description": "Жақын арада ",
+    "placeholders": {
+      "value": {
+        "type": "String"
+      }
+    }
+  },
+  "appTitle": "Syila",
+  "custom_colors": "Custom Colors",
+  "default_themes": "Default Themes",
+  "locales": "Locales",
+  "pullDownToRefresh": "Жаңарту үшін, төмен қарай тартыңыз",
+  "pullUpToLoadTheData": "Деректерді жүктеу үшін жоғары қарай тартыңыз",
+  "successfullyUpdated": "Сәтті жаңартылды!",
+  "theServiceIsTemporarilyUnavailable": "Сервис уақытша қолжетімсіз",
+  "thisSectionIsUnderDevelopment": "Бөлім әзірленуде",
+  "today": "Бүгін",
+  "unknownError": "Белгісіз қате",
+  "update": "Жаңарту!",
+  "updateDotDotDot": "Жаңарту...",
+  "uploadingDotDotDot": "Жүктеу...",
+  "verySoonWillAppearInTheApplicationAndYouWillAbleCheck": "Жақын арада ",
+  "yesterday": "Кеше"
+}
