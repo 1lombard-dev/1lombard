@@ -6,6 +6,8 @@ class AppColors {
   /// <-- Primary colors -->
   static const Color mainBlueColor = Color(0xFF1e63e9);
 
+  static const Color eFGrey = Color(0xFFEFEFEF);
+
   static const Color secondBlueColor = Color(0xFF99b5fe);
 
   static const Color thirdBlueColor = Color(0xFFc5d5ff);
@@ -25,6 +27,9 @@ class AppColors {
   static const Color darkBlueText = Color(0xff172856);
 
   static const Color backgroundInput = Color(0xFFfafafe);
+
+
+  static const Color backgroundInputE3 = Color(0xFFE3E3E3);
 
   static const Color chatMessageBox = Color(0xFFf3f4f4);
 
@@ -62,7 +67,7 @@ class AppColors {
 
   static const Color greyText2 = Color(0xFF77787A);
 
-  static const Color black = Color(0xFF46484C);
+  static const Color black = Color(0xFF000000);
 
   static const Color greyTextColor = Color(0xFF3D3C3C);
 
@@ -123,6 +128,7 @@ class AppColors {
   static const Color red700 = Color(0xffE70E38);
 
   static const Color pink = Color(0xffFC6996);
+
 
   static const Color barrierColor = Color.fromRGBO(0, 0, 0, 0.6);
 }

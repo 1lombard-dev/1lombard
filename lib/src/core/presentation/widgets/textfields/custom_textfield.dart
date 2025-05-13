@@ -129,7 +129,7 @@ class CustomTextField extends StatelessWidget {
               textAlign: textAlign,
               maxLength: maxLength,
               decoration: InputDecoration(
-                fillColor: fillColor ?? AppColors.backgroundInput,
+                fillColor: fillColor ?? AppColors.black.withAlpha(20),
                 border: OutlineInputBorder(
                   borderRadius: borderR ?? const BorderRadius.all(Radius.circular(12)),
                 ),

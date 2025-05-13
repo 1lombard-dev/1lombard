@@ -1,21 +1,17 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
-import 'package:lombard/src/core/presentation/widgets/shimmer/shimmer_box.dart';
-// import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/theme/resources.dart';
-import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
-import 'package:lombard/src/feature/main_feed/presentation/widget/banner_bs.dart';
-import 'package:lombard/src/feature/main_feed/presentation/widget/subject_item.dart';
+import 'package:lombard/src/feature/main_feed/presentation/widget/image_slider_widget.dart';
+import 'package:lombard/src/feature/main_feed/presentation/widget/main_list_container_widget.dart';
+import 'package:lombard/src/feature/main_feed/presentation/widget/main_row_container.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 @RoutePage()
@@ -59,13 +55,36 @@ class _MainPageState extends State<MainPage> {
             decoration: const BoxDecoration(
               color: AppColors.white,
             ),
-            child: Row(
-              children: [
-                // Image.asset(
-                //   Assets.images.appbarLogo.path,
-                //   height: 36,
-                // ),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset(
+                    Assets.images.logoHeader.path,
+                    height: 34,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(color: AppColors.eFGrey, borderRadius: BorderRadius.circular(11)),
+                    child: Material(
+                      color: Colors.transparent,
+                      borderRadius: BorderRadius.circular(11),
+                      child: InkWell(
+                        onTap: () {},
+                        borderRadius: BorderRadius.circular(11),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Image.asset(
+                            Assets.images.notification.path,
+                            height: 30,
+                            width: 30,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           shape: const Border(
@@ -80,153 +99,138 @@ class _MainPageState extends State<MainPage> {
             controller: _refreshController,
             header: const RefreshClassicHeader(),
             onRefresh: () {
-              BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-              BlocProvider.of<CategoryCubit>(context).getCategory();
+              // BlocProvider.of<BannerCubit>(context).getMainPageBanner();
+              // BlocProvider.of<CategoryCubit>(context).getCategory();
               _refreshController.refreshCompleted();
             },
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    BlocConsumer<BannerCubit, BannerState>(
-                      listener: (context, state) {},
-                      builder: (context, state) {
-                        return state.maybeWhen(
-                          orElse: () => const ShimmerBox(
-                            height: 191.6,
-                            width: double.infinity,
-                          ),
-                          loaded: (bannerList) => GestureDetector(
-                            onTap: () {
-                              BannerBS.show(context, bannerList);
-                            },
-                            // child: Image.asset(Assets.images.bannerMain.path),
-                          ),
-                        );
-                      },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 20,
                     ),
-                    const Gap(24),
-                    const Text(
-                      'Өз пәніңізді таңдаңыз',
-                      style: AppTextStyles.fs20w700,
-                    ),
-                    const Gap(6),
-                    BlocConsumer<CategoryCubit, CategoryState>(
-                      listener: (context, state) {},
-                      builder: (context, state) {
-                        return state.maybeWhen(
-                          orElse: () => ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: 2,
-                            itemBuilder: (context, index) {
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Padding(
-                                    padding: EdgeInsets.only(bottom: 10, top: 6),
-                                    child: ShimmerBox(
-                                      height: 22,
-                                      width: 200,
+                    child: ImageSliderWidget(),
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(color: AppColors.white),
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 11).copyWith(bottom: 15),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Наша расценка на 09.09.24',
+                            style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
+                            textAlign: TextAlign.center,
+                          ),
+                          const Gap(17),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              children: List.generate(5, (index) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 10.0, left: 10),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(5),
                                     ),
-                                  ),
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: 2,
-                                    itemBuilder: (context, indexTwo) {
-                                      return const Padding(
-                                        padding: EdgeInsets.only(bottom: 8),
-                                        child: ShimmerBox(
-                                          height: 78,
-                                          width: double.infinity,
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          loaded: (categoryList) => Column(
-                            children: [
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: categoryList.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (categoryList[index].subjects!.isNotEmpty &&
-                                          categoryList[index].subjects != null)
-                                        Padding(
-                                          padding: const EdgeInsets.only(bottom: 10, top: 6),
-                                          child: Text(
-                                            '${categoryList[index].categoryName}',
-                                            style: AppTextStyles.fs14w500,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(5),
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {},
+                                        borderRadius: BorderRadius.circular(5),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                'AU 999',
+                                                style: AppTextStyles.fs14w500.copyWith(
+                                                  color: AppColors.black,
+                                                ),
+                                              ),
+                                              const Gap(5),
+                                              Container(
+                                                decoration: const BoxDecoration(
+                                                  color: AppColors.red,
+                                                ),
+                                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                                                child: Text(
+                                                  '37250 ₸',
+                                                  style: AppTextStyles.fs14w600
+                                                      .copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      if (categoryList[index].subjects!.isNotEmpty &&
-                                          categoryList[index].subjects != null)
-                                        ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                          itemCount: categoryList[index].subjects?.length,
-                                          itemBuilder: (context, indexTwo) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(bottom: 8),
-                                              child: SubjectItem(
-                                                testQuantity:
-                                                    '${categoryList[index].subjects?[indexTwo].questionsCount} тест',
-                                                title: '${categoryList[index].subjects?[indexTwo].name}',
-                                                onTap: () {
-                                                  log('${context.appBloc.isAuthenticated}', name: 'isAuthenticated');
-                                                  if (context.appBloc.isAuthenticated == false) {
-                                                    context.router.push(const AuthRoute());
-                                                  } else if (context.appBloc.isAuthenticated == true) {
-                                                    context.router.push(
-                                                      SubjectRoute(
-                                                        subjectDTO: categoryList[index].subjects?[indexTwo],
-                                                        categoryDTO: categoryList,
-                                                        categoryIndex: index,
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                    ],
-                                  );
-                                },
-                              ),
-                              const Gap(14),
-                              const Gap(12),
-                              Center(
-                                child: Text(
-                                  'Басқа пәндер жақын арада қосылады',
-                                  style: AppTextStyles.fs14w600.copyWith(height: 1.7, color: AppColors.green2),
-                                ),
-                              ),
-                              const Gap(4),
-                              Center(
-                                child: Text(
-                                  'Еліміздің үздік тренерлері тесттерді дайындау үстінде...',
-                                  style: AppTextStyles.fs12w400.copyWith(height: 1.6, color: AppColors.darkBlueText),
-                                ),
-                              ),
-                              const Gap(50),
-                            ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }),
+                            ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15).copyWith(bottom: 30),
+                    child: Container(
+                      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(5)),
+                      padding: const EdgeInsets.only(left: 21, top: 16, bottom: 11, right: 21),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          MainRowContainer(
+                            image: Assets.images.standart.path,
+                            title: 'Стандарт',
+                            onTap: () {},
+                          ),
+                          MainRowContainer(
+                            image: Assets.images.refinance.path,
+                            title: 'Рефинансирование',
+                            onTap: () {},
+                          ),
+                          MainRowContainer(
+                            image: Assets.images.map.path,
+                            title: 'Карта',
+                            onTap: () {},
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Center(
+                    child: Text(
+                      'Ответы на ваши вопросы ',
+                      style: AppTextStyles.fs16w700,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const Gap(20),
+                  MainListContainerWidget(
+                    title: 'Где можно посмотреть актуальную расценку на золото?',
+                    onTap: () {},
+                  ),
+                  const Gap(15),
+                  MainListContainerWidget(
+                    title: 'Будет ли соблюдена конфиденциальность моих данных?',
+                    onTap: () {},
+                  ),
+                  const Gap(15),
+                  MainListContainerWidget(
+                    title: 'Где можно посмотреть актуальную \nрасценку на золото?',
+                    onTap: () {},
+                  ),
+                  const Gap(50),
+                ],
               ),
             ),
           ),
