@@ -162,35 +162,35 @@ class _BaseStudentBottomNavbarState extends State<BaseStudentBottomNavbar> {
             onTap: (value) {
               HapticFeedback.mediumImpact();
               appState.maybeWhen(
-                notAuthorized: () {
-                  if (value == 2) {
-                    context.router.push(const AuthRoute());
-                    log('---${widget.tabController.index}');
-                    log('---v$value');
-                  } else {
-                    if (widget.tabsRouter.activeIndex == value) {
-                      widget.tabsRouter.maybePopTop();
-                      lastTab = value;
-                      log('--${widget.tabController.index}');
-                      log('--v$value');
-                    } else {
-                      widget.tabsRouter.setActiveIndex(value);
-                      lastTab = value;
-                      log('-${widget.tabController.index}');
-                      log('-v$value');
-                    }
-                  }
+                // notAuthorized: () {
+                //   if (value == 2) {
+                //     context.router.push(const AuthRoute());
+                //     log('---${widget.tabController.index}');
+                //     log('---v$value');
+                //   } else {
+                //     if (widget.tabsRouter.activeIndex == value) {
+                //       widget.tabsRouter.maybePopTop();
+                //       lastTab = value;
+                //       log('--${widget.tabController.index}');
+                //       log('--v$value');
+                //     } else {
+                //       widget.tabsRouter.setActiveIndex(value);
+                //       lastTab = value;
+                //       log('-${widget.tabController.index}');
+                //       log('-v$value');
+                //     }
+                //   }
 
-                  // if (widget.tabsRouter.activeIndex == value) {
-                  //   log('maybePOP');
-                  //   widget.tabsRouter.maybePopTop();
-                  //   lastTab = value;
-                  // } else {
-                  //   log('setActive');
-                  //   widget.tabsRouter.setActiveIndex(value);
-                  //   lastTab = value;
-                  // }
-                },
+                //   // if (widget.tabsRouter.activeIndex == value) {
+                //   //   log('maybePOP');
+                //   //   widget.tabsRouter.maybePopTop();
+                //   //   lastTab = value;
+                //   // } else {
+                //   //   log('setActive');
+                //   //   widget.tabsRouter.setActiveIndex(value);
+                //   //   lastTab = value;
+                //   // }
+                // },
                 orElse: () {
                   if (widget.tabsRouter.activeIndex == value) {
                     widget.tabsRouter.maybePopTop();
@@ -210,7 +210,6 @@ class _BaseStudentBottomNavbarState extends State<BaseStudentBottomNavbar> {
                 currentIndex: widget.tabController.index,
                 tabIndex: 0,
               ),
-              
               CustomTabWidget(
                 icon: Assets.images.calculationPageIcon.path,
                 activeIcon: Assets.images.calculationPageActiveIcon.path,

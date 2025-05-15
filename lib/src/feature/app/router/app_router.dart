@@ -7,7 +7,9 @@ import 'package:lombard/src/feature/auth/models/user_dto.dart';
 import 'package:lombard/src/feature/auth/presentation/auth.dart';
 import 'package:lombard/src/feature/auth/presentation/pages/auth_page.dart';
 import 'package:lombard/src/feature/calculation/presentation/calculation_page.dart';
-import 'package:lombard/src/feature/loans/presentation/loans_page.dart';
+import 'package:lombard/src/feature/loans/presentation/pages/loans_detail_page.dart';
+import 'package:lombard/src/feature/loans/presentation/pages/loans_page.dart';
+import 'package:lombard/src/feature/loans/presentation/pages/payment_information_page.dart';
 import 'package:lombard/src/feature/main_feed/model/category_dto.dart';
 import 'package:lombard/src/feature/main_feed/presentation/main_feed.dart';
 import 'package:lombard/src/feature/main_feed/presentation/pages/change_subject_page.dart';
@@ -98,6 +100,10 @@ class AppRouter extends RootStackRouter {
         AutoRoute(page: ChangeSubjectRoute.page),
 
         AutoRoute(page: DetailImageRoute.page),
+
+        //LOANS
+        AutoRoute(page: LoansDetailRoute.page),
+        AutoRoute(page: PaymentInformationRoute.page),
       ];
 }
 
