@@ -22,6 +22,10 @@
 		<string>$(FLUTTER_BUILD_NAME)</string>
 		<key>CFBundleSignature</key>
 		<string>????</string>
+		<key>YMKApiKey</key>
+        <string>ec9c9734-d6cf-48a8-8d7b-bfb81ee96e2a</string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>We need your location for map features</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>ITSAppUsesNonExemptEncryption</key>

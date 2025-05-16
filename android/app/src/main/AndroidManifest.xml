@@ -3,6 +3,9 @@
         android:label="lombard"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+             <meta-data
+            android:name="com.yandex.maps.apikey"
+            android:value="ec9c9734-d6cf-48a8-8d7b-bfb81ee96e2a"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -14,7 +14,9 @@ import 'package:lombard/src/feature/main_feed/model/category_dto.dart';
 import 'package:lombard/src/feature/main_feed/presentation/main_feed.dart';
 import 'package:lombard/src/feature/main_feed/presentation/pages/change_subject_page.dart';
 import 'package:lombard/src/feature/main_feed/presentation/pages/subject_page.dart';
-import 'package:lombard/src/feature/map/presentation/map_page.dart';
+import 'package:lombard/src/feature/map/presentation/pages/all_branches_page.dart';
+import 'package:lombard/src/feature/map/presentation/pages/branches_detail_page.dart';
+import 'package:lombard/src/feature/map/presentation/pages/map_page.dart';
 import 'package:lombard/src/feature/profile/presentation/pages/about_us_page.dart';
 import 'package:lombard/src/feature/profile/presentation/pages/edit_profile_page.dart';
 import 'package:lombard/src/feature/profile/presentation/pages/faq_page.dart';
@@ -104,6 +106,10 @@ class AppRouter extends RootStackRouter {
         //LOANS
         AutoRoute(page: LoansDetailRoute.page),
         AutoRoute(page: PaymentInformationRoute.page),
+
+        //MAP
+        AutoRoute(page: AllBranchesRoute.page),
+        AutoRoute(page: BranchesDetailRoute.page),
       ];
 }
 

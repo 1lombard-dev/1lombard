@@ -129,7 +129,7 @@ class CustomTextField extends StatelessWidget {
               textAlign: textAlign,
               maxLength: maxLength,
               decoration: InputDecoration(
-                fillColor: fillColor ?? AppColors.black.withAlpha(20),
+                fillColor: fillColor ?? AppColors.black.withAlpha(10),
                 border: OutlineInputBorder(
                   borderRadius: borderR ?? const BorderRadius.all(Radius.circular(12)),
                 ),
@@ -139,7 +139,7 @@ class CustomTextField extends StatelessWidget {
                 ),
                 focusedBorder: focusedBorder ??
                     const OutlineInputBorder(
-                      borderSide: BorderSide(color: AppColors.mainBlueColor),
+                      borderSide: BorderSide(color: Colors.transparent),
                       borderRadius: BorderRadius.all(Radius.circular(12)),
                     ),
                 // prefixIcon: prefixIconWidget ??

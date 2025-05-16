@@ -1,26 +1,29 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
+
+import 'package:lombard/src/core/constant/generated/assets.gen.dart';
+import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/theme/resources.dart';
-import 'package:lombard/src/core/utils/extensions/context_extension.dart';
-import 'package:lombard/src/feature/calculation/bloc/notification_cubit.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
+import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 
 @RoutePage()
 class ProfilePage extends StatefulWidget implements AutoRouteWrapper {
   const ProfilePage({super.key});
 
   @override
-  State<ProfilePage> createState() => _ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => NotificationCubit(repository: context.repository.notificationRepository),
-          child: this,
+          create: (context) => BannerCubit(repository: context.repository.mainRepository),
+        ),
+        BlocProvider(
+          create: (context) => CategoryCubit(repository: context.repository.mainRepository),
         ),
       ],
       child: this,
@@ -29,88 +32,45 @@ class ProfilePage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final RefreshController _refreshController = RefreshController();
-  // List<String> title = [
-  //   'Тестілеу ақпараттары',
-  //   'Бонустар және баланс',
-  //   'Тест жауаптары',
-  //   'Хабарламалар',
-  // ];
-
-  // List<bool> count = [
-  //   true,
-  //   false,
-  //   true,
-  //   false,
-  // ];
+  final TextEditingController priceController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
+    BlocProvider.of<CategoryCubit>(context).getCategory();
+  }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundInput,
-      appBar: AppBar(
-        title: const Text(
-          'Кабинет',
-          style: AppTextStyles.fs18w600,
-        ),
-        shape: const Border(
-          bottom: BorderSide(
-            color: AppColors.dividerGrey,
-            width: 0.5,
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: AppColors.backgroundInput,
+        appBar: AppBar(
+          title: Container(
+            decoration: const BoxDecoration(
+              color: AppColors.white,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 15),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Кабинет',
+                    style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  Image.asset(
+                    Assets.images.logoHeader.path,
+                    height: 34,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          shape: const Border(
+            bottom: BorderSide(
+              color: AppColors.dividerGrey,
+              width: 0.5,
+            ),
           ),
         ),
-      ),
-      body: SmartRefresher(
-        controller: _refreshController,
-        header: const RefreshClassicHeader(),
-        onRefresh: () {},
-        child: ListView.builder(
-          itemCount: 3,
-          itemBuilder: (context, index) {
-            return Container(
-              // height: 80,
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                color: AppColors.white,
-                border: Border(top: BorderSide(color: AppColors.dividerGrey, width: 0.5)),
-              ),
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              height: 22,
-                              width: 22,
-                              decoration: const BoxDecoration(
-                                color: AppColors.mainBlueColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '1',
-                                  style: AppTextStyles.fs12w600.copyWith(color: AppColors.white),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
+      );
 }
