@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lombard/src/core/theme/resources.dart';
 
-class CustomRadio extends StatefulWidget {
+class CustomRadio<T> extends StatefulWidget {
   const CustomRadio({
     required this.value,
     required this.onChanged,
@@ -10,9 +11,9 @@ class CustomRadio extends StatefulWidget {
     this.color,
   });
   final double size;
-  final int value;
-  final int? groupValue;
-  final void Function(int index) onChanged;
+  final T value;
+  final T? groupValue;
+  final void Function(T index) onChanged;
   final Color? color;
 
   @override
@@ -30,26 +31,11 @@ class _CustomRadioState extends State<CustomRadio> {
       child: Container(
         height: widget.size,
         width: widget.size,
-        decoration: BoxDecoration(
-          // color: selected ? Colors.black : AppColors.grey2,
-          border: selected
-              ? null
-              : const Border.fromBorderSide(
-                  BorderSide(
-                    color: Color(0xffe0e0e0),
-                    width: 1.5,
-                  ),
-                ),
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
         ),
         child: Center(
-          child: selected
-              ? const Icon(
-                  Icons.check,
-                  size: 17,
-                  color: Colors.white,
-                )
-              : const SizedBox(),
+          child: selected ? const Icon(Icons.radio_button_checked) : const Icon(Icons.radio_button_off),
         ),
       ),
     );

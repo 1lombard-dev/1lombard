@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lombard/src/core/constant/localization/localization.dart';
 import 'package:lombard/src/core/containers/repository_storage.dart';
 import 'package:lombard/src/core/presentation/scopes/repository_scope.dart';
 import 'package:lombard/src/core/utils/screen_util.dart';
 import 'package:lombard/src/feature/initialization/model/dependencies_container.dart';
 import 'package:lombard/src/feature/initialization/widget/dependencies_scope.dart';
-
 import 'package:lombard/src/feature/settings/widget/settings_scope.dart';
 
 /// List of extensions for [BuildContext]
@@ -55,11 +56,11 @@ extension ContextExtension on BuildContext {
   IRepositoryStorage get repository => RepositoryScope.of(this);
 
   /// Перевести через контекст
-  // AppLocalizations get localized => Localization.of(this);
+  AppLocalizations get localized => Localization.of(this);
 
   /// Выбранный язык
 
-  Locale get currentLocale => SettingsScope.settingsOf(this).locale ?? const Locale('kz', 'KZ');
+  Locale get currentLocale => SettingsScope.settingsOf(this).locale ?? const Locale('ru', 'RU');
 
   /// Выбранный город
   // CityDTO? get currentCity => SettingsScope.cityOf(this);
@@ -95,9 +96,6 @@ extension OrientationX on Orientation {
         return portrait;
       case Orientation.landscape:
         return landscape;
-
-      default:
-        return portrait;
     }
   }
 

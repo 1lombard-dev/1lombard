@@ -7,6 +7,7 @@ import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/image_slider_widget.dart';
@@ -70,7 +71,9 @@ class _MainPageState extends State<MainPage> {
                       color: Colors.transparent,
                       borderRadius: BorderRadius.circular(11),
                       child: InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          context.router.push(const NotificationRoute());
+                        },
                         borderRadius: BorderRadius.circular(11),
                         child: Padding(
                           padding: const EdgeInsets.all(8),

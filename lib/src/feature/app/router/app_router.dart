@@ -95,12 +95,14 @@ class AppRouter extends RootStackRouter {
         // AutoRoute(page: RegisterRoute.page),
         AutoRoute(page: NewPasswordRoute.page),
 
+        //MAIN
+        AutoRoute(page: NotificationRoute.page),
+
         // Other pages
         AutoRoute(page: AboutUsRoute.page),
         AutoRoute(page: FaqRoute.page),
         AutoRoute(page: EditProfileRoute.page),
         AutoRoute(page: ChangeSubjectRoute.page),
-
         AutoRoute(page: DetailImageRoute.page),
 
         //LOANS
@@ -110,6 +112,10 @@ class AppRouter extends RootStackRouter {
         //MAP
         AutoRoute(page: AllBranchesRoute.page),
         AutoRoute(page: BranchesDetailRoute.page),
+
+        //CONTACT
+        AutoRoute(page: ContactsRoute.page),
+        AutoRoute(page: ChooseLanguageRoute.page),
       ];
 }
 

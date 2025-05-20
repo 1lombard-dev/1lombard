@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lombard/src/core/constant/localization/localization.dart';
 
 import 'package:lombard/src/core/theme/resources.dart';
 
@@ -28,8 +29,8 @@ class MaterialContext extends StatelessWidget {
     return AppRouterBuilder(
       createRouter: (context) => AppRouter(),
       builder: (context, informationParser, routerDelegate, router) => MaterialApp.router(
-        title: 'Ustaz Tilegi',
-        onGenerateTitle: (context) => 'Ustaz Tilegi',
+        title: 'Lombard1',
+        onGenerateTitle: (context) => 'Lombard1',
         routerDelegate: routerDelegate,
         routeInformationParser: informationParser,
         theme: AppTheme.light,
@@ -37,9 +38,10 @@ class MaterialContext extends StatelessWidget {
         // theme: theme.lightTheme,
         // darkTheme: theme.darkTheme,
         // themeMode: ThemeMode.light, // theme.mode,
-        // localizationsDelegates: Localization.localizationDelegates,
-        // supportedLocales: Localization.supportedLocales,
         locale: settings.locale,
+        localizationsDelegates: Localization.localizationDelegates,
+        supportedLocales: Localization.supportedLocales,
+
         // home: const HomeScreen(),
         // builder: (context, child) => MediaQuery.withClampedTextScaling(
         //   maxScaleFactor: 1,
