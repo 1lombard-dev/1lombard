@@ -32,6 +32,7 @@ class App extends StatelessWidget {
             create: (context) => RepositoryStorage(
               sharedPreferences: result.dependencies.sharedPreferences,
               packageInfo: result.dependencies.packageInfo,
+              appSettingsDatasource: result.dependencies.appSettingsDatasource,
             ),
             child: const SettingsScope(
               child: WindowSizeScope(

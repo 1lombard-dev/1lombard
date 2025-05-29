@@ -149,8 +149,7 @@ abstract base class RestClientBase implements IRestClient {
   /// body as is.
   @protected
   @visibleForTesting
-  Future<Map<String, Object?>?> decodeResponse(
-    /* String, Map<String, Object?>, List<int> */
+  Future<Object?> decodeResponse(
     Object? body, {
     int? statusCode,
     bool returnFullData = false,
@@ -158,7 +157,7 @@ abstract base class RestClientBase implements IRestClient {
     if (body == null) return null;
 
     assert(
-      body is String || body is Map<String, Object?> || body is List<int>,
+      body is String || body is Map<String, Object?> || body is List<int> || body is List<dynamic>,
       'Unexpected response body type: ${body.runtimeType}',
     );
 
@@ -167,6 +166,7 @@ abstract base class RestClientBase implements IRestClient {
         final Map<String, Object?> map => map,
         final String str => await _decodeString(str),
         final List<int> bytes => await _decodeBytes(bytes),
+        final List<dynamic> list => list,
         _ => throw WrongResponseTypeException(
             message: 'Unexpected response body type: ${body.runtimeType}',
             statusCode: statusCode,
@@ -185,9 +185,11 @@ abstract base class RestClientBase implements IRestClient {
         return data;
       }
 
-      // Simply return decoded body if it is not an error or data
-      // This is useful for responses that do not follow the structured response
-      // But generally, it is recommended to follow the structured response :)
+      // Если decodedBody — это список, оборачиваем его в Map с ключом 'data'
+      if (decodedBody is List<dynamic>) {
+        return {'data': decodedBody};
+      }
+
       return decodedBody;
     } on RestClientException {
       rethrow;

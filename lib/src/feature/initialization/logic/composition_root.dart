@@ -85,13 +85,15 @@ class DependenciesFactory extends AsyncFactory<DependenciesContainer> {
       cacheOptions: const SharedPreferencesWithCacheOptions(),
     );
     final packageInfo = await PackageInfo.fromPlatform();
+    final sharedPreferencesAsync = SharedPreferencesAsync();
     final errorTrackingManager = await ErrorTrackingManagerFactory(config, logger).create();
     final settingsBloc = await SettingsBlocFactory(SharedPreferencesAsync()).create();
-
+    final appSettingsDatasource = AppSettingsDatasourceImpl(sharedPreferences: sharedPreferencesAsync);
     return DependenciesContainer(
       appSettingsBloc: settingsBloc,
       packageInfo: packageInfo,
       errorTrackingManager: errorTrackingManager,
+      appSettingsDatasource: appSettingsDatasource,
       sharedPreferences: sharedPreferences,
     );
   }

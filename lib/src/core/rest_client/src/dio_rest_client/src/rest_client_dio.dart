@@ -1,9 +1,9 @@
 // ignore_for_file: inference_failure_on_function_invocation, avoid_dynamic_calls, lines_longer_than_80_chars
 
 import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
 import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/core/rest_client/src/dio_rest_client/src/dio_client.dart';
+import 'package:meta/meta.dart';
 
 /// Rest client that uses `Dio` as HTTP library.
 final class RestClientDio extends RestClientBase {
@@ -34,7 +34,7 @@ final class RestClientDio extends RestClientBase {
           data: body,
           headers: headers,
           method: method,
-          contentType: 'application/json',
+          contentType: 'application/x-www-form-urlencoded',
           responseType: ResponseType.json,
           queryParameters: queryParams,
           sendTimeout: const Duration(milliseconds: 30000),
@@ -55,7 +55,13 @@ final class RestClientDio extends RestClientBase {
           statusCode: response.statusCode,
         );
       }
-      return resp;
+
+      if (resp is Map<String, Object?>) {
+        return resp;
+      } else {
+        // Если пришёл не Map, оборачиваем в Map с ключом 'data'
+        return <String, Object?>{'data': resp};
+      }
     } on RestClientException {
       rethrow;
     } on DioException catch (e) {

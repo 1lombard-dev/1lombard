@@ -1,15 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
+import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
+import 'package:lombard/src/feature/main_feed/bloc/get_faq_cubit.dart';
+import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/image_slider_widget.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/main_list_container_widget.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/main_row_container.dart';
@@ -32,6 +34,12 @@ class MainPage extends StatefulWidget implements AutoRouteWrapper {
         BlocProvider(
           create: (context) => CategoryCubit(repository: context.repository.mainRepository),
         ),
+        BlocProvider(
+          create: (context) => GetTokenCubit(repository: context.repository.mainRepository),
+        ),
+        BlocProvider(
+          create: (context) => GetFaqCubit(repository: context.repository.mainRepository),
+        ),
       ],
       child: this,
     );
@@ -44,8 +52,8 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-    BlocProvider.of<CategoryCubit>(context).getCategory();
+    BlocProvider.of<GetTokenCubit>(context).getToken();
+    BlocProvider.of<GetFaqCubit>(context).getFAQ();
   }
 
   @override
@@ -210,29 +218,50 @@ class _MainPageState extends State<MainPage> {
                       ),
                     ),
                   ),
-                  const Center(
-                    child: Text(
-                      'Ответы на ваши вопросы ',
-                      style: AppTextStyles.fs16w700,
-                      textAlign: TextAlign.center,
-                    ),
+                  BlocBuilder<GetFaqCubit, GetFaqState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        orElse: () {
+                          return const CustomLoadingOverlayWidget();
+                        },
+                        loaded: (faq) {
+                          return Column(
+                            children: [
+                              const Center(
+                                child: Text(
+                                  'Ответы на ваши вопросы ',
+                                  style: AppTextStyles.fs16w700,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const Gap(20),
+
+                              // Обернули в SizedBox с фиксированной высотой, чтобы ListView работал внутри Column
+                              SizedBox(
+                                height: faq.length * 80 + (faq.length - 1) * 15, // примерная высота
+                                child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(), // чтобы не скроллилось, если не нужно
+                                  itemCount: faq.length,
+                                  itemBuilder: (context, index) {
+                                    return Column(
+                                      children: [
+                                        MainListContainerWidget(
+                                          title: faq[index].title ?? 'ERROR',
+                                          onTap: () {},
+                                        ),
+                                        if (index != faq.length - 1) const Gap(15),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                              const Gap(50),
+                            ],
+                          );
+                        },
+                      );
+                    },
                   ),
-                  const Gap(20),
-                  MainListContainerWidget(
-                    title: 'Где можно посмотреть актуальную расценку на золото?',
-                    onTap: () {},
-                  ),
-                  const Gap(15),
-                  MainListContainerWidget(
-                    title: 'Будет ли соблюдена конфиденциальность моих данных?',
-                    onTap: () {},
-                  ),
-                  const Gap(15),
-                  MainListContainerWidget(
-                    title: 'Где можно посмотреть актуальную \nрасценку на золото?',
-                    onTap: () {},
-                  ),
-                  const Gap(50),
                 ],
               ),
             ),

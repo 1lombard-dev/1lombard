@@ -64,45 +64,6 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
             Semantics(
               excludeSemantics: true,
               explicitChildNodes: true,
-              label: 'select_change_language_en_button',
-              child: CustomMaterialButton(
-                borderRadiusGeometry: BorderRadius.zero,
-                onTap: () async {
-                  SettingsScope.of(context).add(
-                    AppSettingsEvent.updateAppSettings(
-                      appSettings: SettingsScope.settingsOf(context).copyWith(
-                        locale: const Locale('en'),
-                      ),
-                    ),
-                  );
-                  context.router.maybePop();
-
-                  BlocProvider.of<AppRestartBloc>(context).add(const AppRestartEvent.restartApp());
-                },
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'English',
-                      style: AppTextStyles.fs16w500,
-                    ),
-                    CustomRadio(
-                      value: const Locale('en'),
-                      groupValue: SettingsScope.settingsOf(context).locale,
-                      onChanged: (Locale index) {},
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const Divider(
-              height: 1, // Adjust height to remove extra space
-              thickness: 1, // Adjust thickness if needed
-            ),
-            Semantics(
-              excludeSemantics: true,
-              explicitChildNodes: true,
               label: 'select_change_language_kz_button',
               child: CustomMaterialButton(
                 borderRadiusGeometry: BorderRadius.zero,

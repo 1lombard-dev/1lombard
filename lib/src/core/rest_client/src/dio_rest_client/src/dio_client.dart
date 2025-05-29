@@ -1,11 +1,9 @@
-import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 import 'package:lombard/src/core/utils/talker_logger_util.dart';
 import 'package:lombard/src/feature/auth/database/auth_dao.dart';
-import 'package:lombard/src/feature/auth/models/user_dto.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:talker_dio_logger/talker_dio_logger_interceptor.dart';
 
 class DioClient {
   factory DioClient({
@@ -58,19 +56,7 @@ class DioClient {
       dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) async {
-            options.headers['Accept'] = 'application/json';
-            options.headers['version'] = packageInfo.version;
-
-            final userStr = authDao.user.value;
-            if (userStr != null) {
-              final user = UserDTO.fromJson(jsonDecode(userStr) as Map<String, dynamic>);
-              if (user.accessToken != null) {
-                options.headers['Authorization'] = 'Bearer ${user.accessToken}';
-                // todo added content lang
-                //     options.headers['Content-Language'] = settings.locale.value ?? AppLanguage.deviceLanguage.localeCode;
-              }
-            }
-
+            options.headers['Accept'] = 'application/x-www-form-urlencoded';
             return handler.next(options);
           },
           onError: (e, handler) async => handler.next(e),

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-
 import 'package:lombard/src/core/containers/dependencies_storage.dart';
 import 'package:lombard/src/core/containers/repository_storage.dart';
 import 'package:lombard/src/core/presentation/scopes/dependencies_scope.dart';
@@ -9,6 +7,7 @@ import 'package:lombard/src/core/presentation/scopes/repository_scope.dart';
 import 'package:lombard/src/core/utils/screen_util.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/auth/models/user_dto.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 extension BuildContextX on BuildContext {
   // IEnvironmentStorage get environment => EnvironmentScope.of(this);
@@ -61,9 +60,7 @@ extension OrientationX on Orientation {
       case Orientation.landscape:
         return landscape;
 
-      default:
-        return portrait;
-    }
+      }
   }
 
   T maybeWhenByValue<T extends Object?>({

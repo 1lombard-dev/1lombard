@@ -75,7 +75,7 @@ final class RestClientHttp extends RestClientBase {
 
       if (body != null) {
         request.bodyBytes = encodeBody(body);
-        request.headers['content-type'] = 'application/json;charset=utf-8';
+        request.headers['content-type'] = 'application/x-www-form-urlencoded;charset=utf-8';
       }
 
       if (headers != null) {
@@ -91,6 +91,7 @@ final class RestClientHttp extends RestClientBase {
       final result = await decodeResponse(
         response.bodyBytes,
         statusCode: response.statusCode,
+        returnFullData: returnFullData, // добавил, если есть поддержка
       );
 
       if (result == null) {
@@ -100,7 +101,12 @@ final class RestClientHttp extends RestClientBase {
         );
       }
 
-      return result;
+      if (result is Map<String, Object?>) {
+        return result;
+      } else {
+        // Оборачиваем в Map, если тип не совпадает
+        return <String, Object?>{'data': result};
+      }
     } on RestClientException {
       rethrow;
     } on http.ClientException catch (e, stack) {

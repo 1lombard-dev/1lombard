@@ -1,6 +1,3 @@
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/core/rest_client/src/dio_rest_client/src/dio_client.dart';
 import 'package:lombard/src/core/rest_client/src/dio_rest_client/src/interceptor/dio_interceptor.dart';
@@ -8,12 +5,15 @@ import 'package:lombard/src/core/rest_client/src/dio_rest_client/src/rest_client
 import 'package:lombard/src/feature/auth/data/auth_remote_ds.dart';
 import 'package:lombard/src/feature/auth/data/auth_repository.dart';
 import 'package:lombard/src/feature/auth/database/auth_dao.dart';
-import 'package:lombard/src/feature/main_feed/data/main_remote_ds.dart';
-import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
 import 'package:lombard/src/feature/calculation/data/notification_remote_ds.dart';
 import 'package:lombard/src/feature/calculation/data/notification_repository.dart';
+import 'package:lombard/src/feature/main_feed/data/main_remote_ds.dart';
+import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
 import 'package:lombard/src/feature/profile/data/profile_remote_ds.dart';
 import 'package:lombard/src/feature/profile/data/profile_repository.dart';
+import 'package:lombard/src/feature/settings/data/app_settings_datasource.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class IRepositoryStorage {
   // dao's
@@ -44,10 +44,13 @@ class RepositoryStorage implements IRepositoryStorage {
   RepositoryStorage({
     required SharedPreferencesWithCache sharedPreferences,
     required PackageInfo packageInfo,
+    required AppSettingsDatasource appSettingsDatasource,
   })  : _sharedPreferences = sharedPreferences,
-        _packageInfo = packageInfo;
+        _packageInfo = packageInfo,
+        _appSettingsDatasource = appSettingsDatasource;
   final SharedPreferencesWithCache _sharedPreferences;
   final PackageInfo _packageInfo;
+  final AppSettingsDatasource _appSettingsDatasource;
   IRestClient? _restClient;
 
   @override
@@ -63,9 +66,9 @@ class RepositoryStorage implements IRepositoryStorage {
   ///
   @override
   IRestClient get restClient => _restClient ??= RestClientDio(
-        baseUrl: 'http://194.32.140.48/api',
+        baseUrl: 'https://1lombard.kz',
         dioClient: DioClient(
-          baseUrl: 'http://194.32.140.48/api',
+          baseUrl: 'https://1lombard.kz',
           interceptor: const DioInterceptor(),
           authDao: authDao,
           packageInfo: _packageInfo,
@@ -90,6 +93,7 @@ class RepositoryStorage implements IRepositoryStorage {
   @override
   IMainRepository get mainRepository => MainRepositoryImpl(
         remoteDS: mainRemoteDS,
+        authDao: authDao,
       );
 
   @override
@@ -113,6 +117,8 @@ class RepositoryStorage implements IRepositoryStorage {
   @override
   IMainRemoteDS get mainRemoteDS => MainRemoteDSImpl(
         restClient: restClient,
+        authDao: authDao,
+        appSettingsDatasource: _appSettingsDatasource, // ✅ Inject here
       );
 
   @override

@@ -1,50 +1,34 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
-import 'package:lombard/src/core/rest_client/models/basic_response.dart';
 import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/core/utils/talker_logger_util.dart';
+import 'package:lombard/src/feature/auth/database/auth_dao.dart';
 import 'package:lombard/src/feature/main_feed/model/category_dto.dart';
 import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 import 'package:lombard/src/feature/main_feed/model/question_dto.dart';
-import 'package:lombard/src/feature/main_feed/model/quiz_dto.dart';
+import 'package:lombard/src/feature/settings/data/app_settings_datasource.dart';
 
 abstract interface class IMainRemoteDS {
   Future<List<BannerDTO>> mainPageBanner();
 
   Future<List<CategoryDTO>> categories();
 
-  ///
-  /// quiz api
-  ///
-  Future<QuizDTO> startQuiz({
-    required int subjectId,
-    int? sectionId,
-  });
+  Future<List<QuestionDTO>> getFAQ();
 
-  Future<List<QuestionDTO>> getQuestionList({
-    required int testId,
-  });
-
-  Future<BasicResponse> errorComment({
-    required int questionId,
-    required String comment,
-  });
-
-  Future<BasicResponse> answerUpload({
-    required int testId,
-    required int questionId,
-    required int answerId,
-  });
-
-  Future<QuizResultDTO> finishTest({
-    required int testId,
-  });
+  Future<String> getToken();
 }
 
 class MainRemoteDSImpl implements IMainRemoteDS {
   const MainRemoteDSImpl({
     required this.restClient,
+    required this.authDao,
+    required this.appSettingsDatasource, // ✅ Add this
   });
   final IRestClient restClient;
+  final IAuthDao authDao;
+  final AppSettingsDatasource appSettingsDatasource; // ✅ Declare this
 
   @override
   Future<List<BannerDTO>> mainPageBanner() async {
@@ -68,6 +52,38 @@ class MainRemoteDSImpl implements IMainRemoteDS {
       return list;
     } catch (e, st) {
       TalkerLoggerUtil.talker.error('#getMainPageBanner - $e', e, st);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<QuestionDTO>> getFAQ() async {
+    try {
+      final appSettings = await appSettingsDatasource.getAppSettings();
+      final token = authDao.token.value;
+
+      final Map<String, dynamic> response = await restClient.post(
+        '/webservice/faq/getFaq.php',
+        body: {
+          'token': token ?? '',
+          'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
+        },
+      );
+
+      if (response['data'] == null) {
+        throw Exception();
+      }
+      final list = await compute<List<dynamic>, List<QuestionDTO>>(
+        (list) => list
+            .map(
+              (e) => QuestionDTO.fromJson(e as Map<String, dynamic>),
+            )
+            .toList(),
+        response['data'] as List,
+      );
+      return list;
+    } catch (e, st) {
+      TalkerLoggerUtil.talker.error('#getFAQ - $e', e, st);
       rethrow;
     }
   }
@@ -98,100 +114,21 @@ class MainRemoteDSImpl implements IMainRemoteDS {
     }
   }
 
-  ///
-  /// quiz api
-  ///
   @override
-  Future<List<QuestionDTO>> getQuestionList({required int testId}) async {
-    try {
-      final Map<String, dynamic> response = await restClient.get(
-        '/test/$testId',
-        queryParams: {},
-      );
-
-      if (response['data'] == null) {
-        throw Exception();
-      }
-      final list = await compute<List<dynamic>, List<QuestionDTO>>(
-        (list) => list
-            .map(
-              (e) => QuestionDTO.fromJson(e as Map<String, dynamic>),
-            )
-            .toList(),
-        response['data'] as List,
-      );
-      return list;
-    } catch (e, st) {
-      TalkerLoggerUtil.talker.error('#getQuestionList - $e', e, st);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<QuizDTO> startQuiz({required int subjectId, int? sectionId}) async {
+  Future<String> getToken() async {
     try {
       final Map<String, dynamic> response = await restClient.post(
-        '/test/start',
+        '/webservice/auth/getToken.php',
         body: {
-          'subject_id': subjectId,
-          'section_id': sectionId,
+          'secret': 'djdmctndbnnf3wzq8yjgmbm9wo561201',
         },
       );
 
-      return QuizDTO.fromJson(response);
+      log('RESPONSE::::: $response');
+      final token = response['token'] as String;
+      return token;
     } catch (e, st) {
-      TalkerLoggerUtil.talker.error('#login - $e', e, st);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<BasicResponse> errorComment({required int questionId, required String comment}) async {
-    try {
-      final Map<String, dynamic> response = await restClient.post(
-        '/test/report-error',
-        body: {
-          'question_id': questionId,
-          'comment': comment,
-        },
-      );
-
-      return BasicResponse.fromJson(response);
-    } catch (e, st) {
-      TalkerLoggerUtil.talker.error('#errorComment - $e', e, st);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<BasicResponse> answerUpload({required int testId, required int questionId, required int answerId}) async {
-    try {
-      final Map<String, dynamic> response = await restClient.post(
-        '/test/$testId/answer',
-        body: {
-          'question_id': questionId,
-          'answer_id': answerId,
-        },
-      );
-
-      return BasicResponse.fromJson(response);
-    } catch (e, st) {
-      TalkerLoggerUtil.talker.error('#answerUpload - $e', e, st);
-      rethrow;
-    }
-  }
-
-  @override
-  Future<QuizResultDTO> finishTest({required int testId}) async {
-    try {
-      final Map<String, dynamic> response = await restClient.post(
-        '/test/$testId/finish',
-        body: {},
-      );
-
-      return QuizResultDTO.fromJson(response);
-    } catch (e, st) {
-      TalkerLoggerUtil.talker.error('#finishTest - $e', e, st);
+      TalkerLoggerUtil.talker.error('#getToken - $e', e, st);
       rethrow;
     }
   }

@@ -113,7 +113,7 @@ mixin _LoggerMixin on BaseSharedPreferencesDao {
 }
 
 mixin _KeyImplementationMixin on BaseSharedPreferencesDao {
-  late final String _fullNamespace = 'syila_client.$_name';
+  late final String _fullNamespace = 'lombard1.$_name';
   late final F1<String, String> _memoizedKey = _key.memoize();
 
   String _key(String name) => '$_fullNamespace.$name';

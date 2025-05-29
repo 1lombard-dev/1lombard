@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lombard/src/core/theme/resources.dart';
 
 class CustomRadio<T> extends StatefulWidget {
   const CustomRadio({

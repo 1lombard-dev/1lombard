@@ -1,45 +1,27 @@
-import 'package:lombard/src/core/rest_client/models/basic_response.dart';
+import 'package:lombard/src/feature/auth/database/auth_dao.dart';
 import 'package:lombard/src/feature/main_feed/data/main_remote_ds.dart';
 import 'package:lombard/src/feature/main_feed/model/category_dto.dart';
 import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 import 'package:lombard/src/feature/main_feed/model/question_dto.dart';
-import 'package:lombard/src/feature/main_feed/model/quiz_dto.dart';
 
 abstract interface class IMainRepository {
   Future<List<BannerDTO>> mainPageBanner();
 
   Future<List<CategoryDTO>> categories();
 
-  Future<QuizDTO> startQuiz({
-    required int subjectId,
-    int? sectionId,
-  });
+  Future<List<QuestionDTO>> getFAQ();
 
-  Future<List<QuestionDTO>> getQuestionList({
-    required int testId,
-  });
-
-  Future<BasicResponse> errorComment({
-    required int questionId,
-    required String comment,
-  });
-
-  Future<BasicResponse> answerUpload({
-    required int testId,
-    required int questionId,
-    required int answerId,
-  });
-
-  Future<QuizResultDTO> finishTest({
-    required int testId,
-  });
+  Future<String> getToken();
 }
 
 class MainRepositoryImpl implements IMainRepository {
   const MainRepositoryImpl({
     required IMainRemoteDS remoteDS,
-  }) : _remoteDS = remoteDS;
+    required IAuthDao authDao,
+  })  : _remoteDS = remoteDS,
+        _authDao = authDao;
   final IMainRemoteDS _remoteDS;
+  final IAuthDao _authDao;
 
   @override
   Future<List<BannerDTO>> mainPageBanner() async {
@@ -60,45 +42,20 @@ class MainRepositoryImpl implements IMainRepository {
   }
 
   @override
-  Future<QuizDTO> startQuiz({required int subjectId, int? sectionId}) async {
+  Future<List<QuestionDTO>> getFAQ() async {
     try {
-      return await _remoteDS.startQuiz(subjectId: subjectId, sectionId: sectionId);
+      return await _remoteDS.getFAQ();
     } catch (e) {
       rethrow;
     }
   }
 
   @override
-  Future<List<QuestionDTO>> getQuestionList({required int testId}) async {
+  Future<String> getToken() async {
     try {
-      return await _remoteDS.getQuestionList(testId: testId);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<BasicResponse> errorComment({required int questionId, required String comment}) async {
-    try {
-      return await _remoteDS.errorComment(questionId: questionId, comment: comment);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<BasicResponse> answerUpload({required int testId, required int questionId, required int answerId}) async {
-    try {
-      return await _remoteDS.answerUpload(questionId: questionId, answerId: answerId, testId: testId);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  @override
-  Future<QuizResultDTO> finishTest({required int testId}) async {
-    try {
-      return await _remoteDS.finishTest(testId: testId);
+      final token = await _remoteDS.getToken();
+      await _authDao.token.setValue(token);
+      return token;
     } catch (e) {
       rethrow;
     }
