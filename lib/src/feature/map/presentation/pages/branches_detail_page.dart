@@ -5,14 +5,17 @@ import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
+import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/textfields/custom_textfield.dart';
 import 'package:lombard/src/core/theme/resources.dart';
-import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
+import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
+import 'package:lombard/src/feature/map/bloc/city_cubit.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class BranchesDetailPage extends StatefulWidget implements AutoRouteWrapper {
-  const BranchesDetailPage({super.key});
+  final String title;
+  const BranchesDetailPage({super.key, required this.title});
 
   @override
   _BranchesDetailPageState createState() => _BranchesDetailPageState();
@@ -22,10 +25,7 @@ class BranchesDetailPage extends StatefulWidget implements AutoRouteWrapper {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BannerCubit(repository: context.repository.mainRepository),
-        ),
-        BlocProvider(
-          create: (context) => CategoryCubit(repository: context.repository.mainRepository),
+          create: (context) => CityCubit(repository: context.repository.mapRepository),
         ),
       ],
       child: this,
@@ -34,134 +34,262 @@ class BranchesDetailPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _BranchesDetailPageState extends State<BranchesDetailPage> {
-  final TextEditingController priceController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
+  List<LayersDTO> originalList = [];
+  List<LayersDTO> filteredList = [];
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-    BlocProvider.of<CategoryCubit>(context).getCategory();
+    searchController.addListener(_onSearchChanged);
+    BlocProvider.of<CityCubit>(context).getCityDetail(name: widget.title);
+  }
+
+  void _onSearchChanged() {
+    final query = searchController.text.toLowerCase();
+    setState(() {
+      filteredList = originalList.where((e) {
+        final branchName = (e.branchname ?? '').toLowerCase();
+        final address = (e.address ?? '').toLowerCase();
+        return branchName.contains(query) || address.contains(query);
+      }).toList();
+    });
   }
 
   @override
-  Widget build(BuildContext context) => DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          backgroundColor: AppColors.backgroundInput,
-          appBar: AppBar(
-            title: Text(
-              'Алматы',
-              style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
-            ),
-            shape: const Border(
-              bottom: BorderSide(
-                color: AppColors.dividerGrey,
-                width: 0.5,
-              ),
-            ),
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        backgroundColor: AppColors.backgroundInput,
+        appBar: AppBar(
+          title: Text(
+            widget.title,
+            style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
           ),
-          body: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Gap(15),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: CustomTextField(
-                    suffixIcon: Icon(Icons.search),
-                    hintText: 'Например: город Алматы',
-                  ),
-                ),
-                const Gap(30),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'Отделения',
-                    style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
-                  ),
-                ),
-                const Gap(25),
-                Column(
-                  children: List.generate(10, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 12.0, left: 16, right: 16),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.white,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Material(
-                          color: Colors.transparent,
-                          borderRadius: BorderRadius.circular(10),
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius: BorderRadius.circular(10),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'ул. Назарбаева 137',
-                                    style: AppTextStyles.fs14w500.copyWith(
-                                      color: AppColors.black,
-                                    ),
-                                  ),
-                                  const Gap(10),
-                                  const Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text('300м', style: AppTextStyles.fs16w400),
-                                      Text('+7 777 999 77 99', style: AppTextStyles.fs14w600),
-                                    ],
-                                  ),
-                                  const Divider(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text('300м', style: AppTextStyles.fs16w400),
-                                          Text('9:00 - 18:00', style: AppTextStyles.fs14w600),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {},
-                                            child: Image.asset(
-                                              Assets.images.phone.path,
-                                              width: 32,
-                                              height: 32,
-                                            ),
-                                          ),
-                                          const Gap(14),
-                                          InkWell(
-                                            onTap: () {},
-                                            child: Image.asset(
-                                              Assets.images.a2gis.path,
-                                              width: 32,
-                                              height: 32,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const Gap(21),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
-                ),
-                const Gap(45),
-              ],
+          shape: const Border(
+            bottom: BorderSide(
+              color: AppColors.dividerGrey,
+              width: 0.5,
             ),
           ),
         ),
+        body: BlocListener<CityCubit, CityState>(
+          listener: (context, state) {
+            state.maybeWhen(
+              loaded: (data) {
+                setState(() {
+                  originalList = data;
+                  filteredList = data;
+                });
+              },
+              orElse: () {},
+            );
+          },
+          child: BlocBuilder<CityCubit, CityState>(
+            builder: (context, state) {
+              return state.maybeWhen(
+                orElse: () => const CustomLoadingOverlayWidget(),
+                loaded: (_) => _buildContent(),
+              );
+            },
+          ),
+        ),
       );
+
+  Widget _buildContent() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Gap(15),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: CustomTextField(
+              controller: searchController,
+              suffixIcon: const Icon(Icons.search),
+              hintText: 'Например: Адрес',
+            ),
+          ),
+          const Gap(30),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Отделения',
+              style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
+            ),
+          ),
+          const Gap(25),
+          ...filteredList.map((item) => _buildBranchItem(item)),
+          const Gap(45),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBranchItem(LayersDTO item) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12.0, left: 16, right: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
+          child: item.time == null
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item.branchname ?? "ERROR NAME",
+                          style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
+                        ),
+                        Text(item.phones ?? "ERROR phones", style: AppTextStyles.fs16w600),
+                      ],
+                    ),
+                    const Gap(14),
+                    Row(
+                      mainAxisAlignment: item.time == null ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (item.time != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item.time!, style: AppTextStyles.fs16w600),
+                            ],
+                          ),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                final phone = item.phones?.replaceAll(RegExp(r'[^0-9+]'), '');
+                                if (phone != null && phone.isNotEmpty) {
+                                  final uri = Uri.parse('tel:$phone');
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri);
+                                  }
+                                }
+                              },
+                              child: Image.asset(Assets.images.phone.path, width: 32, height: 32),
+                            ),
+                            const Gap(14),
+                            InkWell(
+                              onTap: () async {
+                                final coordsString = item.coords;
+                                if (coordsString != null) {
+                                  final coords = coordsString
+                                      .replaceAll('[', '')
+                                      .replaceAll(']', '')
+                                      .split(',')
+                                      .map((e) => e.trim())
+                                      .toList();
+                                  if (coords.length == 2) {
+                                    final lat = coords[0];
+                                    final lon = coords[1];
+                                    final uri = Uri.parse('dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
+                                    if (await canLaunchUrl(uri)) {
+                                      await launchUrl(uri);
+                                    } else {
+                                      final fallbackUrl = Uri.parse('https://2gis.kz/almaty/geo/$lat,$lon');
+                                      if (await canLaunchUrl(fallbackUrl)) {
+                                        await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              child: Image.asset(Assets.images.a2gis.path, width: 32, height: 32),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Gap(21),
+                  ],
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          item.branchname ?? "ERROR NAME",
+                          style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
+                        ),
+                        Text(item.phones ?? "ERROR phones", style: AppTextStyles.fs16w600),
+                      ],
+                    ),
+                    const Divider(),
+                    const Gap(4),
+                    Row(
+                      mainAxisAlignment: item.time == null ? MainAxisAlignment.end : MainAxisAlignment.spaceBetween,
+                      children: [
+                        if (item.time != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item.time!, style: AppTextStyles.fs16w600),
+                            ],
+                          ),
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: () async {
+                                final phone = item.phones?.replaceAll(RegExp(r'[^0-9+]'), '');
+                                if (phone != null && phone.isNotEmpty) {
+                                  final uri = Uri.parse('tel:$phone');
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri);
+                                  }
+                                }
+                              },
+                              child: Image.asset(Assets.images.phone.path, width: 32, height: 32),
+                            ),
+                            const Gap(14),
+                            InkWell(
+                              onTap: () async {
+                                final coordsString = item.coords;
+                                if (coordsString != null) {
+                                  final coords = coordsString
+                                      .replaceAll('[', '')
+                                      .replaceAll(']', '')
+                                      .split(',')
+                                      .map((e) => e.trim())
+                                      .toList();
+                                  if (coords.length == 2) {
+                                    final lat = coords[0];
+                                    final lon = coords[1];
+                                    final uri = Uri.parse('dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
+                                    if (await canLaunchUrl(uri)) {
+                                      await launchUrl(uri);
+                                    } else {
+                                      final fallbackUrl = Uri.parse('https://2gis.kz/almaty/geo/$lat,$lon');
+                                      if (await canLaunchUrl(fallbackUrl)) {
+                                        await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              child: Image.asset(Assets.images.a2gis.path, width: 32, height: 32),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const Gap(21),
+                  ],
+                ),
+        ),
+      ),
+    );
+  }
 }

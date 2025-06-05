@@ -27,4 +27,4 @@ enum Environment {
 
 const String kBaseUrlWSocket = 'ws://185.100.67.120:1996';
 const String kBaseUrl = 'http://194.32.140.48/api';
-const String kBaseUrlImages = 'http://194.32.140.48/storage';
+const String kBaseUrlImages = 'https://1lombard.kz';

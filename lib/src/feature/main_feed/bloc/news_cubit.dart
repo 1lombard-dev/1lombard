@@ -4,31 +4,31 @@ import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
 import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 
-part 'banner_cubit.freezed.dart';
+part 'news_cubit.freezed.dart';
 
-class BannerCubit extends Cubit<BannerState> {
-  BannerCubit({
+class NewsCubit extends Cubit<NewsState> {
+  NewsCubit({
     required IMainRepository repository,
   })  : _repository = repository,
-        super(const BannerState.initial());
+        super(const NewsState.initial());
   final IMainRepository _repository;
 
-  Future<void> getMainPageBanner() async {
+  Future<void> getNews() async {
     try {
-      emit(const BannerState.loading());
+      emit(const NewsState.loading());
 
-      final result = await _repository.mainPageBanner();
+      final result = await _repository.getNews();
 
-      emit(BannerState.loaded(bannerList: result));
+      emit(NewsState.loaded(news: result));
     } on RestClientException catch (e) {
       emit(
-        BannerState.error(
+        NewsState.error(
           message: e.message,
         ),
       );
     } catch (e) {
       emit(
-        BannerState.error(
+        NewsState.error(
           message: e.toString(),
         ),
       );
@@ -37,16 +37,16 @@ class BannerCubit extends Cubit<BannerState> {
 }
 
 @freezed
-class BannerState with _$BannerState {
-  const factory BannerState.initial() = _InitialState;
+class NewsState with _$NewsState {
+  const factory NewsState.initial() = _InitialState;
 
-  const factory BannerState.loading() = _LoadingState;
+  const factory NewsState.loading() = _LoadingState;
 
-  const factory BannerState.loaded({
-    required List<LayersDTO> bannerList,
+  const factory NewsState.loaded({
+    required List<BannerDTO> news,
   }) = _LoadedState;
 
-  const factory BannerState.error({
+  const factory NewsState.error({
     required String message,
   }) = _ErrorState;
 }

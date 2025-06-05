@@ -7,6 +7,7 @@ import 'package:lombard/src/core/presentation/scopes/repository_scope.dart';
 import 'package:lombard/src/core/utils/screen_util.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/auth/models/user_dto.dart';
+import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 extension BuildContextX on BuildContext {
@@ -39,6 +40,8 @@ extension BuildContextX on BuildContext {
   TextTheme get textTheme => theme.textTheme;
 
   AppBloc get appBloc => BlocProvider.of<AppBloc>(this);
+
+  GetTokenCubit get getToken => BlocProvider.of<GetTokenCubit>(this);
   // ProfileBloc get profileBloc => BlocProvider.of<ProfileBloc>(this);
   ScreenSize get deviceSize => ScreenUtil.screenSizeOf(this);
   // ScreenSize get deviceSizeOf => ScreenUtil.screenSizeOf(this);
@@ -59,8 +62,7 @@ extension OrientationX on Orientation {
         return portrait;
       case Orientation.landscape:
         return landscape;
-
-      }
+    }
   }
 
   T maybeWhenByValue<T extends Object?>({

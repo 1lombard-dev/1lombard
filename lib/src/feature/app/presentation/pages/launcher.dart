@@ -11,6 +11,7 @@ import 'package:lombard/src/feature/app/logic/notification_service.dart';
 import 'package:lombard/src/feature/app/presentation/pages/base_student.dart';
 import 'package:lombard/src/feature/app/presentation/pages/force_update_page.dart';
 import 'package:lombard/src/feature/auth/bloc/auth_cubit.dart';
+import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/profile/bloc/profile_bloc.dart';
 
 @RoutePage(name: 'LauncherRoute')
@@ -25,6 +26,7 @@ class _LauncherState extends State<Launcher> {
   @override
   void initState() {
     FToast().init(context);
+    BlocProvider.of<GetTokenCubit>(context).getToken();
     BlocProvider.of<AppBloc>(context).add(
       AppEvent.checkAuth(
         version: context.dependencies.packageInfo.version,
@@ -67,7 +69,7 @@ class _LauncherState extends State<Launcher> {
           //   ),
           //   // child: const BaseStudent(),
           //   child: const LoginPage(),
-        // ),
+          // ),
           notAuthorized: () => BlocProvider(
             create: (context) => AuthCubit(
               repository: context.repository.authRepository,

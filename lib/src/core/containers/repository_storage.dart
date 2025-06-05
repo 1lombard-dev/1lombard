@@ -9,6 +9,8 @@ import 'package:lombard/src/feature/calculation/data/notification_remote_ds.dart
 import 'package:lombard/src/feature/calculation/data/notification_repository.dart';
 import 'package:lombard/src/feature/main_feed/data/main_remote_ds.dart';
 import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
+import 'package:lombard/src/feature/map/data/map_remote_ds.dart';
+import 'package:lombard/src/feature/map/data/map_repository.dart';
 import 'package:lombard/src/feature/profile/data/profile_remote_ds.dart';
 import 'package:lombard/src/feature/profile/data/profile_repository.dart';
 import 'package:lombard/src/feature/settings/data/app_settings_datasource.dart';
@@ -29,12 +31,15 @@ abstract class IRepositoryStorage {
   IAuthRepository get authRepository;
   IProfileRepository get profileRepository;
   IMainRepository get mainRepository;
+
+  IMapRepository get mapRepository;
   INotificationRepository get notificationRepository;
 
   // Data sources
   IAuthRemoteDS get authRemoteDS;
   IProfileRemoteDS get profileRemoteDS;
   IMainRemoteDS get mainRemoteDS;
+  IMapRemoteDS get mapRemoteDS;
   INotificationRemoteDS get notificationRemoteDS;
 
   void close();
@@ -97,6 +102,11 @@ class RepositoryStorage implements IRepositoryStorage {
       );
 
   @override
+  IMapRepository get mapRepository => MapRepositoryImpl(
+        remoteDS: mapRemoteDS,
+      );
+
+  @override
   INotificationRepository get notificationRepository => NotificationRepositoryImpl(
         remoteDS: notificationRemoteDS,
       );
@@ -107,6 +117,13 @@ class RepositoryStorage implements IRepositoryStorage {
   @override
   IAuthRemoteDS get authRemoteDS => AuthRemoteDSImpl(
         restClient: restClient,
+      );
+
+  @override
+  IMapRemoteDS get mapRemoteDS => MapRemoteDSImpl(
+        restClient: restClient,
+        authDao: authDao,
+        appSettingsDatasource: _appSettingsDatasource,
       );
 
   @override

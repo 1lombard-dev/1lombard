@@ -5,7 +5,9 @@ import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 import 'package:lombard/src/feature/main_feed/model/question_dto.dart';
 
 abstract interface class IMainRepository {
-  Future<List<BannerDTO>> mainPageBanner();
+  Future<List<LayersDTO>> mainPageBanner();
+
+  Future<List<BannerDTO>> getNews();
 
   Future<List<CategoryDTO>> categories();
 
@@ -24,9 +26,18 @@ class MainRepositoryImpl implements IMainRepository {
   final IAuthDao _authDao;
 
   @override
-  Future<List<BannerDTO>> mainPageBanner() async {
+  Future<List<LayersDTO>> mainPageBanner() async {
     try {
       return await _remoteDS.mainPageBanner();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<BannerDTO>> getNews() async {
+    try {
+      return await _remoteDS.getNews();
     } catch (e) {
       rethrow;
     }

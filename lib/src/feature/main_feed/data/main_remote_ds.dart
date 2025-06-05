@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
@@ -11,7 +10,8 @@ import 'package:lombard/src/feature/main_feed/model/question_dto.dart';
 import 'package:lombard/src/feature/settings/data/app_settings_datasource.dart';
 
 abstract interface class IMainRemoteDS {
-  Future<List<BannerDTO>> mainPageBanner();
+  Future<List<LayersDTO>> mainPageBanner();
+  Future<List<BannerDTO>> getNews();
 
   Future<List<CategoryDTO>> categories();
 
@@ -31,11 +31,17 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   final AppSettingsDatasource appSettingsDatasource; // ✅ Declare this
 
   @override
-  Future<List<BannerDTO>> mainPageBanner() async {
+  Future<List<BannerDTO>> getNews() async {
     try {
-      final Map<String, dynamic> response = await restClient.get(
-        '/list/app-functions',
-        queryParams: {},
+      final appSettings = await appSettingsDatasource.getAppSettings();
+      final token = authDao.token.value;
+
+      final Map<String, dynamic> response = await restClient.post(
+        '/webservice/news/getNews.php',
+        body: {
+          'token': token ?? '',
+          'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
+        },
       );
 
       if (response['data'] == null) {
@@ -51,7 +57,39 @@ class MainRemoteDSImpl implements IMainRemoteDS {
       );
       return list;
     } catch (e, st) {
-      TalkerLoggerUtil.talker.error('#getMainPageBanner - $e', e, st);
+      TalkerLoggerUtil.talker.error('#getNews - $e', e, st);
+      rethrow;
+    }
+  }
+
+  @override
+  Future<List<LayersDTO>> mainPageBanner() async {
+    try {
+      final appSettings = await appSettingsDatasource.getAppSettings();
+      final token = authDao.token.value;
+
+      final Map<String, dynamic> response = await restClient.post(
+        '/webservice/slider/getActiveSlides.php',
+        body: {
+          'token': token ?? '',
+          'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
+        },
+      );
+
+      if (response['data'] == null) {
+        throw Exception();
+      }
+      final list = await compute<List<dynamic>, List<LayersDTO>>(
+        (list) => list
+            .map(
+              (e) => LayersDTO.fromJson(e as Map<String, dynamic>),
+            )
+            .toList(),
+        response['data'] as List,
+      );
+      return list;
+    } catch (e, st) {
+      TalkerLoggerUtil.talker.error('#mainPageBanner - $e', e, st);
       rethrow;
     }
   }

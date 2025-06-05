@@ -24,8 +24,10 @@
 		<string>????</string>
 		<key>YMKApiKey</key>
         <string>ec9c9734-d6cf-48a8-8d7b-bfb81ee96e2a</string>
-        <key>NSLocationWhenInUseUsageDescription</key>
-        <string>We need your location for map features</string>
+ <key>NSLocationWhenInUseUsageDescription</key>
+<string>We need your location to show nearby branches.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>We need your location to show nearby branches.</string>
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>ITSAppUsesNonExemptEncryption</key>

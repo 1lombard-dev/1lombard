@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
-import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 
 part 'get_token_cubit.freezed.dart';
 

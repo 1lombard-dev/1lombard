@@ -1,11 +1,11 @@
 name: lombard
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 
 version: 1.0.0+8
- 
+
 environment:
-  sdk: '>=3.4.4 <4.0.0'
+  sdk: ">=3.4.4 <4.0.0"
 
 dependencies:
   animations: ^2.0.11
@@ -29,10 +29,13 @@ dependencies:
   equatable: ^2.0.5
   firebase_core: ^3.9.0
   firebase_messaging: ^15.1.6
+  geolocator: ^11.0.0
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.6
   flutter_html: ^3.0.0-beta.2
+  permission_handler: ^12.0.0+1
+
   flutter_linkify: ^6.0.0
   flutter_local_notifications: ^18.0.1
   flutter_localizations:
@@ -98,15 +101,14 @@ flutter:
     - assets/fonts/Inter/
 
   fonts:
-     - family: Inter
-       fonts:
-         - asset: assets/fonts/Inter/Inter_18pt-Black.ttf
-         
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter/Inter_18pt-Black.ttf
+
 flutter_gen:
   output: lib/src/core/constant/generated
   line_length: 120
   integrations:
     flutter_svg: true
     rive: true
-    lottie: true  
-
+    lottie: true

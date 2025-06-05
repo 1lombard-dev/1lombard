@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
+import 'package:lombard/src/core/presentation/widgets/other/custom_loading_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
@@ -35,9 +36,6 @@ class MainPage extends StatefulWidget implements AutoRouteWrapper {
           create: (context) => CategoryCubit(repository: context.repository.mainRepository),
         ),
         BlocProvider(
-          create: (context) => GetTokenCubit(repository: context.repository.mainRepository),
-        ),
-        BlocProvider(
           create: (context) => GetFaqCubit(repository: context.repository.mainRepository),
         ),
       ],
@@ -54,6 +52,7 @@ class _MainPageState extends State<MainPage> {
     super.initState();
     BlocProvider.of<GetTokenCubit>(context).getToken();
     BlocProvider.of<GetFaqCubit>(context).getFAQ();
+    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
   }
 
   @override
@@ -118,11 +117,24 @@ class _MainPageState extends State<MainPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20,
-                    ),
-                    child: ImageSliderWidget(),
+                  BlocBuilder<BannerCubit, BannerState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        orElse: () {
+                          return const CustomLoadingWidget();
+                        },
+                        loaded: (bannerList) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
+                            child: ImageSliderWidget(
+                              banners: bannerList,
+                            ),
+                          );
+                        },
+                      );
+                    },
                   ),
                   Container(
                     decoration: const BoxDecoration(color: AppColors.white),
@@ -237,23 +249,19 @@ class _MainPageState extends State<MainPage> {
                               const Gap(20),
 
                               // Обернули в SizedBox с фиксированной высотой, чтобы ListView работал внутри Column
-                              SizedBox(
-                                height: faq.length * 80 + (faq.length - 1) * 15, // примерная высота
-                                child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(), // чтобы не скроллилось, если не нужно
-                                  itemCount: faq.length,
-                                  itemBuilder: (context, index) {
-                                    return Column(
-                                      children: [
-                                        MainListContainerWidget(
-                                          title: faq[index].title ?? 'ERROR',
-                                          onTap: () {},
-                                        ),
-                                        if (index != faq.length - 1) const Gap(15),
-                                      ],
-                                    );
-                                  },
-                                ),
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: faq.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: index == faq.length - 1 ? 0 : 15),
+                                    child: MainListContainerWidget(
+                                      title: faq[index].title ?? 'ERROR',
+                                      introtext: faq[index].introtext ?? 'ERROR',
+                                    ),
+                                  );
+                                },
                               ),
                               const Gap(50),
                             ],
