@@ -5,8 +5,8 @@ import 'package:lombard/src/core/rest_client/src/dio_rest_client/src/rest_client
 import 'package:lombard/src/feature/auth/data/auth_remote_ds.dart';
 import 'package:lombard/src/feature/auth/data/auth_repository.dart';
 import 'package:lombard/src/feature/auth/database/auth_dao.dart';
-import 'package:lombard/src/feature/calculation/data/notification_remote_ds.dart';
-import 'package:lombard/src/feature/calculation/data/notification_repository.dart';
+import 'package:lombard/src/feature/calculation/data/calculation_remote_ds.dart';
+import 'package:lombard/src/feature/calculation/data/calculation_repository.dart';
 import 'package:lombard/src/feature/main_feed/data/main_remote_ds.dart';
 import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
 import 'package:lombard/src/feature/map/data/map_remote_ds.dart';
@@ -33,14 +33,14 @@ abstract class IRepositoryStorage {
   IMainRepository get mainRepository;
 
   IMapRepository get mapRepository;
-  INotificationRepository get notificationRepository;
+  ICalculationRepository get calculacationRepository;
 
   // Data sources
   IAuthRemoteDS get authRemoteDS;
   IProfileRemoteDS get profileRemoteDS;
   IMainRemoteDS get mainRemoteDS;
   IMapRemoteDS get mapRemoteDS;
-  INotificationRemoteDS get notificationRemoteDS;
+  ICalculationRemoteDS get calculationRemoteDS;
 
   void close();
 }
@@ -107,8 +107,8 @@ class RepositoryStorage implements IRepositoryStorage {
       );
 
   @override
-  INotificationRepository get notificationRepository => NotificationRepositoryImpl(
-        remoteDS: notificationRemoteDS,
+  ICalculationRepository get calculacationRepository => CalculationRepositoryImpl(
+        remoteDS: calculationRemoteDS,
       );
 
   ///
@@ -139,8 +139,10 @@ class RepositoryStorage implements IRepositoryStorage {
       );
 
   @override
-  INotificationRemoteDS get notificationRemoteDS => NotificationRemoteDSImpl(
+  ICalculationRemoteDS get calculationRemoteDS => CalculationRemoteDSImpl(
         restClient: restClient,
+        authDao: authDao,
+        appSettingsDatasource: _appSettingsDatasource, // ✅ Inject here
       );
 
   ///

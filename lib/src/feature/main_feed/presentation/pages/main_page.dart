@@ -9,8 +9,8 @@ import 'package:lombard/src/core/presentation/widgets/other/custom_loading_widge
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
+import 'package:lombard/src/feature/calculation/bloc/get_gold_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/get_faq_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/image_slider_widget.dart';
@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget implements AutoRouteWrapper {
           create: (context) => BannerCubit(repository: context.repository.mainRepository),
         ),
         BlocProvider(
-          create: (context) => CategoryCubit(repository: context.repository.mainRepository),
+          create: (context) => GetGoldCubit(repository: context.repository.calculacationRepository),
         ),
         BlocProvider(
           create: (context) => GetFaqCubit(repository: context.repository.mainRepository),
@@ -53,6 +53,7 @@ class _MainPageState extends State<MainPage> {
     BlocProvider.of<GetTokenCubit>(context).getToken();
     BlocProvider.of<GetFaqCubit>(context).getFAQ();
     BlocProvider.of<BannerCubit>(context).getMainPageBanner();
+    BlocProvider.of<GetGoldCubit>(context).getGoldList();
   }
 
   @override
@@ -150,54 +151,67 @@ class _MainPageState extends State<MainPage> {
                             textAlign: TextAlign.center,
                           ),
                           const Gap(17),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(5, (index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10.0, left: 10),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () {},
-                                        borderRadius: BorderRadius.circular(5),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                'AU 999',
-                                                style: AppTextStyles.fs14w500.copyWith(
-                                                  color: AppColors.black,
+                          BlocBuilder<GetGoldCubit, GetGoldState>(
+                            builder: (context, state) {
+                              return state.maybeWhen(
+                                orElse: () {
+                                  return const CustomLoadingWidget();
+                                },
+                                loaded: (goldDTO) {
+                                  return SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: List.generate(goldDTO.length, (index) {
+                                        return Padding(
+                                          padding: EdgeInsets.only(right: 16.0, left: index == 0 ? 16 : 0),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              border: Border.all(),
+                                              borderRadius: BorderRadius.circular(5),
+                                            ),
+                                            child: Material(
+                                              borderRadius: BorderRadius.circular(5),
+                                              color: Colors.transparent,
+                                              child: InkWell(
+                                                onTap: () {},
+                                                borderRadius: BorderRadius.circular(5),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                                  child: Column(
+                                                    children: [
+                                                      Text(
+                                                        'AU ${goldDTO[index].sample}',
+                                                        style: AppTextStyles.fs14w500.copyWith(
+                                                          color: AppColors.black,
+                                                        ),
+                                                      ),
+                                                      const Gap(5),
+                                                      Container(
+                                                        decoration: const BoxDecoration(
+                                                          color: AppColors.red,
+                                                        ),
+                                                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                                                        child: Text(
+                                                          '${goldDTO[index].price} ₸',
+                                                          style: AppTextStyles.fs14w600.copyWith(
+                                                            color: AppColors.white,
+                                                            fontWeight: FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
-                                              const Gap(5),
-                                              Container(
-                                                decoration: const BoxDecoration(
-                                                  color: AppColors.red,
-                                                ),
-                                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                                                child: Text(
-                                                  '37250 ₸',
-                                                  style: AppTextStyles.fs14w600
-                                                      .copyWith(color: AppColors.white, fontWeight: FontWeight.bold),
-                                                ),
-                                              ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      }),
                                     ),
-                                  ),
-                                );
-                              }),
-                            ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ],
                       ),

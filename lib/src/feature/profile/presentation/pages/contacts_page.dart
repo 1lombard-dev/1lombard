@@ -10,6 +10,7 @@ import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class ContactsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -102,14 +103,30 @@ class _ContactsPageState extends State<ContactsPage> {
                       style: AppTextStyles.fs16w600.copyWith(color: AppColors.black, fontWeight: FontWeight.bold),
                     ),
                     const Gap(9),
-                    Text(
-                      '+7 708 708 708 4',
-                      style: AppTextStyles.fs14w600.copyWith(color: AppColors.black),
+                    InkWell(
+                      onTap: () async {
+                        final Uri uri = Uri(scheme: 'tel', path: '+77087087084');
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        }
+                      },
+                      child: Text(
+                        '+7 708 708 70 84',
+                        style: AppTextStyles.fs14w600.copyWith(color: AppColors.black),
+                      ),
                     ),
                     const Gap(9),
-                    Text(
-                      '+7 708 708 708 4',
-                      style: AppTextStyles.fs14w600.copyWith(color: AppColors.black),
+                    InkWell(
+                      onTap: () async {
+                        final Uri uri = Uri(scheme: 'tel', path: '+77089730422');
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        }
+                      },
+                      child: Text(
+                        '+7 708 973 04 22',
+                        style: AppTextStyles.fs14w600.copyWith(color: AppColors.black),
+                      ),
                     ),
                     const Gap(8),
                     Text(
@@ -117,11 +134,22 @@ class _ContactsPageState extends State<ContactsPage> {
                       style: AppTextStyles.fs16w600.copyWith(color: AppColors.black, fontWeight: FontWeight.bold),
                     ),
                     const Gap(8),
-                    Text(
-                      'marketing@1lombard.kz',
-                      style: AppTextStyles.fs14w600.copyWith(
-                        color: AppColors.black,
-                        decoration: TextDecoration.underline,
+                    InkWell(
+                      onTap: () async {
+                        final Uri uri = Uri(
+                          scheme: 'mailto',
+                          path: 'marketing@1lombard.kz',
+                        );
+                        if (await canLaunchUrl(uri)) {
+                          await launchUrl(uri);
+                        }
+                      },
+                      child: Text(
+                        'marketing@1lombard.kz',
+                        style: AppTextStyles.fs14w600.copyWith(
+                          color: AppColors.black,
+                          decoration: TextDecoration.underline,
+                        ),
                       ),
                     ),
                     const Gap(9),
