@@ -1,10 +1,6 @@
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
@@ -15,10 +11,7 @@ import 'package:lombard/src/core/presentation/widgets/scroll/scroll_wrapper.dart
 import 'package:lombard/src/core/presentation/widgets/textfields/custom_textfield.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
-import 'package:lombard/src/feature/app/presentation/widgets/custom_appbar_widget.dart';
-import 'package:lombard/src/feature/app/router/app_router.dart';
-import 'package:lombard/src/feature/auth/bloc/auth_cubit.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
 
 @RoutePage()
 class AuthPage extends StatefulWidget implements AutoRouteWrapper {
@@ -30,7 +23,7 @@ class AuthPage extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthCubit(repository: context.repository.authRepository),
+      create: (context) => LoginCubit(repository: context.repository.authRepository),
       child: this,
     );
   }
@@ -38,33 +31,27 @@ class AuthPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _AuthPageState extends State<AuthPage> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController phoneController = TextEditingController();
-  final ValueNotifier<String?> _phoneError = ValueNotifier(null);
-
-  MaskTextInputFormatter maskPhoneFormatter = MaskTextInputFormatter(
-    mask: '+7(###) ###-##-##',
-    filter: {"#": RegExp('[0-9]')},
-  );
+  final TextEditingController iinController = TextEditingController();
+  final ValueNotifier<String?> _iinError = ValueNotifier(null);
 
   final ValueNotifier<bool> _obscureText = ValueNotifier(true);
   final ValueNotifier<bool> _allowTapButton = ValueNotifier(false);
 
-  bool isPhoneValid = false;
-  bool isKZnumber = true;
+  bool isIINValid = false;
 
   @override
   void dispose() {
-    phoneController.dispose();
+    iinController.dispose();
     _obscureText.dispose();
-    _phoneError.dispose();
+    _iinError.dispose();
     _allowTapButton.dispose();
     super.dispose();
   }
 
   void checkAllowTapButton() {
-    final isPhoneValid = phoneController.text.length == 17;
+    final isIINValid = iinController.text.length == 12;
 
-    _allowTapButton.value = isPhoneValid;
+    _allowTapButton.value = isIINValid;
   }
 
   @override
@@ -72,13 +59,13 @@ class _AuthPageState extends State<AuthPage> {
     return LoaderOverlay(
       overlayColor: AppColors.barrierColor,
       overlayWidgetBuilder: (progress) => const CustomLoadingOverlayWidget(),
-      child: BlocConsumer<AuthCubit, AuthState>(
+      child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           state.maybeWhen(
             loading: () {
               // Toaster.showLoadingTopShortToast(context, message: 'Құпиясөз жіберілді');
             },
-            error: (message) {
+            error: (message, error, errorResponse) {
               context.loaderOverlay.hide();
               Toaster.showErrorTopShortToast(context, message);
               Future<void>.delayed(
@@ -89,33 +76,6 @@ class _AuthPageState extends State<AuthPage> {
             },
             loaded: (response) {
               context.loaderOverlay.hide();
-              response.exists == false
-                  ? _getSmsAlertDialog(
-                      context,
-                      phoneNumber: maskPhoneFormatter.getMaskedText(),
-                      onTap: () {
-                        context.router
-                            .push(
-                          LoginRoute(
-                            phoneNum: maskPhoneFormatter.getUnmaskedText(),
-                            isHaveAccount: response.exists ?? false,
-                          ),
-                        )
-                            .whenComplete(() {
-                          if (context.mounted) context.router.maybePop();
-                        });
-                      },
-                    )
-                  : context.router
-                      .push(
-                      LoginRoute(
-                        phoneNum: maskPhoneFormatter.getUnmaskedText(),
-                        isHaveAccount: response.exists ?? false,
-                      ),
-                    )
-                      .whenComplete(() {
-                      if (context.mounted) context.router.maybePop();
-                    });
             },
             orElse: () => context.loaderOverlay.hide(),
           );
@@ -127,7 +87,37 @@ class _AuthPageState extends State<AuthPage> {
             },
             child: Scaffold(
               resizeToAvoidBottomInset: false,
-              appBar: const CustomAppBar(),
+              backgroundColor: AppColors.backgroundInput,
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                title: Container(
+                  decoration: const BoxDecoration(
+                    color: AppColors.white,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          context.localized.office,
+                          style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        Image.asset(
+                          Assets.images.logoHeader.path,
+                          height: 34,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                shape: const Border(
+                  bottom: BorderSide(
+                    color: AppColors.dividerGrey,
+                    width: 0.5,
+                  ),
+                ),
+              ),
               body: SafeArea(
                 child: Form(
                   key: _formKey,
@@ -140,10 +130,6 @@ class _AuthPageState extends State<AuthPage> {
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Gap(37.5),
-                              // SvgPicture.asset(
-                              //   Assets.images.logoName.path,
-                              // ),
                               const Gap(30.5),
                               Container(
                                 height: 0.5,
@@ -152,71 +138,82 @@ class _AuthPageState extends State<AuthPage> {
                               ),
                               const Gap(30.5),
                               const Text(
-                                'Кабинетке кіру/тіркелу',
+                                'Войдите или зарегестрироуйтесь!',
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 26,
+                                  fontSize: 20,
                                   height: 1.3,
                                 ),
                               ),
                               const Gap(20),
                               Text(
-                                'Телефон номер',
-                                style: AppTextStyles.fs14w400.copyWith(height: 1.6),
+                                'Вход',
+                                style: AppTextStyles.fs18w600.copyWith(height: 1.6, color: AppColors.red),
+                              ),
+                              const Gap(12),
+                              Text(
+                                'ИИН',
+                                style: AppTextStyles.fs18w500.copyWith(height: 1.6, color: AppColors.black),
                               ),
                               const Gap(12),
                               CustomTextField(
-                                controller: phoneController,
-                                inputFormatters: [maskPhoneFormatter],
-                                hintText: '+7 (7--) --- -- --',
-                                keyboardType: TextInputType.phone,
+                                controller: iinController,
+                                hintText: 'Введите ИИН',
+                                keyboardType: TextInputType.number,
                                 textStyle: AppTextStyles.fs16w400.copyWith(letterSpacing: 0.4),
                                 onChanged: (value) {
                                   checkAllowTapButton();
                                   setState(() {});
                                 },
                               ),
-                              if (isKZnumber == false)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10),
-                                  child: Text(
-                                    'Қазақстандық номер ғана тіркеле алады',
-                                    style: AppTextStyles.fs14w500.copyWith(color: AppColors.red2, letterSpacing: 0.05),
-                                  ),
-                                ),
-                              const Gap(24),
-                              CustomButton(
-                                allowTapButton: _allowTapButton,
-                                onPressed: () {
-                                  log('+7${maskPhoneFormatter.getUnmaskedText()}');
-                                  if (isValidKazakhstanPhoneNumber('+7${maskPhoneFormatter.getUnmaskedText()}')) {
-                                    BlocProvider.of<AuthCubit>(context)
-                                        .authenticate(phone: '7${maskPhoneFormatter.getUnmaskedText()}');
-                                  } else {
-                                    isKZnumber = false;
-                                    setState(() {});
-                                  }
+                              const Gap(12),
+                              Text(
+                                'Пароль',
+                                style: AppTextStyles.fs18w500.copyWith(height: 1.6, color: AppColors.black),
+                              ),
+                              const Gap(12),
+                              CustomTextField(
+                                controller: iinController,
+                                hintText: 'Введите пароль',
+                                keyboardType: TextInputType.number,
+                                textStyle: AppTextStyles.fs16w400.copyWith(letterSpacing: 0.4),
+                                onChanged: (value) {
+                                  checkAllowTapButton();
+                                  setState(() {});
                                 },
-                                style: CustomButtonStyles.mainButtonStyle(context),
-                                child: const Text(
-                                  'Жалғастыру',
-                                  style: AppTextStyles.fs16w600,
-                                ),
+                              ),
+                              const Gap(25),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomButton(
+                                      onPressed: () {},
+                                      style: CustomButtonStyles.mainButtonStyle(context),
+                                      child: const Text(
+                                        'Войти',
+                                        style: AppTextStyles.fs16w600,
+                                      ),
+                                    ),
+                                  ),
+                                  const Gap(20),
+                                  Expanded(
+                                    child: CustomButton(
+                                      onPressed: () {},
+                                      style: CustomButtonStyles.mainButtonStyle(
+                                        context,
+                                        backgroundColor: Colors.white,
+                                        side: const BorderSide(color: AppColors.barrierColor),
+                                      ),
+                                      child: Text(
+                                        'Регистрация',
+                                        style: AppTextStyles.fs16w600.copyWith(color: AppColors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                               const Gap(12),
                             ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 14, right: 14, bottom: 34),
-                            child: Text(
-                              '«Ustaz tilegi» орталығының аттестацияға дайындық приложениесі',
-                              textAlign: TextAlign.center,
-                              style: AppTextStyles.fs16w500.copyWith(
-                                color: AppColors.grayText,
-                                fontStyle: FontStyle.italic,
-                                letterSpacing: -0.32,
-                              ),
-                            ),
                           ),
                         ],
                       ),
@@ -230,46 +227,4 @@ class _AuthPageState extends State<AuthPage> {
       ),
     );
   }
-}
-
-bool isValidKazakhstanPhoneNumber(String phoneNumber) {
-  // Регулярное выражение для проверки казахстанских номеров
-  final regex = RegExp(r'^\+7(700|701|702|705|706|707|708|771|747|775|776|777|778)\d{7}$');
-
-  // Возвращает true, если номер соответствует формату
-  return regex.hasMatch(phoneNumber);
-}
-
-void _getSmsAlertDialog(
-  BuildContext context, {
-  Function()? onTap,
-  String? phoneNumber,
-}) {
-  showCupertinoDialog<void>(
-    context: context,
-    builder: (BuildContext context) => CupertinoAlertDialog(
-      content: Column(
-        children: [
-          Text(
-            '$phoneNumber',
-            style: AppTextStyles.fs16w600,
-          ),
-          const Gap(2),
-          Text(
-            'Сіздің номеріңізге құпия сөз СМС арқылы жіберілді',
-            style: AppTextStyles.fs12w400.copyWith(color: Colors.black),
-          ),
-        ],
-      ),
-      actions: <CupertinoDialogAction>[
-        CupertinoDialogAction(
-          onPressed: onTap,
-          child: Text(
-            'Түсінікті',
-            style: AppTextStyles.fs16w600.copyWith(color: AppColors.mainBlueColor),
-          ),
-        ),
-      ],
-    ),
-  );
 }

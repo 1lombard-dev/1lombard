@@ -4,7 +4,6 @@ import 'package:lombard/src/feature/app/presentation/pages/detail_image_page.dar
 import 'package:lombard/src/feature/app/presentation/pages/launcher.dart';
 import 'package:lombard/src/feature/app/presentation/pages/temp_page.dart';
 import 'package:lombard/src/feature/auth/models/user_dto.dart';
-import 'package:lombard/src/feature/auth/presentation/auth.dart';
 import 'package:lombard/src/feature/auth/presentation/pages/auth_page.dart';
 import 'package:lombard/src/feature/calculation/presentation/calculation_page.dart';
 import 'package:lombard/src/feature/loans/presentation/pages/loans_detail_page.dart';
@@ -62,6 +61,7 @@ class AppRouter extends RootStackRouter {
                   page: LoansRoute.page,
                   initial: true,
                 ),
+                AutoRoute(page: AuthRoute.page),
               ],
             ),
             AutoRoute(
@@ -86,12 +86,8 @@ class AppRouter extends RootStackRouter {
         ),
 
         /// Auth
-        AutoRoute(page: LoginRoute.page),
         AutoRoute(page: AuthRoute.page),
-        AutoRoute(page: PasswordRecoveryRoute.page),
-        AutoRoute(page: EnterSmsCodeRoute.page),
-        // AutoRoute(page: RegisterRoute.page),
-        AutoRoute(page: NewPasswordRoute.page),
+       
 
         //MAIN
         AutoRoute(page: NotificationRoute.page),

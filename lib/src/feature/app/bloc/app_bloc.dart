@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -46,33 +45,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
   bool get isAuthenticated => _authRepository.isAuthenticated;
 
-  int _getExtendedVersionNumber(String version) {
-    final versionCellsStr = version.split('.');
-    final versionCells = versionCellsStr.map(int.parse).toList();
-    return versionCells.first * 100000 + versionCells[1] * 1000 + versionCells[2];
-  }
 
-  String? _versionParser(Object? data) {
-    try {
-      if (data is List) {
-        final list = data;
-        if (list.isNotEmpty) {
-          final map = list.firstWhereOrNull(
-            (element) => ((element as Map<String, dynamic>)['key'] as String?) == 'force_update_version',
-          ) as Map<String, dynamic>?;
-          return map?['value'] as String?;
-        }
-      } else if (data is Map<String, dynamic>) {
-        final map = data;
-        return map['value'] as String?;
-      }
-      return null;
-    } catch (error, st) {
-      TalkerLoggerUtil.talker.handle(error, st);
-      TalkerLoggerUtil.talker.error('$_tag $error', st);
-      return null;
-    }
-  }
+
 
   Future<void> _checkAuth(
     _CheckAuthEvent event,
@@ -81,28 +55,29 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     emit(const AppState.loading());
 
     try {
-      final forceUpdateResult = await _authRepository.getForceUpdateVersion();
-      final versionProj = _getExtendedVersionNumber(event.version);
-      final versionFromBack = _versionParser(forceUpdateResult);
-      final versionFromServer = _getExtendedVersionNumber(versionFromBack ?? event.version);
-
-      if (versionProj >= versionFromServer) {
-        if (_authRepository.isAuthenticated) {
-          emit(const AppState.inApp());
-        } else {
-          emit(const AppState.notAuthorized());
-        }
+      if (_authRepository.isAuthenticated) {
+        emit(const AppState.inApp());
       } else {
-        if (kDebugMode) {
-          if (_authRepository.isAuthenticated) {
-            emit(const AppState.inApp());
-          } else {
-            emit(const AppState.notAuthorized());
-          }
-        } else {
-          emit(const AppState.notAvailableVersion());
-        }
+        emit(const AppState.notAuthorized());
       }
+      // final forceUpdateResult = await _authRepository.getForceUpdateVersion();
+      // final versionProj = _getExtendedVersionNumber(event.version);
+      // final versionFromBack = _versionParser(forceUpdateResult);
+      // final versionFromServer = _getExtendedVersionNumber(versionFromBack ?? event.version);
+
+      // if (versionProj >= versionFromServer) {
+
+      // } else {
+      //   if (kDebugMode) {
+      //     if (_authRepository.isAuthenticated) {
+      //       emit(const AppState.inApp());
+      //     } else {
+      //       emit(const AppState.notAuthorized());
+      //     }
+      //   } else {
+      //     emit(const AppState.notAvailableVersion());
+      //   }
+      // }
     } catch (e, st) {
       TalkerLoggerUtil.talker.error('$_tag $e', st);
       emit(AppState.error(message: e.toString()));

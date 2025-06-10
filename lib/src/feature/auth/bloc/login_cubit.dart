@@ -15,7 +15,7 @@ class LoginCubit extends Cubit<LoginState> {
   final IAuthRepository _repository;
 
   Future<void> login({
-    required String phone,
+    required String iin,
     required String password,
     String? deviceType,
   }) async {
@@ -23,7 +23,7 @@ class LoginCubit extends Cubit<LoginState> {
       emit(const LoginState.loading());
 
       final user = await _repository.login(
-        phone: phone,
+        iin: iin,
         password: password,
         deviceType: deviceType,
       );
@@ -32,12 +32,12 @@ class LoginCubit extends Cubit<LoginState> {
 
       emit(LoginState.loaded(user: user));
     } on RestClientException catch (e) {
-      _onRestClientException(e, phone);
+      _onRestClientException(e, iin);
     } catch (e) {
       emit(
         LoginState.error(
           message: e.toString(),
-          sendedOldValue: phone,
+          sendedOldValue: iin,
         ),
       );
     }

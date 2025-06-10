@@ -7,7 +7,9 @@ import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/auth_page.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 
@@ -35,6 +37,27 @@ class LoansPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _LoansPageState extends State<LoansPage> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AppBloc, AppState>(
+      builder: (context, state) {
+        return state.maybeWhen(
+          inApp: () => const _LoanPage(),
+          orElse: () => const AuthPage(),
+        );
+      },
+    );
+  }
+}
+
+class _LoanPage extends StatefulWidget {
+  const _LoanPage();
+
+  @override
+  State<_LoanPage> createState() => _LoanPageState();
+}
+
+class _LoanPageState extends State<_LoanPage> {
   final TextEditingController priceController = TextEditingController();
   @override
   void initState() {

@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class IAuthDao {
   PreferencesEntry<String> get user;
 
+  PreferencesEntry<int> get userId;
+
   PreferencesEntry<String> get token;
 
   PreferencesEntry<String> get deviceToken;
@@ -16,6 +18,9 @@ class AuthDao extends TypedPreferencesDao implements IAuthDao {
 
   @override
   PreferencesEntry<String> get user => stringEntry('user');
+
+  @override
+  PreferencesEntry<int> get userId => intEntry('userId');
 
   @override
   PreferencesEntry<String> get token => stringEntry('token');

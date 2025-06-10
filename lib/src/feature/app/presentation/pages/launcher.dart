@@ -10,7 +10,8 @@ import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/logic/notification_service.dart';
 import 'package:lombard/src/feature/app/presentation/pages/base_student.dart';
 import 'package:lombard/src/feature/app/presentation/pages/force_update_page.dart';
-import 'package:lombard/src/feature/auth/bloc/auth_cubit.dart';
+import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
+
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/profile/bloc/profile_bloc.dart';
 
@@ -62,19 +63,11 @@ class _LauncherState extends State<Launcher> {
           ),
           inApp: () => const BaseStudent(),
           guest: () => const BaseStudent(),
-          // notAuthorized: () => const BaseStudent(),
-          // notAuthorized: () => BlocProvider(
-          //   create: (context) => LoginCubit(
-          //     repository: context.repository.authRepository,
-          //   ),
-          //   // child: const BaseStudent(),
-          //   child: const LoginPage(),
-          // ),
+         
           notAuthorized: () => BlocProvider(
-            create: (context) => AuthCubit(
+            create: (context) => LoginCubit(
               repository: context.repository.authRepository,
             ),
-            // child: const BaseStudent(),
             child: const BaseStudent(),
           ),
           loading: () => const _Scaffold(
