@@ -17,7 +17,7 @@ abstract interface class IAuthRepository {
 
   Future<void> clearUser();
 
-  Future<UserDTO> login({
+  Future<String> login({
     required String iin,
     required String password,
     String? deviceType,
@@ -65,7 +65,8 @@ class AuthRepositoryImpl implements IAuthRepository {
   Future<void> clearUser() async {
     try {
       await _authDao.user.remove();
-      log(name: 'User', _authDao.user.value ?? '');
+      await _authDao.userId.remove();
+      await _authDao.iin.remove();
     } catch (e) {
       rethrow;
     }
@@ -84,7 +85,7 @@ class AuthRepositoryImpl implements IAuthRepository {
   }
 
   @override
-  Future<UserDTO> login({
+  Future<String> login({
     required String iin,
     required String password,
     String? deviceType,
@@ -97,8 +98,8 @@ class AuthRepositoryImpl implements IAuthRepository {
         deviceToken: dv,
         deviceType: deviceType,
       );
-
-      await _authDao.user.setValue(jsonEncode(user.toJson()));
+      await _authDao.iin.setValue(iin);
+      await _authDao.userId.setValue(user);
 
       return user;
     } catch (e) {

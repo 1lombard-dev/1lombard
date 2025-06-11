@@ -72,19 +72,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   void initState() {
-    nameController.text = widget.user?.name ?? '';
-    surnameController.text = widget.user?.surname ?? '';
-    lastnameController.text = widget.user?.patronymic ?? '';
-    phone = widget.user?.phone ?? '';
-    email = widget.user?.email ?? '';
-    log('${widget.user?.avatar}');
-    imageNetwork = widget.user?.avatar == null ? NOT_FOUND_IMAGE : '${widget.user?.avatar}';
+  
 
-    maskPhoneFormatter = MaskTextInputFormatter(
-      mask: '+# ### ### ## ##',
-      filter: {"#": RegExp('[0-9]')},
-      initialText: widget.user?.phone,
-    );
+   
 
     super.initState();
   }
@@ -243,14 +233,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     const Gap(12),
 
-                    Center(
-                      child: Text(
-                        widget.user?.patronymic != null
-                            ? '${widget.user?.name} ${widget.user?.patronymic}'
-                            : '${widget.user?.name}',
-                        style: AppTextStyles.fs16w600.copyWith(height: 1.6),
-                      ),
-                    ),
                     const Gap(24),
                     Text(
                       'Тегіңіз (Фамилия)',

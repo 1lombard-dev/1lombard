@@ -3,7 +3,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/feature/auth/data/auth_repository.dart';
 import 'package:lombard/src/feature/auth/models/response/auth_error_response.dart';
-import 'package:lombard/src/feature/auth/models/user_dto.dart';
 
 part 'login_cubit.freezed.dart';
 
@@ -30,7 +29,7 @@ class LoginCubit extends Cubit<LoginState> {
 
       if (isClosed) return;
 
-      emit(LoginState.loaded(user: user));
+      emit(LoginState.loaded(userId: user));
     } on RestClientException catch (e) {
       _onRestClientException(e, iin);
     } catch (e) {
@@ -89,7 +88,7 @@ class LoginState with _$LoginState {
   const factory LoginState.loading() = _LoadingState;
 
   const factory LoginState.loaded({
-    required UserDTO user,
+    required String userId,
   }) = _LoadedState;
 
   const factory LoginState.error({

@@ -117,6 +117,8 @@ class RepositoryStorage implements IRepositoryStorage {
   @override
   IAuthRemoteDS get authRemoteDS => AuthRemoteDSImpl(
         restClient: restClient,
+        authDao: authDao,
+        appSettingsDatasource: _appSettingsDatasource,
       );
 
   @override
@@ -129,6 +131,8 @@ class RepositoryStorage implements IRepositoryStorage {
   @override
   IProfileRemoteDS get profileRemoteDS => ProfileRemoteDSImpl(
         restClient: restClient,
+        authDao: authDao,
+        appSettingsDatasource: _appSettingsDatasource,
       );
 
   @override
