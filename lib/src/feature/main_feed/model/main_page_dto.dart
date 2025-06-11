@@ -21,7 +21,7 @@ class LayersDTO with _$LayersDTO {
 @freezed
 class BannerDTO with _$BannerDTO {
   const factory BannerDTO({
-    int? id,
+    String? id,
     String? type,
     String? title,
     String? introtext,

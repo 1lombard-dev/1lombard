@@ -14,6 +14,7 @@ import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 @RoutePage()
 class AuthPage extends StatefulWidget implements AutoRouteWrapper {
@@ -65,6 +66,65 @@ class _AuthPageState extends State<AuthPage> {
     _passwordError.dispose();
     _allowTapButton.dispose();
     super.dispose();
+  }
+
+  void _showRegistrationWebView() {
+    final controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(Colors.white)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onUrlChange: (change) {
+            debugPrint('onUrlChange - ${change.url}');
+          },
+          onPageFinished: (url) {
+            debugPrint('onPageFinished - $url');
+            if (url.contains('register-success')) {
+              Toaster.showTopShortToast(
+                context,
+                message: 'Регистрация успешна',
+              );
+              Future.delayed(const Duration(seconds: 2), () {
+                Navigator.of(context).pop(); // закрываем диалог
+              });
+            }
+          },
+          onWebResourceError: (error) {
+            debugPrint('WebView error: $error');
+          },
+        ),
+      )
+      ..loadRequest(Uri.parse('https://1lombard.kz/ru/register'));
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) {
+        return Dialog(
+          insetPadding: EdgeInsets.zero,
+          backgroundColor: Colors.white,
+          child: SafeArea(
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      context.router.maybePop();
+                    },
+                  ),
+                ),
+                const Divider(height: 1),
+                Expanded(
+                  child: WebViewWidget(controller: controller),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -235,9 +295,7 @@ class _AuthPageState extends State<AuthPage> {
                                       const Gap(20),
                                       Expanded(
                                         child: CustomButton(
-                                          onPressed: () {
-                                            // Навигация на страницу регистрации, если есть
-                                          },
+                                          onPressed: _showRegistrationWebView,
                                           style: CustomButtonStyles.mainButtonStyle(
                                             context,
                                             backgroundColor: Colors.white,

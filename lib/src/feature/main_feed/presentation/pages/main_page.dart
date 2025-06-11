@@ -226,13 +226,15 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           MainRowContainer(
-                            image: Assets.images.standart.path,
-                            title: 'Стандарт',
-                            onTap: () {},
+                            image: Assets.images.refinance.path,
+                            title: 'Новости',
+                            onTap: () {
+                              context.router.push(const NewsRoute());
+                            },
                           ),
                           MainRowContainer(
-                            image: Assets.images.refinance.path,
-                            title: 'Рефинансирование',
+                            image: Assets.images.standart.path,
+                            title: 'Стандарт',
                             onTap: () {},
                           ),
                           MainRowContainer(

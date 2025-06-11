@@ -23,6 +23,7 @@ dependencies:
   cupertino_http: ^1.5.1
   dio: ^5.7.0
   dots_indicator: ^3.0.0
+  webview_flutter: ^4.4.4
   percent_indicator: ^4.2.5
   drift: ^2.20.0
   drift_flutter: ^0.2.0

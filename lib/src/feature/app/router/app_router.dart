@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:lombard/src/feature/app/presentation/pages/detail_image_page.dart';
 import 'package:lombard/src/feature/app/presentation/pages/launcher.dart';
 import 'package:lombard/src/feature/app/presentation/pages/temp_page.dart';
-import 'package:lombard/src/feature/auth/models/user_dto.dart';
 import 'package:lombard/src/feature/auth/presentation/pages/auth_page.dart';
 import 'package:lombard/src/feature/calculation/presentation/calculation_page.dart';
 import 'package:lombard/src/feature/loans/presentation/pages/loans_detail_page.dart';
@@ -12,11 +11,10 @@ import 'package:lombard/src/feature/loans/presentation/pages/payment_information
 import 'package:lombard/src/feature/main_feed/model/category_dto.dart';
 import 'package:lombard/src/feature/main_feed/presentation/main_feed.dart';
 import 'package:lombard/src/feature/main_feed/presentation/pages/change_subject_page.dart';
+import 'package:lombard/src/feature/main_feed/presentation/pages/news_page.dart';
 import 'package:lombard/src/feature/map/presentation/pages/all_branches_page.dart';
 import 'package:lombard/src/feature/map/presentation/pages/branches_detail_page.dart';
 import 'package:lombard/src/feature/map/presentation/pages/map_page.dart';
-import 'package:lombard/src/feature/profile/presentation/pages/about_us_page.dart';
-import 'package:lombard/src/feature/profile/presentation/pages/edit_profile_page.dart';
 import 'package:lombard/src/feature/profile/presentation/pages/faq_page.dart';
 import 'package:lombard/src/feature/profile/presentation/profile.dart';
 
@@ -91,11 +89,11 @@ class AppRouter extends RootStackRouter {
 
         //MAIN
         AutoRoute(page: NotificationRoute.page),
+        AutoRoute(page: NewsRoute.page),
 
         // Other pages
-        AutoRoute(page: AboutUsRoute.page),
         AutoRoute(page: FaqRoute.page),
-        AutoRoute(page: EditProfileRoute.page),
+
         AutoRoute(page: ChangeSubjectRoute.page),
         AutoRoute(page: DetailImageRoute.page),
 

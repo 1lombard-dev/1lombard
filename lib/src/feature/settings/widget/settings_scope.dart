@@ -8,8 +8,6 @@ import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/initialization/widget/dependencies_scope.dart';
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/profile/bloc/profile_bloc.dart';
-import 'package:lombard/src/feature/profile/bloc/social_media_cubit.dart';
-import 'package:lombard/src/feature/profile/bloc/working_hour_cubit.dart';
 
 import 'package:lombard/src/feature/settings/bloc/app_settings_bloc.dart';
 import 'package:lombard/src/feature/settings/model/app_settings.dart';
@@ -83,12 +81,6 @@ class _SettingsScopeState extends State<SettingsScope> {
             // BlocProvider(
             //   create: (context) => FaqCubit(repository: context.repository.profileRepository),
             // ),
-            BlocProvider(
-              create: (context) => SocialMediaCubit(repository: context.repository.profileRepository),
-            ),
-            BlocProvider(
-              create: (context) => WorkingHourCubit(repository: context.repository.profileRepository),
-            ),
           ],
           child: _InheritedSettings(
             settings: state.appSettings,

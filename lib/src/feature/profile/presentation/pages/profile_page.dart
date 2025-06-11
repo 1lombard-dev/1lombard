@@ -174,28 +174,6 @@ class _ProfilesPageState extends State<_ProfilesPage> {
                             Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                onTap: () {},
-                                child: Padding(
-                                  padding: const EdgeInsets.only(top: 20, bottom: 10),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        context.localized.changePassword,
-                                        style: AppTextStyles.fs16w400.copyWith(color: AppColors.black),
-                                      ),
-                                      SvgPicture.asset(
-                                        Assets.icons.arrowRight.path,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Divider(),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
                                 onTap: () {
                                   context.router.push(const ChooseLanguageRoute());
                                 },
