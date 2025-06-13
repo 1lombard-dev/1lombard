@@ -55,7 +55,7 @@ class _CalculationPageState extends State<CalculationPage> {
 
     if (selectedPrice != null && weight > 0 && days > 0) {
       giveAmount = selectedPrice! * weight;
-      returnAmount = giveAmount + (giveAmount * stavka * days)/100;
+      returnAmount = giveAmount + (giveAmount * stavka * days) / 100;
     } else {
       giveAmount = 0;
       returnAmount = 0;
@@ -116,56 +116,66 @@ class _CalculationPageState extends State<CalculationPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Gap(36),
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Row(
-                              children: List.generate(goldDTO.length, (index) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 10.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(),
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(5),
-                                      color: Colors.transparent,
-                                      child: InkWell(
-                                        onTap: () {},
+                          Align(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: goldDTO
+                                    .where((item) =>
+                                        item.sample == '999.9' || item.sample == '750' || item.sample == '585')
+                                    .toList()
+                                    .asMap()
+                                    .entries
+                                    .map((entry) {
+                                  final index = entry.key;
+                                  final item = entry.value;
+
+                                  return Padding(
+                                    padding: EdgeInsets.only(right: 16.0, left: index == 0 ? 16 : 0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(),
                                         borderRadius: BorderRadius.circular(5),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                'AU ${goldDTO[index].sample}',
-                                                style: AppTextStyles.fs14w500.copyWith(
-                                                  color: AppColors.black,
-                                                ),
-                                              ),
-                                              const Gap(5),
-                                              Container(
-                                                decoration: const BoxDecoration(
-                                                  color: AppColors.red,
-                                                ),
-                                                padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                                                child: Text(
-                                                  '${goldDTO[index].price} ₸',
-                                                  style: AppTextStyles.fs14w600.copyWith(
-                                                    color: AppColors.white,
-                                                    fontWeight: FontWeight.bold,
+                                      ),
+                                      child: Material(
+                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () {},
+                                          borderRadius: BorderRadius.circular(5),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                            child: Column(
+                                              children: [
+                                                Text(
+                                                  'AU ${item.sample}',
+                                                  style: AppTextStyles.fs14w500.copyWith(
+                                                    color: AppColors.black,
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                const Gap(5),
+                                                Container(
+                                                  decoration: const BoxDecoration(
+                                                    color: AppColors.red,
+                                                  ),
+                                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+                                                  child: Text(
+                                                    '${item.price} ₸',
+                                                    style: AppTextStyles.fs14w600.copyWith(
+                                                      color: AppColors.white,
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                }).toList(),
+                              ),
                             ),
                           ),
                           const Gap(20),
@@ -245,25 +255,24 @@ class _CalculationPageState extends State<CalculationPage> {
                                 ),
                                 const Gap(20),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(
-                                      'Срок микрокредита, дни',
-                                      style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
+                                    Flexible(
+                                      child: Text(
+                                        'Срок микрокредита, дни',
+                                        style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
+                                    const SizedBox(width: 12),
                                     SizedBox(
                                       width: 174,
                                       child: CustomTextField(
                                         controller: daysController,
-
                                         keyboardType: TextInputType.number,
                                         focusedBorder: const OutlineInputBorder(
                                           borderSide: BorderSide.none,
                                         ),
                                         textStyle: AppTextStyles.fs16w400.copyWith(letterSpacing: 0.4),
-                                        // onChanged: (value) {
-                                        //   checkAllowTapButton();
-                                        // },
                                       ),
                                     ),
                                   ],

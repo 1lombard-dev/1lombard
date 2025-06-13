@@ -24,18 +24,14 @@ class _CustomRadioState extends State<CustomRadio> {
   Widget build(BuildContext context) {
     final selected = widget.value == widget.groupValue;
 
-    return InkWell(
-      borderRadius: const BorderRadius.all(Radius.circular(15)),
-      onTap: () => widget.onChanged(widget.value),
-      child: Container(
-        height: widget.size,
-        width: widget.size,
-        decoration: const BoxDecoration(
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: selected ? const Icon(Icons.radio_button_checked) : const Icon(Icons.radio_button_off),
-        ),
+    return Container(
+      height: widget.size,
+      width: widget.size,
+      decoration: const BoxDecoration(
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: selected ? const Icon(Icons.radio_button_checked) : const Icon(Icons.radio_button_off),
       ),
     );
   }

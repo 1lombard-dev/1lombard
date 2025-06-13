@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
+import 'package:intl/intl.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
@@ -146,7 +147,7 @@ class _MainPageState extends State<MainPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Наша расценка на 09.09.24',
+                            'Наша расценка на ${DateFormat('dd.MM.yy').format(DateTime.now())}',
                             style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
                             textAlign: TextAlign.center,
                           ),
@@ -161,7 +162,16 @@ class _MainPageState extends State<MainPage> {
                                   return SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
-                                      children: List.generate(goldDTO.length, (index) {
+                                      children: goldDTO
+                                          .where((item) =>
+                                              item.sample == '999.9' || item.sample == '750' || item.sample == '585')
+                                          .toList()
+                                          .asMap()
+                                          .entries
+                                          .map((entry) {
+                                        final index = entry.key;
+                                        final item = entry.value;
+
                                         return Padding(
                                           padding: EdgeInsets.only(right: 16.0, left: index == 0 ? 16 : 0),
                                           child: Container(
@@ -173,14 +183,16 @@ class _MainPageState extends State<MainPage> {
                                               borderRadius: BorderRadius.circular(5),
                                               color: Colors.transparent,
                                               child: InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  AutoTabsRouter.of(context).setActiveIndex(1);
+                                                },
                                                 borderRadius: BorderRadius.circular(5),
                                                 child: Padding(
                                                   padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                                                   child: Column(
                                                     children: [
                                                       Text(
-                                                        'AU ${goldDTO[index].sample}',
+                                                        'AU ${item.sample}',
                                                         style: AppTextStyles.fs14w500.copyWith(
                                                           color: AppColors.black,
                                                         ),
@@ -192,7 +204,7 @@ class _MainPageState extends State<MainPage> {
                                                         ),
                                                         padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
                                                         child: Text(
-                                                          '${goldDTO[index].price} ₸',
+                                                          '${item.price} ₸',
                                                           style: AppTextStyles.fs14w600.copyWith(
                                                             color: AppColors.white,
                                                             fontWeight: FontWeight.bold,
@@ -206,7 +218,7 @@ class _MainPageState extends State<MainPage> {
                                             ),
                                           ),
                                         );
-                                      }),
+                                      }).toList(),
                                     ),
                                   );
                                 },

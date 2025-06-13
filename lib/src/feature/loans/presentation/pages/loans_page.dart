@@ -147,7 +147,7 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                       return tickets.isEmpty || tickets[0].status == 'error'
                           ? const Center(
                               child: Text(
-                                'Нету активных билетов',
+                                'Нет активных билетов',
                                 style: AppTextStyles.fs24w700,
                               ),
                             )
@@ -175,7 +175,7 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                       return tickets.isEmpty || tickets[0].status == 'error'
                           ? const Center(
                               child: Text(
-                                'Нету выкупленных билетов',
+                                'Нет выкупленных билетов',
                                 style: AppTextStyles.fs24w700,
                               ),
                             )

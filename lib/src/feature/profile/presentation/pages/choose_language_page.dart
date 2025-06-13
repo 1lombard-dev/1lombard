@@ -39,7 +39,7 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Кабинет',
+                    'Выберите язык',
                     style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Image.asset(

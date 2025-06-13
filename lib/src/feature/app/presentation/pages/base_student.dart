@@ -232,7 +232,7 @@ class _BaseStudentBottomNavbarState extends State<BaseStudentBottomNavbar> {
               CustomTabWidget(
                 icon: Assets.images.profilePageIcon.path,
                 activeIcon: Assets.images.profilePageActiveIcon.path,
-                title: 'Кабинет',
+                title: 'Профиль',
                 currentIndex: widget.tabController.index,
                 tabIndex: 4,
               ),

@@ -59,7 +59,7 @@ class _ContactsPageState extends State<ContactsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Кабинет',
+                    'Профиль',
                     style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Image.asset(
