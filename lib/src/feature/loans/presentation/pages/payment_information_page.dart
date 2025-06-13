@@ -5,6 +5,7 @@ import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
+import 'package:lombard/src/core/presentation/widgets/dialog/toaster.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
@@ -136,10 +137,19 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
               BlocListener<GetPaymentCubit, GetPaymentState>(
                 listener: (context, state) {
                   state.maybeWhen(
+                    // ignore: void_checks
                     orElse: () {
                       return const CustomLoadingOverlayWidget();
                     },
+                    // c070c49a-c3d6-4cee-a30e-9fe23eb5351f
                     loaded: (tickets) {
+                      if (tickets.status == 'error') {
+                        return Toaster.showErrorTopShortToast(
+                          context,
+                          'Данный вид операции не может быть выполнен по указанному номеру билета',
+                        );
+                      }
+
                       context.router
                           .push(DetailPaymentRoute(paymentUrl: tickets.paylink ?? 'ERROR', successPaymentUrl: ''));
                     },

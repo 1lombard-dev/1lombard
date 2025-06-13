@@ -63,6 +63,6 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1079222635401',
     projectId: 'ustaztilegi-1abc5',
     storageBucket: 'ustaztilegi-1abc5.firebasestorage.app',
-    iosBundleId: 'com.thousand.ustazTilegi',
+    iosBundleId: 'com.lombardFlutter',
   );
 }

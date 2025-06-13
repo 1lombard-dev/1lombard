@@ -68,7 +68,7 @@ class LoansRemoteDSImpl implements ILoansRemoteDS {
       final iin = authDao.iin.value;
       final appSettings = await appSettingsDatasource.getAppSettings();
       final Map<String, dynamic> response = await restClient.post(
-        '/webservice/payment/getPayLinkPage.php',
+        '/webservice/payment/getPayLinkPageNew.php',
         body: {
           'token': token ?? '',
           'login': iin ?? '',
