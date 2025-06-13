@@ -235,12 +235,18 @@ class _MainPageState extends State<MainPage> {
                           MainRowContainer(
                             image: Assets.images.standart.path,
                             title: 'Стандарт',
-                            onTap: () {},
+                            onTap: () {
+                              // Переключение на таб с индексом 1 (например, BaseCalculationTab)
+                              AutoTabsRouter.of(context).setActiveIndex(1);
+                            },
                           ),
                           MainRowContainer(
                             image: Assets.images.map.path,
                             title: 'Карта',
-                            onTap: () {},
+                            onTap: () {
+                              // Переключение на таб с индексом 3 (например, BaseMapTab)
+                              AutoTabsRouter.of(context).setActiveIndex(3);
+                            },
                           ),
                         ],
                       ),

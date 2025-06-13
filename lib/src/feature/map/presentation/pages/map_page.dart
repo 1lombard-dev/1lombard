@@ -129,7 +129,8 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                 }
               }
 
-              return Column(
+              return ListView(
+                physics: const ClampingScrollPhysics(),
                 children: [
                   SizedBox(
                     height: 320,
@@ -204,108 +205,101 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                     ),
                   ),
                   const Gap(18),
-                  Expanded(
-                    child: ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      itemCount: cityList.length,
-                      itemBuilder: (context, index) {
-                        final city = cityList[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 12),
-                          child: Container(
-                            decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(10)),
-                            child: Material(
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(10),
-                              child: InkWell(
-                                onTap: () => context.router.push(const AllBranchesRoute()),
-                                borderRadius: BorderRadius.circular(10),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ...cityList.map((city) {
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12, left: 16, right: 16),
+                      child: Container(
+                        decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(10)),
+                        child: Material(
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.circular(10),
+                          child: InkWell(
+                            onTap: () => context.router.push(const AllBranchesRoute()),
+                            borderRadius: BorderRadius.circular(10),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(city.address ?? 'ERROR ADDRESS',
+                                      style: AppTextStyles.fs14w500.copyWith(color: AppColors.black)),
+                                  const Gap(10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(city.address ?? 'ERROR ADDRESS',
-                                          style: AppTextStyles.fs14w500.copyWith(color: AppColors.black)),
-                                      const Gap(10),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text('300м', style: AppTextStyles.fs16w400),
-                                          Text(city.phones ?? 'ERROR PHONE', style: AppTextStyles.fs14w600),
-                                        ],
-                                      ),
-                                      const Divider(),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text('закрыто', style: AppTextStyles.fs16w400),
-                                              Text(city.time ?? 'ERROR', style: AppTextStyles.fs14w600),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              InkWell(
-                                                onTap: () async {
-                                                  final phone = city.phones?.replaceAll(RegExp(r'[^0-9+]'), '');
-                                                  if (phone != null && phone.isNotEmpty) {
-                                                    final uri = Uri.parse('tel:$phone');
-                                                    if (await canLaunchUrl(uri)) {
-                                                      await launchUrl(uri);
-                                                    }
-                                                  }
-                                                },
-                                                child: Image.asset(Assets.images.phone.path, width: 32, height: 32),
-                                              ),
-                                              const Gap(14),
-                                              InkWell(
-                                                onTap: () async {
-                                                  final coordsString = city.coords;
-                                                  if (coordsString != null) {
-                                                    final coords = coordsString
-                                                        .replaceAll('[', '')
-                                                        .replaceAll(']', '')
-                                                        .split(',')
-                                                        .map((e) => e.trim())
-                                                        .toList();
-                                                    if (coords.length == 2) {
-                                                      final lat = coords[0];
-                                                      final lon = coords[1];
-                                                      final uri = Uri.parse(
-                                                          'dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
-                                                      if (await canLaunchUrl(uri)) {
-                                                        await launchUrl(uri);
-                                                      } else {
-                                                        final fallbackUrl =
-                                                            Uri.parse('https://2gis.kz/almaty/geo/$lat,$lon');
-                                                        if (await canLaunchUrl(fallbackUrl)) {
-                                                          await launchUrl(fallbackUrl,
-                                                              mode: LaunchMode.externalApplication);
-                                                        }
-                                                      }
-                                                    }
-                                                  }
-                                                },
-                                                child: Image.asset(Assets.images.a2gis.path, width: 32, height: 32),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                      const Gap(21),
+                                      const Text('300м', style: AppTextStyles.fs16w400),
+                                      Text(city.phones ?? 'ERROR PHONE', style: AppTextStyles.fs14w600),
                                     ],
                                   ),
-                                ),
+                                  const Divider(),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text('закрыто', style: AppTextStyles.fs16w400),
+                                          Text(city.time ?? 'ERROR', style: AppTextStyles.fs14w600),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          InkWell(
+                                            onTap: () async {
+                                              final phone = city.phones?.replaceAll(RegExp(r'[^0-9+]'), '');
+                                              if (phone != null && phone.isNotEmpty) {
+                                                final uri = Uri.parse('tel:$phone');
+                                                if (await canLaunchUrl(uri)) {
+                                                  await launchUrl(uri);
+                                                }
+                                              }
+                                            },
+                                            child: Image.asset(Assets.images.phone.path, width: 32, height: 32),
+                                          ),
+                                          const Gap(14),
+                                          InkWell(
+                                            onTap: () async {
+                                              final coordsString = city.coords;
+                                              if (coordsString != null) {
+                                                final coords = coordsString
+                                                    .replaceAll('[', '')
+                                                    .replaceAll(']', '')
+                                                    .split(',')
+                                                    .map((e) => e.trim())
+                                                    .toList();
+                                                if (coords.length == 2) {
+                                                  final lat = coords[0];
+                                                  final lon = coords[1];
+                                                  final uri =
+                                                      Uri.parse('dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
+                                                  if (await canLaunchUrl(uri)) {
+                                                    await launchUrl(uri);
+                                                  } else {
+                                                    final fallbackUrl =
+                                                        Uri.parse('https://2gis.kz/almaty/geo/$lat,$lon');
+                                                    if (await canLaunchUrl(fallbackUrl)) {
+                                                      await launchUrl(fallbackUrl,
+                                                          mode: LaunchMode.externalApplication);
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            child: Image.asset(Assets.images.a2gis.path, width: 32, height: 32),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Gap(21),
+                                ],
                               ),
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
+                        ),
+                      ),
+                    );
+                  }),
                 ],
               );
             },
