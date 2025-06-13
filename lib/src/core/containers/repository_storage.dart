@@ -7,6 +7,8 @@ import 'package:lombard/src/feature/auth/data/auth_repository.dart';
 import 'package:lombard/src/feature/auth/database/auth_dao.dart';
 import 'package:lombard/src/feature/calculation/data/calculation_remote_ds.dart';
 import 'package:lombard/src/feature/calculation/data/calculation_repository.dart';
+import 'package:lombard/src/feature/loans/data/loans_remote_ds.dart';
+import 'package:lombard/src/feature/loans/data/loans_repository.dart';
 import 'package:lombard/src/feature/main_feed/data/main_remote_ds.dart';
 import 'package:lombard/src/feature/main_feed/data/main_repository.dart';
 import 'package:lombard/src/feature/map/data/map_remote_ds.dart';
@@ -31,12 +33,14 @@ abstract class IRepositoryStorage {
   IAuthRepository get authRepository;
   IProfileRepository get profileRepository;
   IMainRepository get mainRepository;
+  ILoansRepository get loansRepository;
 
   IMapRepository get mapRepository;
   ICalculationRepository get calculacationRepository;
 
   // Data sources
   IAuthRemoteDS get authRemoteDS;
+  ILoansRemoteDS get loansRemoteDS;
   IProfileRemoteDS get profileRemoteDS;
   IMainRemoteDS get mainRemoteDS;
   IMapRemoteDS get mapRemoteDS;
@@ -91,6 +95,10 @@ class RepositoryStorage implements IRepositoryStorage {
       );
 
   @override
+  ILoansRepository get loansRepository => LoansRepositoryImpl(
+        remoteDS: loansRemoteDS,
+      );
+  @override
   IProfileRepository get profileRepository => ProfileRepositoryImpl(
         remoteDS: profileRemoteDS,
       );
@@ -121,6 +129,12 @@ class RepositoryStorage implements IRepositoryStorage {
         appSettingsDatasource: _appSettingsDatasource,
       );
 
+  @override
+  ILoansRemoteDS get loansRemoteDS => LoansRemoteDSImpl(
+        restClient: restClient,
+        authDao: authDao,
+        appSettingsDatasource: _appSettingsDatasource,
+      );
   @override
   IMapRemoteDS get mapRemoteDS => MapRemoteDSImpl(
         restClient: restClient,

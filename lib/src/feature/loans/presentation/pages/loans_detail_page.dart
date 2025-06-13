@@ -7,13 +7,14 @@ import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
-import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
+import 'package:lombard/src/feature/loans/bloc/get_payment_cubit.dart';
+import 'package:lombard/src/feature/loans/model/tickets_dto.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 @RoutePage()
 class LoansDetailPage extends StatefulWidget implements AutoRouteWrapper {
-  const LoansDetailPage({super.key});
+  final TicketsDTO ticketsDTO;
+  const LoansDetailPage({super.key, required this.ticketsDTO});
 
   @override
   _LoansDetailPageState createState() => _LoansDetailPageState();
@@ -23,10 +24,7 @@ class LoansDetailPage extends StatefulWidget implements AutoRouteWrapper {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BannerCubit(repository: context.repository.mainRepository),
-        ),
-        BlocProvider(
-          create: (context) => CategoryCubit(repository: context.repository.mainRepository),
+          create: (context) => GetPaymentCubit(repository: context.repository.loansRepository),
         ),
       ],
       child: this,
@@ -36,19 +34,13 @@ class LoansDetailPage extends StatefulWidget implements AutoRouteWrapper {
 
 class _LoansDetailPageState extends State<LoansDetailPage> {
   final TextEditingController priceController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-    BlocProvider.of<CategoryCubit>(context).getCategory();
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: AppColors.backgroundInput,
         appBar: AppBar(
           title: Text(
-            'Займ 000-2401133',
+            'Займ ${widget.ticketsDTO.ticketnumber ?? 'ERROR'}',
             style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
           ),
           shape: const Border(
@@ -65,7 +57,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
             children: [
               const Gap(20),
               Text(
-                '000-2401133',
+                widget.ticketsDTO.ticketnumber ?? 'ERROR',
                 style: AppTextStyles.fs14w600.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
               ),
               const Gap(13),
@@ -82,7 +74,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
-                            'пролонгирован',
+                            widget.ticketsDTO.status ?? 'ERROR',
                             style: AppTextStyles.fs16w500.copyWith(color: AppColors.green2),
                           ),
                         ],
@@ -95,7 +87,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
-                            ' 09.07.2024',
+                            widget.ticketsDTO.issuedate ?? 'ERROR',
                             style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                           ),
                         ],
@@ -108,7 +100,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
-                            ' 02.10.2024',
+                            widget.ticketsDTO.returndate ?? 'ERROR',
                             style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                           ),
                         ],
@@ -121,7 +113,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
-                            ' Ертанова Лаура',
+                            widget.ticketsDTO.manager ?? 'ERROR',
                             style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                           ),
                         ],
@@ -134,7 +126,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
-                            '30.11.2024',
+                            widget.ticketsDTO.garantdate ?? 'ERROR',
                             style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                           ),
                         ],
@@ -147,7 +139,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
-                            ' 30',
+                            widget.ticketsDTO.paydays ?? 'ERROR',
                             style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                           ),
                         ],
@@ -166,7 +158,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                           style: AppTextStyles.fs14w500.copyWith(color: AppColors.black),
                         ),
                         Text(
-                          '14',
+                          widget.ticketsDTO.paydays ?? 'ERROR',
                           style: AppTextStyles.fs30w600.copyWith(color: const Color(0xFFFF5C5C)),
                         ),
                         Text(
@@ -198,38 +190,50 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                 ],
               ),
               const Gap(22),
-              const Text(
-                '1 x Кольцо',
-                style: AppTextStyles.fs16w500,
-              ),
+              if (widget.ticketsDTO.pledges != null)
+                Column(
+                  children: [
+                    ...widget.ticketsDTO.pledges!.map(
+                      (pledge) => Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${pledge.itemcount} x ${pledge.itemname}', // например: 1 x Кольцо
+                            style: AppTextStyles.fs16w400.copyWith(color: AppColors.black),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               const Gap(19.5),
               const Divider(
                 color: Color(0xFF9E9D9D),
               ),
               const Gap(19),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Всего к выплате: ',
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
-                    '41 302.58  ₸',
+                    '${widget.ticketsDTO.totalrefundamount}  ₸',
                     style: AppTextStyles.fs18w600,
                   ),
                 ],
               ),
               const Gap(6),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
+                  const Text(
                     'Выплачено:',
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
-                    '41 302.58  ₸',
+                    '${widget.ticketsDTO.totalpaidamount}  ₸',
                     style: AppTextStyles.fs18w600,
                   ),
                 ],
@@ -240,8 +244,11 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                 children: [
                   Expanded(
                     child: CustomButton(
-                      onPressed: () {},
-                      style: CustomButtonStyles.mainButtonStyle(context, backgroundColor: AppColors.red),
+                      onPressed: () {
+                        context.router
+                            .push(PaymentInformationRoute(ticketsDTO: widget.ticketsDTO, paymentType: 'Пролонгация'));
+                      },
+                      style: CustomButtonStyles.mainButtonStyle(context),
                       child: const Text(
                         'Пролонгация',
                         style: AppTextStyles.fs18w600,
@@ -252,7 +259,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
-                        context.router.push(const PaymentInformationRoute());
+                        context.router
+                            .push(PaymentInformationRoute(ticketsDTO: widget.ticketsDTO, paymentType: 'Выкуп'));
                       },
                       style: CustomButtonStyles.mainButtonStyle(
                         context,

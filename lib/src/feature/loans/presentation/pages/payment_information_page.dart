@@ -5,13 +5,17 @@ import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
+import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/theme/resources.dart';
-import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
+import 'package:lombard/src/feature/app/router/app_router.dart';
+import 'package:lombard/src/feature/loans/bloc/get_payment_cubit.dart';
+import 'package:lombard/src/feature/loans/model/tickets_dto.dart';
 
 @RoutePage()
 class PaymentInformationPage extends StatefulWidget implements AutoRouteWrapper {
-  const PaymentInformationPage({super.key});
+  final TicketsDTO ticketsDTO;
+  final String paymentType;
+  const PaymentInformationPage({super.key, required this.ticketsDTO, required this.paymentType});
 
   @override
   _PaymentInformationPageState createState() => _PaymentInformationPageState();
@@ -21,10 +25,7 @@ class PaymentInformationPage extends StatefulWidget implements AutoRouteWrapper 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BannerCubit(repository: context.repository.mainRepository),
-        ),
-        BlocProvider(
-          create: (context) => CategoryCubit(repository: context.repository.mainRepository),
+          create: (context) => GetPaymentCubit(repository: context.repository.loansRepository),
         ),
       ],
       child: this,
@@ -34,12 +35,6 @@ class PaymentInformationPage extends StatefulWidget implements AutoRouteWrapper 
 
 class _PaymentInformationPageState extends State<PaymentInformationPage> {
   final TextEditingController priceController = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-    BlocProvider.of<CategoryCubit>(context).getCategory();
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -74,7 +69,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
-                    '000-2401133',
+                    widget.ticketsDTO.ticketnumber ?? 'ERROR',
                     style: AppTextStyles.fs16w600.copyWith(color: AppColors.red, fontWeight: FontWeight.bold),
                   ),
                 ],
@@ -87,7 +82,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
-                    'Выкуп',
+                    widget.paymentType,
                     style: AppTextStyles.fs16w600.copyWith(
                       color: AppColors.black,
                     ),
@@ -102,7 +97,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
-                    '000-2401133',
+                    widget.ticketsDTO.ticketnumber ?? 'ERROR',
                     style: AppTextStyles.fs16w600.copyWith(
                       color: AppColors.black,
                     ),
@@ -117,7 +112,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
-                    '44553 тг.',
+                    '${widget.ticketsDTO.totalrefundamount} тг.',
                     style: AppTextStyles.fs16w600.copyWith(
                       color: AppColors.black,
                     ),
@@ -138,12 +133,31 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                 color: Color(0xFF9E9D9D),
               ),
               const Gap(39),
-              CustomButton(
-                onPressed: () {},
-                style: CustomButtonStyles.mainButtonStyle(context, backgroundColor: AppColors.red),
-                child: const Text(
-                  'Оплатить',
-                  style: AppTextStyles.fs18w600,
+              BlocListener<GetPaymentCubit, GetPaymentState>(
+                listener: (context, state) {
+                  state.maybeWhen(
+                    orElse: () {
+                      return const CustomLoadingOverlayWidget();
+                    },
+                    loaded: (tickets) {
+                      context.router
+                          .push(DetailPaymentRoute(paymentUrl: tickets.paylink ?? 'ERROR', successPaymentUrl: ''));
+                    },
+                  );
+                },
+                child: CustomButton(
+                  onPressed: () {
+                    BlocProvider.of<GetPaymentCubit>(context).getPayment(
+                      paymentType: widget.paymentType,
+                      ticketnum: widget.ticketsDTO.ticketnumber ?? 'ERROR',
+                      ticketdate: widget.ticketsDTO.issuedate ?? "ERROR",
+                    );
+                  },
+                  style: CustomButtonStyles.mainButtonStyle(context),
+                  child: const Text(
+                    'Оплатить',
+                    style: AppTextStyles.fs18w600,
+                  ),
                 ),
               ),
               const Gap(21),

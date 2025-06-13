@@ -1,7 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:lombard/src/core/rest_client/rest_client.dart';
-import 'package:lombard/src/feature/profile/data/profile_repository.dart';
 
 part 'logout_cubit.freezed.dart';
 

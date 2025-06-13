@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
-import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 
 class SubjectItem extends StatelessWidget {
