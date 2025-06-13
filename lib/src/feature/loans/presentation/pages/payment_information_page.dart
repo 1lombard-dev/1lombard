@@ -158,7 +158,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                 child: CustomButton(
                   onPressed: () {
                     BlocProvider.of<GetPaymentCubit>(context).getPayment(
-                      paymentType: widget.paymentType,
+                      paymentType: widget.paymentType == 'Пролонгация' ? '1' : '2',
                       ticketnum: widget.ticketsDTO.ticketnumber ?? 'ERROR',
                       ticketdate: widget.ticketsDTO.issuedate ?? "ERROR",
                     );

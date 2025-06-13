@@ -55,7 +55,7 @@ class _CalculationPageState extends State<CalculationPage> {
 
     if (selectedPrice != null && weight > 0 && days > 0) {
       giveAmount = selectedPrice! * weight;
-      returnAmount = giveAmount + giveAmount * stavka * days;
+      returnAmount = giveAmount + (giveAmount * stavka * days)/100;
     } else {
       giveAmount = 0;
       returnAmount = 0;

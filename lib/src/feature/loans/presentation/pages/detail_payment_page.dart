@@ -86,7 +86,7 @@ class _PaymentWebViewState extends State<DetailPaymentPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse(widget.paymentUrl));
+      ..loadRequest(Uri.parse('https://1lombard.kz${widget.paymentUrl}'));
 
     super.initState();
   }
@@ -105,7 +105,7 @@ class _PaymentWebViewState extends State<DetailPaymentPage> {
                 context.router.replaceAll([const LauncherRoute(), LoansRoute()]);
               });
             },
-            child: SvgPicture.asset(Assets.icons.backButton.path),
+            child: const Icon(Icons.arrow_back),
           ),
         ),
         title: const Text(
