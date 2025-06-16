@@ -247,10 +247,12 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                         context.router
                             .push(PaymentInformationRoute(ticketsDTO: widget.ticketsDTO, paymentType: 'Пролонгация'));
                       },
-                      style: CustomButtonStyles.mainButtonStyle(context),
+                      style: CustomButtonStyles.mainButtonStyle(
+                        context,
+                      ),
                       child: Text(
                         context.localized.prolongation,
-                        style: AppTextStyles.fs18w600,
+                        style: AppTextStyles.fs16w600,
                       ),
                     ),
                   ),
@@ -268,7 +270,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                       ),
                       child: Text(
                         context.localized.theRansom,
-                        style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
+                        style: AppTextStyles.fs16w600.copyWith(color: AppColors.black),
                       ),
                     ),
                   ),

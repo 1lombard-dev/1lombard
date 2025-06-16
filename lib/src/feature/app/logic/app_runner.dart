@@ -61,7 +61,6 @@ final class AppRunner {
         final result = await CompositionRoot(config, logger).compose();
 
         TalkerLoggerUtil.talker.log('msSpent ${result.msSpent}');
-
         // Attach this widget to the root of the tree.
         runApp(
           BlocProvider(

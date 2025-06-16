@@ -171,7 +171,7 @@ class ActiveContainerWidget extends StatelessWidget {
                         style: CustomButtonStyles.mainButtonStyle(context),
                         child: Text(
                           context.localized.prolongation,
-                          style: AppTextStyles.fs18w600,
+                          style: AppTextStyles.fs16w600,
                         ),
                       ),
                     ),
@@ -188,7 +188,7 @@ class ActiveContainerWidget extends StatelessWidget {
                         ),
                         child: Text(
                           context.localized.theRansom,
-                          style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
+                          style: AppTextStyles.fs16w600.copyWith(color: AppColors.black),
                         ),
                       ),
                     ),

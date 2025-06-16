@@ -34,12 +34,15 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   Future<List<BannerDTO>> getNews() async {
     try {
       final appSettings = await appSettingsDatasource.getAppSettings();
-      final token = authDao.token.value;
-
+      String? token = authDao.token.value;
+      if (token == null || token.isEmpty) {
+        token = await getToken();
+        await authDao.token.setValue(token); // ✅ Сохраняем, если нужно
+      }
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/news/getNews.php',
         body: {
-          'token': token ?? '',
+          'token': token,
           'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
         },
       );
@@ -66,12 +69,16 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   Future<List<LayersDTO>> mainPageBanner() async {
     try {
       final appSettings = await appSettingsDatasource.getAppSettings();
-      final token = authDao.token.value;
+      String? token = authDao.token.value;
+      if (token == null || token.isEmpty) {
+        token = await getToken();
+        await authDao.token.setValue(token); // ✅ Сохраняем, если нужно
+      }
 
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/slider/getActiveSlides.php',
         body: {
-          'token': token ?? '',
+          'token': token,
           'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
         },
       );
@@ -98,12 +105,18 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   Future<List<QuestionDTO>> getFAQ() async {
     try {
       final appSettings = await appSettingsDatasource.getAppSettings();
-      final token = authDao.token.value;
+      String? token = authDao.token.value;
+
+      // ✅ Получаем новый токен, если текущий пустой
+      if (token == null || token.isEmpty) {
+        token = await getToken();
+        await authDao.token.setValue(token); // ✅ Сохраняем, если нужно
+      }
 
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/faq/getFaq.php',
         body: {
-          'token': token ?? '',
+          'token': token,
           'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
         },
       );
@@ -111,14 +124,12 @@ class MainRemoteDSImpl implements IMainRemoteDS {
       if (response['data'] == null) {
         throw Exception();
       }
+
       final list = await compute<List<dynamic>, List<QuestionDTO>>(
-        (list) => list
-            .map(
-              (e) => QuestionDTO.fromJson(e as Map<String, dynamic>),
-            )
-            .toList(),
+        (list) => list.map((e) => QuestionDTO.fromJson(e as Map<String, dynamic>)).toList(),
         response['data'] as List,
       );
+
       return list;
     } catch (e, st) {
       TalkerLoggerUtil.talker.error('#getFAQ - $e', e, st);
