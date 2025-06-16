@@ -2,6 +2,7 @@ import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/initialization/model/environment.dart';
 import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,11 +24,11 @@ class _ImageSliderWidgetState extends State<ImageSliderWidget> {
   int imageIndex = 0;
   String cleanHtml(String html) {
     // Удаляем inline style
-    String withoutStyle = html.replaceAll(RegExp(r'style="[^"]*"'), '');
+    final String withoutStyle = html.replaceAll(RegExp('style="[^"]*"'), '');
 
     // Распознаём вложенные <span> и превращаем в <b>
     return withoutStyle.replaceAllMapped(
-      RegExp(r'<span[^>]*>(.*?)</span>', dotAll: true),
+      RegExp('<span[^>]*>(.*?)</span>', dotAll: true),
       (match) {
         final content = match.group(1)!;
         // Если внутри были признаки жирного текста (раньше был font-weight:800), делаем <b>
@@ -106,7 +107,7 @@ class _ImageSliderWidgetState extends State<ImageSliderWidget> {
                             child: Padding(
                               padding: const EdgeInsets.all(12.0),
                               child: Text(
-                                'ПОДРОБНЕЕ',
+                                context.localized.moreDetailed,
                                 style: AppTextStyles.fs15w400.copyWith(color: AppColors.white),
                               ),
                             ),

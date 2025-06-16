@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/loans/model/tickets_dto.dart';
 
@@ -41,8 +42,8 @@ class ActiveContainerWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Дата открытия:',
+                    Text(
+                      context.localized.openingDate,
                       style: AppTextStyles.fs16w400,
                     ),
                     Text(
@@ -55,8 +56,8 @@ class ActiveContainerWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Дата возврата:',
+                    Text(
+                      context.localized.returnDate,
                       style: AppTextStyles.fs16w400,
                     ),
                     Text(
@@ -83,8 +84,8 @@ class ActiveContainerWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Гарантия: ',
+                    Text(
+                      context.localized.guarantee,
                       style: AppTextStyles.fs16w400,
                     ),
                     Text(
@@ -97,8 +98,8 @@ class ActiveContainerWidget extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Срок выплаты:',
+                    Text(
+                      context.localized.paymentPeriod,
                       style: AppTextStyles.fs16w400,
                     ),
                     Text(
@@ -110,8 +111,8 @@ class ActiveContainerWidget extends StatelessWidget {
                 const Gap(15),
                 const Divider(),
                 const Gap(10),
-                const Text(
-                  'Залог',
+                Text(
+                  context.localized.deposit,
                   style: AppTextStyles.fs16w400,
                 ),
                 const Gap(10),
@@ -168,8 +169,8 @@ class ActiveContainerWidget extends StatelessWidget {
                               .push(PaymentInformationRoute(ticketsDTO: ticketsDTO, paymentType: 'Пролонгация'));
                         },
                         style: CustomButtonStyles.mainButtonStyle(context),
-                        child: const Text(
-                          'Пролонгация',
+                        child: Text(
+                          context.localized.prolongation,
                           style: AppTextStyles.fs18w600,
                         ),
                       ),
@@ -186,7 +187,7 @@ class ActiveContainerWidget extends StatelessWidget {
                           side: const BorderSide(),
                         ),
                         child: Text(
-                          'Выкуп',
+                          context.localized.theRansom,
                           style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                         ),
                       ),

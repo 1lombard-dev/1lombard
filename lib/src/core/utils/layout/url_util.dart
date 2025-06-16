@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:lombard/src/core/presentation/widgets/dialog/toaster.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class UrlUtil {
   UrlUtil._();

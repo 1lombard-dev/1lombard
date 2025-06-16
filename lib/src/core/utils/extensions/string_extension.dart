@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:tuple/tuple.dart';
 import 'package:lombard/src/core/constant/constants.dart';
+import 'package:tuple/tuple.dart';
 
 /// Common extensions for [String]
 extension StringExtension on String {

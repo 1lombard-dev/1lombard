@@ -82,9 +82,10 @@ class _AuthPageState extends State<AuthPage> {
             if (url.contains('register-success')) {
               Toaster.showTopShortToast(
                 context,
-                message: 'Регистрация успешна',
+                message: context.localized.registrationIsSuccessful,
               );
               Future.delayed(const Duration(seconds: 2), () {
+                // ignore: use_build_context_synchronously
                 Navigator.of(context).pop(); // закрываем диалог
               });
             }
@@ -200,9 +201,9 @@ class _AuthPageState extends State<AuthPage> {
                               const Gap(30.5),
                               Container(height: 0.5, width: double.infinity, color: AppColors.muteBlue),
                               const Gap(30.5),
-                              const Text(
-                                'Войдите или зарегестрироуйтесь!',
-                                style: TextStyle(
+                              Text(
+                                context.localized.logOrRegister,
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 20,
                                   height: 1.3,
@@ -210,7 +211,7 @@ class _AuthPageState extends State<AuthPage> {
                               ),
                               const Gap(20),
                               Text(
-                                'Вход',
+                                context.localized.entrance,
                                 style: AppTextStyles.fs18w600.copyWith(height: 1.6, color: AppColors.red),
                               ),
                               const Gap(12),
@@ -237,7 +238,7 @@ class _AuthPageState extends State<AuthPage> {
                               ),
                               const Gap(12),
                               Text(
-                                'Пароль',
+                                context.localized.password,
                                 style: AppTextStyles.fs18w500.copyWith(height: 1.6, color: AppColors.black),
                               ),
                               const Gap(12),
@@ -249,12 +250,13 @@ class _AuthPageState extends State<AuthPage> {
                                     builder: (context, errorText, _) {
                                       return CustomTextField(
                                         controller: passwordController,
-                                        hintText: 'Введите пароль',
+                                        hintText: context.localized.enterThePassword,
                                         obscureText: obscure,
                                         keyboardType: TextInputType.text,
                                         textStyle: AppTextStyles.fs16w400.copyWith(letterSpacing: 0.4),
                                         onChanged: (value) {
-                                          _passwordError.value = value.length >= 6 ? null : 'Минимум 6 символов';
+                                          _passwordError.value =
+                                              value.length >= 6 ? null : context.localized.minimumOfCharacters;
                                         },
                                         suffixIcon: GestureDetector(
                                           onTap: () => _obscurePassword.value = !_obscurePassword.value,
@@ -286,8 +288,8 @@ class _AuthPageState extends State<AuthPage> {
                                                 }
                                               : null,
                                           style: CustomButtonStyles.mainButtonStyle(context),
-                                          child: const Text(
-                                            'Войти',
+                                          child: Text(
+                                            context.localized.enter,
                                             style: AppTextStyles.fs16w600,
                                           ),
                                         ),
@@ -302,7 +304,7 @@ class _AuthPageState extends State<AuthPage> {
                                             side: const BorderSide(color: AppColors.barrierColor),
                                           ),
                                           child: Text(
-                                            'Регистрация',
+                                            context.localized.registration,
                                             style: AppTextStyles.fs16w600.copyWith(color: AppColors.black),
                                           ),
                                         ),

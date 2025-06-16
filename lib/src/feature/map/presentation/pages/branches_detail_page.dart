@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/textfields/custom_textfield.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
+import 'package:lombard/src/core/utils/layout/url_util.dart';
 import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 import 'package:lombard/src/feature/map/bloc/city_cubit.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class BranchesDetailPage extends StatefulWidget implements AutoRouteWrapper {
@@ -111,14 +111,14 @@ class _BranchesDetailPageState extends State<BranchesDetailPage> {
             child: CustomTextField(
               controller: searchController,
               suffixIcon: const Icon(Icons.search),
-              hintText: 'Например: Адрес',
+              hintText: context.localized.forExampleAddress,
             ),
           ),
           const Gap(30),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Отделения',
+              context.localized.branches,
               style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
             ),
           ),
@@ -169,13 +169,7 @@ class _BranchesDetailPageState extends State<BranchesDetailPage> {
                           children: [
                             InkWell(
                               onTap: () async {
-                                final phone = item.phones?.replaceAll(RegExp(r'[^0-9+]'), '');
-                                if (phone != null && phone.isNotEmpty) {
-                                  final uri = Uri.parse('tel:$phone');
-                                  if (await canLaunchUrl(uri)) {
-                                    await launchUrl(uri);
-                                  }
-                                }
+                                UrlUtil.launchPhoneUrl(context, phone: item.phones!);
                               },
                               child: Image.asset(Assets.images.phone.path, width: 32, height: 32),
                             ),
@@ -194,14 +188,7 @@ class _BranchesDetailPageState extends State<BranchesDetailPage> {
                                     final lat = coords[0];
                                     final lon = coords[1];
                                     final uri = Uri.parse('dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
-                                    if (await canLaunchUrl(uri)) {
-                                      await launchUrl(uri);
-                                    } else {
-                                      final fallbackUrl = Uri.parse('https://2gis.kz/almaty/geo/$lat,$lon');
-                                      if (await canLaunchUrl(fallbackUrl)) {
-                                        await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
-                                      }
-                                    }
+                                    UrlUtil.launch(context, url: uri.toString());
                                   }
                                 }
                               },
@@ -243,13 +230,7 @@ class _BranchesDetailPageState extends State<BranchesDetailPage> {
                           children: [
                             InkWell(
                               onTap: () async {
-                                final phone = item.phones?.replaceAll(RegExp(r'[^0-9+]'), '');
-                                if (phone != null && phone.isNotEmpty) {
-                                  final uri = Uri.parse('tel:$phone');
-                                  if (await canLaunchUrl(uri)) {
-                                    await launchUrl(uri);
-                                  }
-                                }
+                                UrlUtil.launchPhoneUrl(context, phone: item.phones!);
                               },
                               child: Image.asset(Assets.images.phone.path, width: 32, height: 32),
                             ),
@@ -268,14 +249,7 @@ class _BranchesDetailPageState extends State<BranchesDetailPage> {
                                     final lat = coords[0];
                                     final lon = coords[1];
                                     final uri = Uri.parse('dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
-                                    if (await canLaunchUrl(uri)) {
-                                      await launchUrl(uri);
-                                    } else {
-                                      final fallbackUrl = Uri.parse('https://2gis.kz/almaty/geo/$lat,$lon');
-                                      if (await canLaunchUrl(fallbackUrl)) {
-                                        await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
-                                      }
-                                    }
+                                    UrlUtil.launch(context, url: uri.toString());
                                   }
                                 }
                               },

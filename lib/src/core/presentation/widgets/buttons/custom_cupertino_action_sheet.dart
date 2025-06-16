@@ -1772,6 +1772,7 @@ class CupertinoDialogAction extends StatelessWidget {
     }
 
     if (!enabled) {
+      // ignore: deprecated_member_use
       style = style.copyWith(color: style.color!.withOpacity(0.5));
     }
 

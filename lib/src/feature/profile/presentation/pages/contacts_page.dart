@@ -4,13 +4,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
+import 'package:lombard/src/core/utils/layout/url_util.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class ContactsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -59,7 +59,7 @@ class _ContactsPageState extends State<ContactsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Профиль',
+                    context.localized.office,
                     style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Image.asset(
@@ -94,21 +94,18 @@ class _ContactsPageState extends State<ContactsPage> {
                   children: [
                     const Gap(1),
                     Text(
-                      'Головной офис',
+                      context.localized.headOffice,
                       style: AppTextStyles.fs18w600.copyWith(color: AppColors.red),
                     ),
                     const Gap(19),
                     Text(
-                      'Телефон',
+                      context.localized.phoneNumber,
                       style: AppTextStyles.fs16w600.copyWith(color: AppColors.black, fontWeight: FontWeight.bold),
                     ),
                     const Gap(9),
                     InkWell(
                       onTap: () async {
-                        final Uri uri = Uri(scheme: 'tel', path: '+77087087084');
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri);
-                        }
+                        UrlUtil.launchPhoneUrl(context, phone: '+77087087084');
                       },
                       child: Text(
                         '+7 708 708 70 84',
@@ -118,10 +115,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     const Gap(9),
                     InkWell(
                       onTap: () async {
-                        final Uri uri = Uri(scheme: 'tel', path: '+77089730422');
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri);
-                        }
+                        UrlUtil.launchPhoneUrl(context, phone: '+77089730422');
                       },
                       child: Text(
                         '+7 708 973 04 22',
@@ -136,13 +130,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     const Gap(8),
                     InkWell(
                       onTap: () async {
-                        final Uri uri = Uri(
-                          scheme: 'mailto',
-                          path: 'marketing@1lombard.kz',
-                        );
-                        if (await canLaunchUrl(uri)) {
-                          await launchUrl(uri);
-                        }
+                        UrlUtil.launch(context, url: 'marketing@1lombard.kz');
                       },
                       child: Text(
                         'marketing@1lombard.kz',
@@ -154,7 +142,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     ),
                     const Gap(9),
                     Text(
-                      'Адресс',
+                      context.localized.address,
                       style: AppTextStyles.fs16w600.copyWith(color: AppColors.black, fontWeight: FontWeight.bold),
                     ),
                     const Gap(8),

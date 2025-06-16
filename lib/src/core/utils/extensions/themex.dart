@@ -27,9 +27,7 @@ extension ThemeDataX on ThemeData {
       case Brightness.dark:
         return dark;
 
-      default:
-        return light;
-    }
+      }
   }
 
   T maybeWhenByValue<T extends Object?>({

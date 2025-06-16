@@ -2,11 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/textfields/custom_textfield.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/main_feed/model/main_page_dto.dart';
 import 'package:lombard/src/feature/map/bloc/city_cubit.dart';
@@ -58,7 +57,7 @@ class _AllBranchesPageState extends State<AllBranchesPage> {
         backgroundColor: AppColors.backgroundInput,
         appBar: AppBar(
           title: Text(
-            'Все отделения',
+            context.localized.allBranches,
             style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
           ),
           shape: const Border(
@@ -89,12 +88,12 @@ class _AllBranchesPageState extends State<AllBranchesPage> {
                         CustomTextField(
                           controller: searchController,
                           suffixIcon: const Icon(Icons.search),
-                          hintText: 'Например: город Алматы',
+                          hintText: context.localized.forExampleCityAlmaty,
                           onChanged: _filterCities,
                         ),
                         const Gap(30),
                         Text(
-                          'Выберите город',
+                          context.localized.chooseCity,
                           style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
                         ),
                         const Gap(20),

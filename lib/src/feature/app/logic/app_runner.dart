@@ -5,8 +5,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 import 'package:lombard/firebase_options.dart';
 import 'package:lombard/src/core/constant/config.dart';
 import 'package:lombard/src/core/utils/app_bloc_observer.dart';
@@ -17,6 +15,8 @@ import 'package:lombard/src/feature/app/logic/notification_service.dart';
 import 'package:lombard/src/feature/app/presentation/app.dart';
 import 'package:lombard/src/feature/initialization/logic/composition_root.dart';
 import 'package:lombard/src/feature/initialization/widget/initialization_failed_app.dart';
+// import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:talker_bloc_logger/talker_bloc_logger.dart';
 
 /// {@template app_runner}
 /// A class which is responsible for initialization and running the app.

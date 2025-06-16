@@ -28,11 +28,6 @@ class _LauncherState extends State<Launcher> {
   void initState() {
     FToast().init(context);
     BlocProvider.of<GetTokenCubit>(context).getToken();
-    BlocProvider.of<AppBloc>(context).add(
-      AppEvent.checkAuth(
-        version: context.dependencies.packageInfo.version,
-      ),
-    );
     // log('------${context.repository.authDao}');
     NotificationService().getDeviceToken(authDao: context.repository.authDao);
     BlocProvider.of<AppBloc>(context).add(

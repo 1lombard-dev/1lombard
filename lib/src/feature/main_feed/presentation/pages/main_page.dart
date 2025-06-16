@@ -4,16 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
-import 'package:lombard/src/core/presentation/widgets/other/custom_loading_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
-import 'package:lombard/src/feature/calculation/bloc/get_gold_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/get_faq_cubit.dart';
-import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
+import 'package:lombard/src/feature/main_feed/bloc/main_cubit.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/image_slider_widget.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/main_list_container_widget.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/main_row_container.dart';
@@ -31,13 +27,8 @@ class MainPage extends StatefulWidget implements AutoRouteWrapper {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => BannerCubit(repository: context.repository.mainRepository),
-        ),
-        BlocProvider(
-          create: (context) => GetGoldCubit(repository: context.repository.calculacationRepository),
-        ),
-        BlocProvider(
-          create: (context) => GetFaqCubit(repository: context.repository.mainRepository),
+          create: (context) => MainCubit(
+              repository: context.repository.mainRepository, calRepository: context.repository.calculacationRepository,),
         ),
       ],
       child: this,
@@ -51,10 +42,9 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<GetTokenCubit>(context).getToken();
-    BlocProvider.of<GetFaqCubit>(context).getFAQ();
-    BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-    BlocProvider.of<GetGoldCubit>(context).getGoldList();
+    BlocProvider.of<MainCubit>(context).getFAQ();
+    BlocProvider.of<MainCubit>(context).getMainPageBanner();
+    BlocProvider.of<MainCubit>(context).getGoldList();
   }
 
   @override
@@ -106,65 +96,54 @@ class _MainPageState extends State<MainPage> {
             ),
           ),
         ),
-        body: SafeArea(
-          child: SmartRefresher(
-            controller: _refreshController,
-            header: const RefreshClassicHeader(),
-            onRefresh: () {
-              // BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-              // BlocProvider.of<CategoryCubit>(context).getCategory();
-              _refreshController.refreshCompleted();
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  BlocBuilder<BannerCubit, BannerState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        orElse: () {
-                          return const CustomLoadingWidget();
-                        },
-                        loaded: (bannerList) {
-                          return Padding(
+        body: BlocBuilder<MainCubit, MainState>(
+          builder: (context, state) {
+            return state.maybeWhen(
+              orElse: () {
+                return const CustomLoadingOverlayWidget();
+              },
+              loaded: (bannerList, faq, goldDTO) {
+                return SafeArea(
+                  child: SmartRefresher(
+                    controller: _refreshController,
+                    header: const RefreshClassicHeader(),
+                    onRefresh: () {
+                      // BlocProvider.of<BannerCubit>(context).getMainPageBanner();
+                      // BlocProvider.of<CategoryCubit>(context).getCategory();
+                      _refreshController.refreshCompleted();
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 20,
                             ),
                             child: ImageSliderWidget(
                               banners: bannerList,
                             ),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                  Container(
-                    decoration: const BoxDecoration(color: AppColors.white),
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 11).copyWith(bottom: 15),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Наша расценка на ${DateFormat('dd.MM.yy').format(DateTime.now())}',
-                            style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
-                            textAlign: TextAlign.center,
                           ),
-                          const Gap(17),
-                          BlocBuilder<GetGoldCubit, GetGoldState>(
-                            builder: (context, state) {
-                              return state.maybeWhen(
-                                orElse: () {
-                                  return const CustomLoadingWidget();
-                                },
-                                loaded: (goldDTO) {
-                                  return SingleChildScrollView(
+                          Container(
+                            decoration: const BoxDecoration(color: AppColors.white),
+                            width: double.infinity,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 11).copyWith(bottom: 15),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Наша расценка на ${DateFormat('dd.MM.yy').format(DateTime.now())}',
+                                    style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  const Gap(17),
+                                  SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       children: goldDTO
                                           .where((item) =>
-                                              item.sample == '999.9' || item.sample == '750' || item.sample == '585')
+                                              item.sample == '999.9' || item.sample == '750' || item.sample == '585',)
                                           .toList()
                                           .asMap()
                                           .entries
@@ -220,62 +199,51 @@ class _MainPageState extends State<MainPage> {
                                         );
                                       }).toList(),
                                     ),
-                                  );
-                                },
-                              );
-                            },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15).copyWith(bottom: 30),
-                    child: Container(
-                      decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(5)),
-                      padding: const EdgeInsets.only(left: 21, top: 16, bottom: 11, right: 21),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          MainRowContainer(
-                            image: Assets.images.refinance.path,
-                            title: 'Новости',
-                            onTap: () {
-                              context.router.push(const NewsRoute());
-                            },
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15).copyWith(bottom: 30),
+                            child: Container(
+                              decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(5)),
+                              padding: const EdgeInsets.only(left: 21, top: 16, bottom: 11, right: 21),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  MainRowContainer(
+                                    image: Assets.images.refinance.path,
+                                    title: context.localized.news,
+                                    onTap: () {
+                                      context.router.push(const NewsRoute());
+                                    },
+                                  ),
+                                  MainRowContainer(
+                                    image: Assets.images.standart.path,
+                                    title: 'Стандарт',
+                                    onTap: () {
+                                      // Переключение на таб с индексом 1 (например, BaseCalculationTab)
+                                      AutoTabsRouter.of(context).setActiveIndex(1);
+                                    },
+                                  ),
+                                  MainRowContainer(
+                                    image: Assets.images.map.path,
+                                    title: 'Карта',
+                                    onTap: () {
+                                      // Переключение на таб с индексом 3 (например, BaseMapTab)
+                                      AutoTabsRouter.of(context).setActiveIndex(3);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          MainRowContainer(
-                            image: Assets.images.standart.path,
-                            title: 'Стандарт',
-                            onTap: () {
-                              // Переключение на таб с индексом 1 (например, BaseCalculationTab)
-                              AutoTabsRouter.of(context).setActiveIndex(1);
-                            },
-                          ),
-                          MainRowContainer(
-                            image: Assets.images.map.path,
-                            title: 'Карта',
-                            onTap: () {
-                              // Переключение на таб с индексом 3 (например, BaseMapTab)
-                              AutoTabsRouter.of(context).setActiveIndex(3);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  BlocBuilder<GetFaqCubit, GetFaqState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        orElse: () {
-                          return const CustomLoadingOverlayWidget();
-                        },
-                        loaded: (faq) {
-                          return Column(
+                          Column(
                             children: [
-                              const Center(
+                              Center(
                                 child: Text(
-                                  'Ответы на ваши вопросы ',
+                                  context.localized.answersToYourQuestions,
                                   style: AppTextStyles.fs16w700,
                                   textAlign: TextAlign.center,
                                 ),
@@ -299,15 +267,15 @@ class _MainPageState extends State<MainPage> {
                               ),
                               const Gap(50),
                             ],
-                          );
-                        },
-                      );
-                    },
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
+                );
+              },
+            );
+          },
         ),
       );
 }

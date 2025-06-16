@@ -2,12 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
 import 'package:lombard/src/core/presentation/widgets/dialog/toaster.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/loans/bloc/get_payment_cubit.dart';
 import 'package:lombard/src/feature/loans/model/tickets_dto.dart';
@@ -42,7 +41,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
         backgroundColor: AppColors.backgroundInput,
         appBar: AppBar(
           title: Text(
-            'Платеж',
+            context.localized.payment,
             style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
           ),
           shape: const Border(
@@ -59,14 +58,14 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
             children: [
               const Gap(20),
               Text(
-                'Информация о платеже',
+                context.localized.paymentInformation,
                 style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
               ),
               const Gap(30),
               Row(
                 children: [
-                  const Text(
-                    'Номер заказа: ',
+                  Text(
+                    context.localized.orderNumber,
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
@@ -78,8 +77,8 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
               const Gap(15),
               Row(
                 children: [
-                  const Text(
-                    'Вид платежа: ',
+                  Text(
+                    context.localized.typeOfPayment,
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
@@ -93,8 +92,8 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
               const Gap(15),
               Row(
                 children: [
-                  const Text(
-                    'Номер залогового билета: ',
+                  Text(
+                    context.localized.securityTicketNumber,
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
@@ -108,8 +107,8 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
               const Gap(15),
               Row(
                 children: [
-                  const Text(
-                    'Сумма к оплате: ',
+                  Text(
+                    context.localized.amountToBePaid,
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
@@ -125,8 +124,8 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                 color: Color(0xFF9E9D9D),
               ),
               const Gap(16),
-              const Text(
-                'Если все верно, нажмите кнопку "Оплатить" и Вы будете перенаправлены на страницу платежного сервиса',
+              Text(
+                context.localized.ifEverythingIsCorrect,
                 style: AppTextStyles.fs16w500,
               ),
               const Gap(19.5),
@@ -146,7 +145,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                       if (tickets.status == 'error') {
                         return Toaster.showErrorTopShortToast(
                           context,
-                          'Данный вид операции не может быть выполнен по указанному номеру билета',
+                          context.localized.thisTypeOfOperation,
                         );
                       }
 
@@ -164,8 +163,8 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                     );
                   },
                   style: CustomButtonStyles.mainButtonStyle(context),
-                  child: const Text(
-                    'Оплатить',
+                  child: Text(
+                    context.localized.toPay,
                     style: AppTextStyles.fs18w600,
                   ),
                 ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:lombard/src/core/containers/repository_storage.dart';
 import 'package:lombard/src/core/presentation/scopes/repository_scope.dart';
 import 'package:lombard/src/core/utils/layout/window_size.dart';
@@ -7,6 +6,7 @@ import 'package:lombard/src/feature/app/presentation/material_context.dart';
 import 'package:lombard/src/feature/initialization/logic/composition_root.dart';
 import 'package:lombard/src/feature/initialization/widget/dependencies_scope.dart';
 import 'package:lombard/src/feature/settings/widget/settings_scope.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 /// {@template app}
 /// [App] is an entry point to the application.

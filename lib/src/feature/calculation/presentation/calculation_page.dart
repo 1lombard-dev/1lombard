@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/presentation/widgets/textfields/custom_textfield.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/calculation/bloc/get_gold_cubit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -121,8 +121,9 @@ class _CalculationPageState extends State<CalculationPage> {
                               scrollDirection: Axis.horizontal,
                               child: Row(
                                 children: goldDTO
-                                    .where((item) =>
-                                        item.sample == '999.9' || item.sample == '750' || item.sample == '585')
+                                    .where(
+                                      (item) => item.sample == '999.9' || item.sample == '750' || item.sample == '585',
+                                    )
                                     .toList()
                                     .asMap()
                                     .entries
@@ -187,7 +188,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Проба золота',
+                                      context.localized.goldSample,
                                       style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
                                     ),
                                     SizedBox(
@@ -195,7 +196,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                       child: DropdownButtonFormField<double>(
                                         borderRadius: BorderRadius.circular(12), // applies to the dropdown menu
                                         decoration: InputDecoration(
-                                          hintText: 'Проба золота',
+                                          hintText: context.localized.goldSample,
                                           contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                           border: OutlineInputBorder(
                                             borderRadius: BorderRadius.circular(12),
@@ -233,7 +234,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Вес золота в грамм',
+                                      context.localized.theWeightofGoldInGrams,
                                       style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
                                     ),
                                     SizedBox(
@@ -258,7 +259,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                   children: [
                                     Flexible(
                                       child: Text(
-                                        'Срок микрокредита, дни',
+                                        context.localized.termtheMicrLoan,
                                         style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -284,7 +285,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Сумма на руки',
+                                      context.localized.amountOnHand,
                                       style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
                                     ),
                                     Text(
@@ -298,7 +299,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      'Сумма к возврату',
+                                      context.localized.amountToBeRefunded,
                                       style: AppTextStyles.fs16w500.copyWith(color: const Color(0xFF0A0A0A)),
                                     ),
                                     Text(
@@ -314,9 +315,9 @@ class _CalculationPageState extends State<CalculationPage> {
                                   onPressed: () {
                                     _calculate();
                                   },
-                                  style: CustomButtonStyles.mainButtonStyle(context, backgroundColor: AppColors.red),
-                                  child: const Text(
-                                    'Рассчитать',
+                                  style: CustomButtonStyles.mainButtonStyle(context),
+                                  child: Text(
+                                    context.localized.calculate,
                                     style: AppTextStyles.fs18w600,
                                   ),
                                 ),

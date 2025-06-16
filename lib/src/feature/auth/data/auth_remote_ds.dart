@@ -60,8 +60,9 @@ class AuthRemoteDSImpl implements IAuthRemoteDS {
         },
       );
 
-      print('LOGIN rawResponse: $rawResponse'); // 👈 временный лог
 
+
+      // ignore: avoid_dynamic_calls
       final data = rawResponse['data'];
       if (data is List && data.isNotEmpty) {
         final Map<String, dynamic> response = data.first as Map<String, dynamic>;

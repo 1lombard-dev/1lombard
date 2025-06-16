@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/auth/presentation/pages/auth_page.dart';
 import 'package:lombard/src/feature/loans/bloc/get_active_tickets_cubit.dart';
@@ -105,7 +105,7 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Мои займы',
+                      context.localized.myLoans,
                       style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                     ),
                     Image.asset(
@@ -129,9 +129,9 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
               labelStyle: AppTextStyles.fs16w600,
               unselectedLabelStyle: AppTextStyles.fs16w600,
               indicatorColor: AppColors.red,
-              tabs: const [
-                Tab(child: Center(child: Text('Активные'))),
-                Tab(child: Center(child: Text('Выкупленные'))),
+              tabs: [
+                Tab(child: Center(child: Text(context.localized.active))),
+                Tab(child: Center(child: Text(context.localized.redeemed))),
               ],
             ),
           ),
@@ -145,9 +145,9 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                     orElse: () => const CustomLoadingOverlayWidget(),
                     loaded: (tickets) {
                       return tickets.isEmpty || tickets[0].status == 'error'
-                          ? const Center(
+                          ? Center(
                               child: Text(
-                                'Нет активных билетов',
+                                context.localized.thereNoActiveTickets,
                                 style: AppTextStyles.fs24w700,
                               ),
                             )
@@ -173,9 +173,9 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                     orElse: () => const CustomLoadingOverlayWidget(),
                     loadedArchive: (tickets) {
                       return tickets.isEmpty || tickets[0].status == 'error'
-                          ? const Center(
+                          ? Center(
                               child: Text(
-                                'Нет выкупленных билетов',
+                                context.localized.noPurchasedTickets,
                                 style: AppTextStyles.fs24w700,
                               ),
                             )

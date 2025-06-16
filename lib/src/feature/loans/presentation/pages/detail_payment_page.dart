@@ -2,9 +2,8 @@ import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -16,7 +15,7 @@ class DetailPaymentPage extends StatefulWidget {
   final String? title;
   final Function()? onSuccess;
   const DetailPaymentPage(
-      {this.title, required this.paymentUrl, super.key, required this.successPaymentUrl, this.onSuccess});
+      {this.title, required this.paymentUrl, super.key, required this.successPaymentUrl, this.onSuccess,});
 
   @override
   State<DetailPaymentPage> createState() => _PaymentWebViewState();
@@ -102,14 +101,15 @@ class _PaymentWebViewState extends State<DetailPaymentPage> {
             onTap: () {
               Future.delayed(const Duration(seconds: 1), () {
                 // Replace 'AnotherPageRoute' with the route name or method you use to navigate
-                context.router.replaceAll([const LauncherRoute(), LoansRoute()]);
+                // ignore: use_build_context_synchronously
+                context.router.replaceAll([const LauncherRoute(), const LoansRoute()]);
               });
             },
             child: const Icon(Icons.arrow_back),
           ),
         ),
-        title: const Text(
-          'Оформление займа',
+        title: Text(
+          context.localized.loanProcessing,
           style: AppTextStyles.fs18w600,
         ),
         centerTitle: true,

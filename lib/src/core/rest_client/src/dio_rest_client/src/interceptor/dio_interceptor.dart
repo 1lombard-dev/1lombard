@@ -1,10 +1,11 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:lombard/src/core/utils/talker_logger_util.dart';
-
 import 'package:lombard/src/feature/app/logic/not_auth_logic.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+
 
 /// `DioInterceptor` - This class is used to intercept `dio` errors.
 class DioInterceptor extends Interceptor {

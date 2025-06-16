@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 
 extension DateTimeExtension on DateTime? {
   String hoursAndMinutes(

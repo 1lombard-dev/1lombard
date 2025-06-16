@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/main_feed/bloc/banner_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/category_cubit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -58,7 +58,7 @@ class _NotificationPageState extends State<NotificationPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Уведомления',
+                    context.localized.notifications,
                     style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Image.asset(

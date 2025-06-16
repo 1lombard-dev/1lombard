@@ -1,12 +1,10 @@
 import 'dart:ui';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:lombard/src/core/utils/persisted_entry.dart';
 import 'package:lombard/src/feature/app/model/app_theme.dart';
 import 'package:lombard/src/feature/settings/data/theme_mode_codec.dart';
-
 import 'package:lombard/src/feature/settings/model/app_settings.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// {@template app_settings_datasource}
 /// [AppSettingsDatasource] sets and gets app settings.
@@ -131,6 +129,7 @@ class AppSettingsPersistedEntry extends SharedPreferencesEntry<AppSettings> {
     if (value.appTheme != null) {
       await (
         _themeMode.set(const ThemeModeCodec().encode(value.appTheme!.themeMode)),
+        // ignore: deprecated_member_use
         _themeSeedColor.set(value.appTheme!.seed.value),
       ).wait;
     }

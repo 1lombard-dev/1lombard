@@ -1,7 +1,4 @@
 import 'package:clock/clock.dart';
-import 'package:package_info_plus/package_info_plus.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:lombard/src/core/constant/config.dart';
 import 'package:lombard/src/core/utils/refined_logger.dart';
 import 'package:lombard/src/feature/app/logic/tracking_manager.dart';
@@ -9,6 +6,8 @@ import 'package:lombard/src/feature/initialization/model/dependencies_container.
 import 'package:lombard/src/feature/settings/bloc/app_settings_bloc.dart';
 import 'package:lombard/src/feature/settings/data/app_settings_datasource.dart';
 import 'package:lombard/src/feature/settings/data/app_settings_repository.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// {@template composition_root}
 /// A place where all dependencies are initialized.

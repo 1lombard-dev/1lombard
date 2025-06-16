@@ -8,6 +8,7 @@ import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_material_button.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_radio.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_restart_bloc.dart';
 import 'package:lombard/src/feature/settings/bloc/app_settings_bloc.dart';
 import 'package:lombard/src/feature/settings/widget/settings_scope.dart';
@@ -39,7 +40,7 @@ class _ChooseLanguagePageState extends State<ChooseLanguagePage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Выберите язык',
+                    context.localized.selectLanguage,
                     style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Image.asset(

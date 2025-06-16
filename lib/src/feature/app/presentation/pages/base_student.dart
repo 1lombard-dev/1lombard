@@ -7,6 +7,7 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/presentation/widgets/base_tabs.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
@@ -204,21 +205,21 @@ class _BaseStudentBottomNavbarState extends State<BaseStudentBottomNavbar> {
               CustomTabWidget(
                 icon: Assets.images.homePageIcon.path,
                 activeIcon: Assets.images.homePageActiveIcon.path,
-                title: 'Главная',
+                title: context.localized.main,
                 currentIndex: widget.tabController.index,
                 tabIndex: 0,
               ),
               CustomTabWidget(
                 icon: Assets.images.calculationPageIcon.path,
                 activeIcon: Assets.images.calculationPageActiveIcon.path,
-                title: 'Рассчет',
+                title: context.localized.calculation,
                 currentIndex: widget.tabController.index,
                 tabIndex: 1,
               ),
               CustomTabWidget(
                 icon: Assets.images.loansPageIcon.path,
                 activeIcon: Assets.images.loansPageActiveIcon.path,
-                title: 'Займы',
+                title: context.localized.loans,
                 currentIndex: widget.tabController.index,
                 tabIndex: 2,
               ),

@@ -77,7 +77,7 @@ class _CustomAlertState extends State<LogoutBottomSheet> {
                   onPressed: () {
                     BlocProvider.of<LogoutCubit>(context).logout();
                   },
-                  style: CustomButtonStyles.mainButtonStyle(context, backgroundColor: AppColors.red),
+                  style: CustomButtonStyles.mainButtonStyle(context),
                   child: Text(
                     context.localized.exit,
                     style: AppTextStyles.fs16w600,

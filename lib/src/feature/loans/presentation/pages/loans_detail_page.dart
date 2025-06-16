@@ -2,10 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/buttons/custom_button.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/loans/bloc/get_payment_cubit.dart';
 import 'package:lombard/src/feature/loans/model/tickets_dto.dart';
@@ -82,8 +81,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                       const Gap(15),
                       Row(
                         children: [
-                          const Text(
-                            'Дата открытия:',
+                          Text(
+                            context.localized.openingDate,
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
@@ -95,8 +94,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                       const Gap(15),
                       Row(
                         children: [
-                          const Text(
-                            'Дата возврата:',
+                          Text(
+                            context.localized.returnDate,
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
@@ -121,8 +120,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                       const Gap(15),
                       Row(
                         children: [
-                          const Text(
-                            'Гарантия: ',
+                          Text(
+                            context.localized.guarantee,
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
@@ -134,8 +133,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                       const Gap(15),
                       Row(
                         children: [
-                          const Text(
-                            'Срок выплаты: ',
+                          Text(
+                            context.localized.paymentPeriod,
                             style: AppTextStyles.fs16w500,
                           ),
                           Text(
@@ -178,13 +177,13 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
               const Gap(16),
               Row(
                 children: [
-                  const Text(
-                    'Залог',
+                  Text(
+                    context.localized.deposit,
                     style: AppTextStyles.fs16w500,
                   ),
                   const Gap(50),
                   Text(
-                    'Фото',
+                    context.localized.photo,
                     style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                   ),
                 ],
@@ -214,8 +213,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Всего к выплате: ',
+                  Text(
+                    context.localized.totalBoBePaid,
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
@@ -228,8 +227,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    'Выплачено:',
+                  Text(
+                    context.localized.paidOut,
                     style: AppTextStyles.fs16w500,
                   ),
                   Text(
@@ -249,8 +248,8 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                             .push(PaymentInformationRoute(ticketsDTO: widget.ticketsDTO, paymentType: 'Пролонгация'));
                       },
                       style: CustomButtonStyles.mainButtonStyle(context),
-                      child: const Text(
-                        'Пролонгация',
+                      child: Text(
+                        context.localized.prolongation,
                         style: AppTextStyles.fs18w600,
                       ),
                     ),
@@ -268,7 +267,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                         side: const BorderSide(),
                       ),
                       child: Text(
-                        'Выкуп',
+                        context.localized.theRansom,
                         style: AppTextStyles.fs18w600.copyWith(color: AppColors.black),
                       ),
                     ),

@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:lombard/src/core/utils/refined_logger.dart';
 import 'package:meta/meta.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:lombard/src/core/utils/refined_logger.dart';
 
 /// {@template error_tracking_manager}
 /// A class which is responsible for enabling error tracking.

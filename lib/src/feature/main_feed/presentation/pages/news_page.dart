@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
-import 'package:lombard/src/core/extensions/build_context.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
+import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/initialization/model/environment.dart';
 import 'package:lombard/src/feature/main_feed/bloc/news_cubit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -56,7 +56,7 @@ class _NewsPageState extends State<NewsPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Новости',
+                    context.localized.news,
                     style: AppTextStyles.fs18w600.copyWith(fontWeight: FontWeight.bold),
                   ),
                   Image.asset(
@@ -94,7 +94,7 @@ class _NewsPageState extends State<NewsPage> {
                             child: Padding(
                           padding: EdgeInsets.only(top: 200.0),
                           child: CustomLoadingOverlayWidget(),
-                        ));
+                        ),);
                       },
                       loaded: (news) {
                         return GridView.builder(
@@ -173,7 +173,7 @@ class _NewsPageState extends State<NewsPage> {
                                         child: Padding(
                                           padding: const EdgeInsets.all(12.0),
                                           child: Text(
-                                            'ПОДРОБНЕЕ',
+                                            context.localized.moreDetailed,
                                             textAlign: TextAlign.center,
                                             style: AppTextStyles.fs15w400.copyWith(color: AppColors.white),
                                           ),
