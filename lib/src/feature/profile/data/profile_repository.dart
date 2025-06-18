@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:image_picker/image_picker.dart';
 import 'package:lombard/src/core/rest_client/models/basic_response.dart';
+import 'package:lombard/src/feature/auth/database/auth_dao.dart';
 import 'package:lombard/src/feature/auth/models/user_dto.dart';
 import 'package:lombard/src/feature/auth/presentation/auth.dart';
 import 'package:lombard/src/feature/profile/data/profile_remote_ds.dart';
@@ -35,13 +38,18 @@ abstract interface class IProfileRepository {
 class ProfileRepositoryImpl implements IProfileRepository {
   const ProfileRepositoryImpl({
     required IProfileRemoteDS remoteDS,
-  }) : _remoteDS = remoteDS;
+    required IAuthDao authDao,
+  })  : _remoteDS = remoteDS,
+        _authDao = authDao;
   final IProfileRemoteDS _remoteDS;
-
+  final IAuthDao _authDao;
   @override
   Future<UserDTO> profileData() async {
     try {
-      return await _remoteDS.profileData();
+      final user = await _remoteDS.profileData();
+
+      await _authDao.user.setValue(jsonEncode(user.toJson()));
+      return user;
     } catch (e) {
       rethrow;
     }

@@ -99,9 +99,7 @@ class RepositoryStorage implements IRepositoryStorage {
         remoteDS: loansRemoteDS,
       );
   @override
-  IProfileRepository get profileRepository => ProfileRepositoryImpl(
-        remoteDS: profileRemoteDS,
-      );
+  IProfileRepository get profileRepository => ProfileRepositoryImpl(remoteDS: profileRemoteDS, authDao: authDao);
 
   @override
   IMainRepository get mainRepository => MainRepositoryImpl(

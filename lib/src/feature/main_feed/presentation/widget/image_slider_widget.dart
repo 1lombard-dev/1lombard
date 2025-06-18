@@ -44,7 +44,6 @@ class _ImageSliderWidgetState extends State<ImageSliderWidget> {
         children: [
           PageView.builder(
             controller: controller,
-            
             itemCount: widget.banners.length,
             onPageChanged: (value) {
               setState(() {

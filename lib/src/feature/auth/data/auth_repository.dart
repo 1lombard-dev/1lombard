@@ -15,6 +15,8 @@ abstract interface class IAuthRepository {
 
   Future sendDeviceToken();
 
+  Future setPinCode({required String pincode});
+
   Future<void> clearUser();
 
   Future<String> login({
@@ -67,6 +69,7 @@ class AuthRepositoryImpl implements IAuthRepository {
       await _authDao.user.remove();
       await _authDao.userId.remove();
       await _authDao.iin.remove();
+      await _authDao.pinCode.remove();
     } catch (e) {
       rethrow;
     }
@@ -79,6 +82,15 @@ class AuthRepositoryImpl implements IAuthRepository {
           _authDao.deviceToken.value ?? 'device_token'; // await NotificationService.getUserId(_authDao);
 
       await _remoteDS.sendDeviceToken(deviceToken: deviceToken);
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future setPinCode({required String pincode}) async {
+    try {
+      await _authDao.pinCode.setValue(pincode);
     } catch (e) {
       rethrow;
     }

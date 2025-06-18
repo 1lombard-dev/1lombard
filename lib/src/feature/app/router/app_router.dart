@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:lombard/src/feature/app/presentation/pages/detail_image_page.dart';
 import 'package:lombard/src/feature/app/presentation/pages/launcher.dart';
 import 'package:lombard/src/feature/auth/presentation/pages/auth_page.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/pin_code_create_page.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/pin_code_enter_page.dart';
 import 'package:lombard/src/feature/calculation/presentation/calculation_page.dart';
 import 'package:lombard/src/feature/loans/model/tickets_dto.dart';
 
@@ -27,7 +29,6 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-
         /// Root
         AutoRoute(
           page: LauncherRoute.page,
@@ -85,6 +86,8 @@ class AppRouter extends RootStackRouter {
 
         /// Auth
         AutoRoute(page: AuthRoute.page),
+        AutoRoute(page: PinCodeEnterRoute.page),
+        AutoRoute(page: PinCodeCreateRoute.page),
 
         //MAIN
         AutoRoute(page: NotificationRoute.page),

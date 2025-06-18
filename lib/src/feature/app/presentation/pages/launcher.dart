@@ -8,9 +8,10 @@ import 'package:lombard/src/core/presentation/widgets/other/custom_loading_widge
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/logic/notification_service.dart';
-import 'package:lombard/src/feature/app/presentation/pages/base_student.dart';
 import 'package:lombard/src/feature/app/presentation/pages/force_update_page.dart';
 import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/pin_code_create_page.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/pin_code_enter_page.dart';
 
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/profile/bloc/profile_bloc.dart';
@@ -56,19 +57,18 @@ class _LauncherState extends State<Launcher> {
           error: (message) => ForceUpdatePage.noAvailable(
             onTap: () async {},
           ),
-          inApp: () => const BaseStudent(),
-          guest: () => const BaseStudent(),
-         
+          inApp: () => const PinCodeEnterPage(),
+          guest: () => const PinCodeEnterPage(),
           notAuthorized: () => BlocProvider(
             create: (context) => LoginCubit(
               repository: context.repository.authRepository,
             ),
-            child: const BaseStudent(),
+            child: const PinCodeCreatePage(),
           ),
           loading: () => const _Scaffold(
             child: CustomLoadingWidget(),
           ),
-          orElse: () => const BaseStudent(),
+          orElse: () => const PinCodeCreatePage(),
         ),
       );
 }

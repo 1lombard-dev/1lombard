@@ -6,6 +6,8 @@ abstract class IAuthDao {
 
   PreferencesEntry<String> get iin;
 
+  PreferencesEntry<String> get pinCode;
+
   PreferencesEntry<String> get userId;
 
   PreferencesEntry<String> get token;
@@ -20,6 +22,9 @@ class AuthDao extends TypedPreferencesDao implements IAuthDao {
 
   @override
   PreferencesEntry<String> get user => stringEntry('user');
+
+  @override
+  PreferencesEntry<String> get pinCode => stringEntry('pinCode');
 
   @override
   PreferencesEntry<String> get userId => stringEntry('userId');
