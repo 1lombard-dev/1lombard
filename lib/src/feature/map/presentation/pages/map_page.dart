@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/theme/resources.dart';
@@ -10,7 +11,6 @@ import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/core/utils/layout/url_util.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/map/bloc/city_cubit.dart';
-import 'package:yandex_mapkit/yandex_mapkit.dart';
 
 @RoutePage()
 class MapPage extends StatefulWidget implements AutoRouteWrapper {
@@ -33,7 +33,9 @@ class MapPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
-  late YandexMapController _mapController;
+  GoogleMapController? _mapController;
+  Position? _currentPosition;
+  final Set<Marker> _markers = {};
 
   @override
   bool get wantKeepAlive => true;
@@ -42,9 +44,10 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     super.initState();
     BlocProvider.of<CityCubit>(context).getCityDetail(name: 'Алматы');
+    _initLocation();
   }
 
-  Future<void> _initLocationLayer() async {
+  Future<void> _initLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -55,16 +58,13 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
 
     if (isServiceEnabled && isPermissionGranted) {
       final position = await Geolocator.getCurrentPosition();
-      await _mapController.toggleUserLayer(visible: true);
-      _mapController.moveCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-            target: Point(latitude: position.latitude, longitude: position.longitude),
-            zoom: 14,
-          ),
-        ),
-        animation: const MapAnimation(duration: 1),
-      );
+      setState(() {
+        _currentPosition = position;
+      });
+      _mapController?.animateCamera(CameraUpdate.newLatLngZoom(
+        LatLng(position.latitude, position.longitude),
+        14,
+      ));
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -72,6 +72,10 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
         );
       });
     }
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
   }
 
   @override
@@ -100,7 +104,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
           return state.maybeWhen(
             orElse: () => const CustomLoadingOverlayWidget(),
             loaded: (cityList) {
-              final mapObjects = <MapObject>[];
+              _markers.clear();
 
               for (final city in cityList) {
                 final coordsString = city.coords;
@@ -111,18 +115,12 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                       .split(',')
                       .map((e) => double.tryParse(e.trim()))
                       .toList();
-
                   if (coords.length == 2 && coords[0] != null && coords[1] != null) {
-                    mapObjects.add(
-                      PlacemarkMapObject(
-                        mapId: MapObjectId(city.address ?? UniqueKey().toString()),
-                        point: Point(latitude: coords[0]!, longitude: coords[1]!),
-                        icon: PlacemarkIcon.single(
-                          PlacemarkIconStyle(
-                            image: BitmapDescriptor.fromAssetImage(Assets.images.a2gis.path),
-                            scale: 1.5,
-                          ),
-                        ),
+                    _markers.add(
+                      Marker(
+                        markerId: MarkerId(city.address ?? UniqueKey().toString()),
+                        position: LatLng(coords[0]!, coords[1]!),
+                        icon: BitmapDescriptor.defaultMarker,
                       ),
                     );
                   }
@@ -137,20 +135,18 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                     width: double.infinity,
                     child: Stack(
                       children: [
-                        YandexMap(
-                          onMapCreated: (controller) async {
-                            _mapController = controller;
-                            await _initLocationLayer();
-
-                            if (mapObjects.isNotEmpty) {
-                              final point = (mapObjects.first as PlacemarkMapObject).point;
-                              _mapController.moveCamera(
-                                CameraUpdate.newCameraPosition(CameraPosition(target: point, zoom: 14)),
-                                animation: const MapAnimation(duration: 1),
-                              );
-                            }
-                          },
-                          mapObjects: mapObjects,
+                        GoogleMap(
+                          initialCameraPosition: CameraPosition(
+                            target: _currentPosition != null
+                                ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
+                                : const LatLng(43.238949, 76.889709), // fallback
+                            zoom: 12,
+                          ),
+                          markers: _markers,
+                          onMapCreated: _onMapCreated,
+                          myLocationEnabled: true,
+                          myLocationButtonEnabled: false,
+                          zoomControlsEnabled: false,
                         ),
                         Positioned(
                           top: 10,
@@ -160,27 +156,21 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                               FloatingActionButton(
                                 mini: true,
                                 heroTag: 'zoom_in',
-                                onPressed: () => _mapController.moveCamera(
-                                  CameraUpdate.zoomIn(),
-                                  animation: const MapAnimation(duration: 0.3),
-                                ),
+                                onPressed: () => _mapController?.animateCamera(CameraUpdate.zoomIn()),
                                 child: const Icon(Icons.add),
                               ),
                               const SizedBox(height: 8),
                               FloatingActionButton(
                                 mini: true,
                                 heroTag: 'zoom_out',
-                                onPressed: () => _mapController.moveCamera(
-                                  CameraUpdate.zoomOut(),
-                                  animation: const MapAnimation(duration: 0.3),
-                                ),
+                                onPressed: () => _mapController?.animateCamera(CameraUpdate.zoomOut()),
                                 child: const Icon(Icons.remove),
                               ),
                               const SizedBox(height: 8),
                               FloatingActionButton(
                                 mini: true,
                                 heroTag: 'my_location',
-                                onPressed: _initLocationLayer,
+                                onPressed: _initLocation,
                                 child: const Icon(Icons.my_location),
                               ),
                             ],
@@ -199,7 +189,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                         InkWell(
                           onTap: () => context.router.push(const AllBranchesRoute()),
                           child: Text('${context.localized.allBranches} ->',
-                              style: AppTextStyles.fs14w600.copyWith(color: AppColors.grayText),),
+                              style: AppTextStyles.fs14w600.copyWith(color: AppColors.grayText)),
                         ),
                       ],
                     ),
@@ -216,7 +206,7 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(city.address ?? 'ERROR ADDRESS',
-                                  style: AppTextStyles.fs14w500.copyWith(color: AppColors.black),),
+                                  style: AppTextStyles.fs14w500.copyWith(color: AppColors.black)),
                               const Gap(10),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -258,8 +248,8 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                                             if (coords.length == 2) {
                                               final lat = coords[0];
                                               final lon = coords[1];
-                                              final uri =
-                                                  Uri.parse('dgis://2gis.ru/routeSearch/rsType/car/to/$lon,$lat');
+                                              final uri = Uri.parse(
+                                                  'https://www.google.com/maps/dir/?api=1&destination=$lat,$lon');
                                               UrlUtil.launch(context, url: uri.toString());
                                             }
                                           }

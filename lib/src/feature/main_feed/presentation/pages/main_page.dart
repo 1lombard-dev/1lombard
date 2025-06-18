@@ -28,7 +28,9 @@ class MainPage extends StatefulWidget implements AutoRouteWrapper {
       providers: [
         BlocProvider(
           create: (context) => MainCubit(
-              repository: context.repository.mainRepository, calRepository: context.repository.calculacationRepository,),
+            repository: context.repository.mainRepository,
+            calRepository: context.repository.calculacationRepository,
+          ),
         ),
       ],
       child: this,
@@ -116,14 +118,10 @@ class _MainPageState extends State<MainPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                            ),
-                            child: ImageSliderWidget(
+                          if (bannerList != [])
+                            ImageSliderWidget(
                               banners: bannerList,
                             ),
-                          ),
                           Container(
                             decoration: const BoxDecoration(color: AppColors.white),
                             width: double.infinity,
@@ -142,8 +140,10 @@ class _MainPageState extends State<MainPage> {
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
                                       children: goldDTO
-                                          .where((item) =>
-                                              item.sample == '999.9' || item.sample == '750' || item.sample == '585',)
+                                          .where(
+                                            (item) =>
+                                                item.sample == '999.9' || item.sample == '750' || item.sample == '585',
+                                          )
                                           .toList()
                                           .asMap()
                                           .entries

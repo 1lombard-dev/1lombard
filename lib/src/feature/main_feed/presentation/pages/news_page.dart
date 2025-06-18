@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overlay_widget.dart';
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
@@ -34,12 +33,12 @@ class NewsPage extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _NewsPageState extends State<NewsPage> {
-  final TextEditingController priceController = TextEditingController();
   final RefreshController _refreshController = RefreshController();
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<NewsCubit>(context).getNews();
+    context.read<NewsCubit>().getNews();
   }
 
   @override
@@ -47,9 +46,7 @@ class _NewsPageState extends State<NewsPage> {
         backgroundColor: AppColors.backgroundInput,
         appBar: AppBar(
           title: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.white,
-            ),
+            decoration: const BoxDecoration(color: AppColors.white),
             child: Padding(
               padding: const EdgeInsets.only(bottom: 15),
               child: Row(
@@ -68,10 +65,7 @@ class _NewsPageState extends State<NewsPage> {
             ),
           ),
           shape: const Border(
-            bottom: BorderSide(
-              color: AppColors.dividerGrey,
-              width: 0.5,
-            ),
+            bottom: BorderSide(color: AppColors.dividerGrey, width: 0.5),
           ),
         ),
         body: SafeArea(
@@ -79,8 +73,7 @@ class _NewsPageState extends State<NewsPage> {
             controller: _refreshController,
             header: const RefreshClassicHeader(),
             onRefresh: () {
-              // BlocProvider.of<BannerCubit>(context).getMainPageBanner();
-              // BlocProvider.of<CategoryCubit>(context).getCategory();
+              context.read<NewsCubit>().getNews();
               _refreshController.refreshCompleted();
             },
             child: SingleChildScrollView(
@@ -89,23 +82,22 @@ class _NewsPageState extends State<NewsPage> {
                 child: BlocBuilder<NewsCubit, NewsState>(
                   builder: (context, state) {
                     return state.maybeWhen(
-                      orElse: () {
-                        return const Center(
-                            child: Padding(
+                      orElse: () => const Center(
+                        child: Padding(
                           padding: EdgeInsets.only(top: 200.0),
                           child: CustomLoadingOverlayWidget(),
-                        ),);
-                      },
+                        ),
+                      ),
                       loaded: (news) {
                         return GridView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           padding: const EdgeInsets.only(bottom: 20),
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, // 2 колонки
+                            crossAxisCount: 2,
                             crossAxisSpacing: 10,
-                            mainAxisSpacing: 5,
-                            childAspectRatio: 0.6, // Настроить под нужную высоту
+                            mainAxisSpacing: 10,
+                            childAspectRatio: 0.65,
                           ),
                           itemCount: news.length,
                           itemBuilder: (context, index) {
@@ -119,37 +111,24 @@ class _NewsPageState extends State<NewsPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
-                                    child: Stack(
-                                      children: [
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(8.0),
-                                                  child: Image.network(
-                                                    '$kBaseUrlImages/${item.smallImage}',
-                                                    fit: BoxFit.cover,
-                                                    width: double.infinity,
-                                                  ),
-                                                ),
-                                              ),
-                                              const Gap(6),
-                                              Text(
-                                                item.title ?? 'Без текста',
-                                                style: AppTextStyles.fs18w600,
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Image.network(
+                                      '$kBaseUrlImages/${item.smallImage}',
+                                      height: 130,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                   const Gap(10),
+                                  Text(
+                                    item.title ?? 'Без текста',
+                                    style: AppTextStyles.fs18w600,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  const Spacer(),
                                   Container(
                                     decoration: BoxDecoration(
                                       color: AppColors.red,

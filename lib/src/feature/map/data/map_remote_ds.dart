@@ -24,14 +24,13 @@ class MapRemoteDSImpl implements IMapRemoteDS {
   @override
   Future<List<LayersDTO>> getCity() async {
     try {
-      final appSettings = await appSettingsDatasource.getAppSettings();
       final token = authDao.token.value;
 
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/branches/getCityList.php',
         body: {
           'token': token ?? '',
-          'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru',
+          'lang': 'ru',
         },
       );
 
@@ -58,12 +57,11 @@ class MapRemoteDSImpl implements IMapRemoteDS {
     required String name,
   }) async {
     try {
-      final appSettings = await appSettingsDatasource.getAppSettings();
       final token = authDao.token.value;
 
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/branches/getBranchesByCity.php',
-        body: {'token': token ?? '', 'lang': appSettings?.locale?.languageCode == 'kk' ? 'kz' : 'ru', 'cityname': name},
+        body: {'token': token ?? '', 'lang': 'ru', 'cityname': name},
       );
 
       if (response['data'] == null) {
