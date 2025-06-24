@@ -6,6 +6,7 @@ import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 
 import 'package:lombard/src/feature/initialization/widget/dependencies_scope.dart';
+import 'package:lombard/src/feature/main_feed/bloc/check_token_cubit.dart';
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/profile/bloc/profile_bloc.dart';
 
@@ -71,6 +72,9 @@ class _SettingsScopeState extends State<SettingsScope> {
             ),
             BlocProvider(
               create: (context) => GetTokenCubit(repository: context.repository.mainRepository),
+            ),
+            BlocProvider(
+              create: (context) => CheckTokenCubit(repository: context.repository.mainRepository),
             ),
             BlocProvider(
               create: (context) => ProfileBLoC(

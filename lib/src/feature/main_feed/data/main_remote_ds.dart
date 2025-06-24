@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:lombard/src/core/rest_client/rest_client.dart';
 import 'package:lombard/src/core/utils/talker_logger_util.dart';
@@ -18,6 +16,8 @@ abstract interface class IMainRemoteDS {
   Future<List<QuestionDTO>> getFAQ();
 
   Future<String> getToken();
+
+  Future<String> checkToken();
 }
 
 class MainRemoteDSImpl implements IMainRemoteDS {
@@ -34,11 +34,8 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   Future<List<BannerDTO>> getNews() async {
     try {
       final appSettings = await appSettingsDatasource.getAppSettings();
-      String? token = authDao.token.value;
-      if (token == null || token.isEmpty) {
-        token = await getToken();
-        await authDao.token.setValue(token); // ✅ Сохраняем, если нужно
-      }
+      final token = await ensureValidToken();
+
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/news/getNews.php',
         body: {
@@ -69,11 +66,7 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   Future<List<LayersDTO>> mainPageBanner() async {
     try {
       final appSettings = await appSettingsDatasource.getAppSettings();
-      String? token = authDao.token.value;
-      if (token == null || token.isEmpty) {
-        token = await getToken();
-        await authDao.token.setValue(token); // ✅ Сохраняем, если нужно
-      }
+      final token = await ensureValidToken();
 
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/slider/getActiveSlides.php',
@@ -105,13 +98,7 @@ class MainRemoteDSImpl implements IMainRemoteDS {
   Future<List<QuestionDTO>> getFAQ() async {
     try {
       final appSettings = await appSettingsDatasource.getAppSettings();
-      String? token = authDao.token.value;
-
-      // ✅ Получаем новый токен, если текущий пустой
-      if (token == null || token.isEmpty) {
-        token = await getToken();
-        await authDao.token.setValue(token); // ✅ Сохраняем, если нужно
-      }
+      final token = await ensureValidToken();
 
       final Map<String, dynamic> response = await restClient.post(
         '/webservice/faq/getFaq.php',
@@ -173,9 +160,66 @@ class MainRemoteDSImpl implements IMainRemoteDS {
         },
       );
 
-      log('RESPONSE::::: $response');
-      final token = response['token'] as String;
+      final token = response['token'] as String?;
+      final expire = response['expire_date_time'] as String?;
+
+      if (token == null || token.isEmpty) {
+        throw Exception('Empty token');
+      }
+      // ✅ Сохраняем токен и дату окончания
+      await authDao.token.setValue(token);
+      if (expire != null) {
+        await authDao.tokenExpire.setValue(expire);
+      }
+
       return token;
+    } catch (e, st) {
+      TalkerLoggerUtil.talker.error('#getToken - $e', e, st);
+      rethrow;
+    }
+  }
+
+  Future<String> ensureValidToken() async {
+    final String? token = authDao.token.value;
+
+    if (token == null || token.isEmpty) {
+      return await getToken();
+    }
+
+    try {
+      final status = await checkToken();
+
+      if (status.toLowerCase() == 'valid') {
+        return token;
+      } else {
+        return await getToken(); // expired или invalid
+      }
+    } catch (e) {
+      // На всякий случай — если checkToken упал
+      TalkerLoggerUtil.talker.warning('#ensureValidToken fallback to getToken - $e');
+      return await getToken();
+    }
+  }
+
+  @override
+  Future<String> checkToken() async {
+    try {
+      final String? token = authDao.token.value;
+      final Map<String, dynamic> response = await restClient.post(
+        '/webservice/auth/checkToken.php',
+        body: {
+          'token': token,
+        },
+      );
+
+      final status = response['status'] as String?;
+      final expire = response['expire_date_time'] as String?;
+
+      if (expire != null) {
+        await authDao.tokenExpire.setValue(expire);
+      }
+
+      return status!;
     } catch (e, st) {
       TalkerLoggerUtil.talker.error('#getToken - $e', e, st);
       rethrow;

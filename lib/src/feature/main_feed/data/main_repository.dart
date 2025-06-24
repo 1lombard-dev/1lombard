@@ -14,6 +14,8 @@ abstract interface class IMainRepository {
   Future<List<QuestionDTO>> getFAQ();
 
   Future<String> getToken();
+
+  Future<String> checkToken();
 }
 
 class MainRepositoryImpl implements IMainRepository {
@@ -66,6 +68,17 @@ class MainRepositoryImpl implements IMainRepository {
     try {
       final token = await _remoteDS.getToken();
       await _authDao.token.setValue(token);
+      return token;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> checkToken() async {
+    try {
+      final token = await _remoteDS.checkToken();
+
       return token;
     } catch (e) {
       rethrow;

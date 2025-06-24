@@ -8,10 +8,10 @@ import 'package:lombard/src/core/presentation/widgets/other/custom_loading_widge
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/logic/notification_service.dart';
+import 'package:lombard/src/feature/app/presentation/pages/base_student.dart';
 import 'package:lombard/src/feature/app/presentation/pages/force_update_page.dart';
 import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
-import 'package:lombard/src/feature/auth/presentation/pages/pin_code_create_page.dart';
-import 'package:lombard/src/feature/auth/presentation/pages/pin_code_enter_page.dart';
+import 'package:lombard/src/feature/main_feed/bloc/check_token_cubit.dart';
 
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
 import 'package:lombard/src/feature/profile/bloc/profile_bloc.dart';
@@ -25,18 +25,30 @@ class Launcher extends StatefulWidget {
 }
 
 class _LauncherState extends State<Launcher> {
+  String? tokenExpired;
   @override
   void initState() {
-    FToast().init(context);
-    BlocProvider.of<GetTokenCubit>(context).getToken();
-    // log('------${context.repository.authDao}');
-    NotificationService().getDeviceToken(authDao: context.repository.authDao);
-    BlocProvider.of<AppBloc>(context).add(
-      AppEvent.checkAuth(
-        version: context.dependencies.packageInfo.version,
-      ),
-    );
     super.initState();
+    FToast().init(context);
+
+    final authDao = context.repository.authDao;
+    final token = authDao.token.value;
+
+    if (token == null || token.isEmpty) {
+      // Токена нет — сразу получаем
+      context.read<GetTokenCubit>().getToken();
+    } else {
+      // Токен есть — проверим его валидность
+      context.read<CheckTokenCubit>().checkToken();
+    }
+
+    // Остальная инициализация
+    NotificationService().getDeviceToken(authDao: authDao);
+    context.read<AppBloc>().add(
+          AppEvent.checkAuth(
+            version: context.dependencies.packageInfo.version,
+          ),
+        );
   }
 
   @override
@@ -57,18 +69,18 @@ class _LauncherState extends State<Launcher> {
           error: (message) => ForceUpdatePage.noAvailable(
             onTap: () async {},
           ),
-          inApp: () => const PinCodeEnterPage(),
-          guest: () => const PinCodeEnterPage(),
+          inApp: () => const BaseStudent(),
+          guest: () => const BaseStudent(),
           notAuthorized: () => BlocProvider(
             create: (context) => LoginCubit(
               repository: context.repository.authRepository,
             ),
-            child: const PinCodeCreatePage(),
+            child: const BaseStudent(),
           ),
           loading: () => const _Scaffold(
             child: CustomLoadingWidget(),
           ),
-          orElse: () => const PinCodeCreatePage(),
+          orElse: () => const BaseStudent(),
         ),
       );
 }

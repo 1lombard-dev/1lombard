@@ -46,7 +46,7 @@ extension TalkerFlutter on Talker {
       return;
     }
     if ([TargetPlatform.iOS, TargetPlatform.macOS].contains(defaultTargetPlatform)) {
-      log(message, name: 'Syila Client');
+      log(message, name: '1lombard Client');
       return;
     }
     debugPrint(message);

@@ -12,6 +12,8 @@ abstract class IAuthDao {
 
   PreferencesEntry<String> get token;
 
+  PreferencesEntry<String> get tokenExpire;
+
   PreferencesEntry<String> get deviceToken;
 }
 
@@ -31,6 +33,8 @@ class AuthDao extends TypedPreferencesDao implements IAuthDao {
 
   @override
   PreferencesEntry<String> get token => stringEntry('token');
+    @override
+  PreferencesEntry<String> get tokenExpire => stringEntry('tokenExpire');
 
   @override
   PreferencesEntry<String> get iin => stringEntry('iin');
