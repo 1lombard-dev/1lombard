@@ -7,10 +7,10 @@ import 'package:lombard/src/core/presentation/widgets/other/custom_loading_overl
 import 'package:lombard/src/core/presentation/widgets/scroll/pull_to_refresh_widgets.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
+import 'package:lombard/src/core/utils/layout/url_util.dart';
 import 'package:lombard/src/feature/initialization/model/environment.dart';
 import 'package:lombard/src/feature/main_feed/bloc/news_cubit.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class NewsPage extends StatefulWidget implements AutoRouteWrapper {
@@ -140,13 +140,7 @@ class _NewsPageState extends State<NewsPage> {
                                       borderRadius: BorderRadius.circular(20),
                                       child: InkWell(
                                         onTap: () async {
-                                          final uri =
-                                              Uri.tryParse('https://1lombard.kz/webservice${item.readmoreLink ?? ''}');
-                                          if (uri != null && await canLaunchUrl(uri)) {
-                                            await launchUrl(uri, mode: LaunchMode.externalApplication);
-                                          } else {
-                                            debugPrint('Could not launch ${item.readmoreLink}');
-                                          }
+                                          UrlUtil.launch(context, url: 'https://1lombard.kz${item.readmoreLink ?? ''}');
                                         },
                                         borderRadius: BorderRadius.circular(20),
                                         child: Padding(

@@ -85,7 +85,9 @@ class _ImageSliderWidgetState extends State<ImageSliderWidget> {
 
                   // HTML text
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: index == 3
+                        ? const EdgeInsets.only(top: 70, left: 16, right: 16, bottom: 16)
+                        : const EdgeInsets.all(16),
                     child: Html(
                       data: cleanHtml(banner.layers![1].content ?? ''),
                       style: {
