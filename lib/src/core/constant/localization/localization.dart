@@ -36,11 +36,8 @@ final class Localization {
   ///
   /// This is the locale that is used when no locale is specified.
   static Locale computeDefaultLocale() {
-    final locale = WidgetsBinding.instance.platformDispatcher.locale;
-
-    if (_delegate.isSupported(locale)) return locale;
-
-    return const Locale('kz');
+    // Always force Russian, regardless of system language
+    return const Locale('ru');
   }
 
   /// Obtain [AppLocalizations] instance from [BuildContext].

@@ -7,7 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:lombard/src/core/presentation/widgets/other/custom_loading_widget.dart';
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
-import 'package:lombard/src/feature/app/logic/notification_service.dart';
+
 import 'package:lombard/src/feature/app/presentation/pages/base_student.dart';
 import 'package:lombard/src/feature/app/presentation/pages/force_update_page.dart';
 import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
@@ -43,7 +43,7 @@ class _LauncherState extends State<Launcher> {
     }
 
     // Остальная инициализация
-    NotificationService().getDeviceToken(authDao: authDao);
+    // NotificationService().getDeviceToken(authDao: authDao);
     context.read<AppBloc>().add(
           AppEvent.checkAuth(
             version: context.dependencies.packageInfo.version,

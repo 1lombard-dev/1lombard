@@ -7,6 +7,7 @@ import 'package:lombard/src/feature/app/presentation/widgets/app_router_builder.
 import 'package:lombard/src/feature/app/router/app_router.dart';
 
 import 'package:lombard/src/feature/settings/widget/settings_scope.dart';
+import 'package:pure/pure.dart';
 
 /// {@template material_context}
 /// [MaterialContext] is an entry point to the material context.
@@ -30,6 +31,7 @@ class MaterialContext extends StatelessWidget {
       createRouter: (context) => AppRouter(),
       builder: (context, informationParser, routerDelegate, router) => MaterialApp.router(
         title: 'Lombard1',
+        debugShowCheckedModeBanner: nullaryFalse(),
         onGenerateTitle: (context) => 'Lombard1',
         routerDelegate: routerDelegate,
         routeInformationParser: informationParser,

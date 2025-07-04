@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart' as bloc_concurrency;
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lombard/firebase_options.dart';
+
 import 'package:lombard/src/core/constant/config.dart';
 import 'package:lombard/src/core/utils/app_bloc_observer.dart';
 import 'package:lombard/src/core/utils/refined_logger.dart';
@@ -85,10 +84,10 @@ final class AppRunner {
     }
 
     try {
-      await Firebase.initializeApp(
-        options: DefaultFirebaseOptions.currentPlatform,
-      );
-      await NotificationService().init();
+      // await Firebase.initializeApp(
+      //   options: DefaultFirebaseOptions.currentPlatform,
+      // );
+      // await NotificationService().init();
     } catch (e) {
       if (kDebugMode) {
         print(e);
