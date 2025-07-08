@@ -12,6 +12,9 @@ sealed class AppState with _$AppState {
 
   const factory AppState.notAvailableVersion() = _NotAvailableVersion;
 
+    const factory AppState.createPin() = _CreatePin;
+  const factory AppState.enterPin() = _EnterPin;
+
   const factory AppState.error({
     required String message,
   }) = _ErrorAppState;

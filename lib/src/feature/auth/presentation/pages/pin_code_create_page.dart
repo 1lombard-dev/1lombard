@@ -44,7 +44,7 @@ class _PinCodeCreatePageState extends State<PinCodeCreatePage> {
     });
   }
 
-    Future<void>  checkPins(TextEditingController controller) async {
+  Future<void> checkPins(TextEditingController controller) async {
     if (firstPin == controller.text) {
       // box.write('pin', firstPin.value);
       context.repository.authDao.pinCode.setValue(firstPin);
@@ -156,13 +156,20 @@ class _PinCodeCreatePageState extends State<PinCodeCreatePage> {
             child: PinCodeTextField(
               appContext: context,
               length: 4,
-              enabled: false,
               controller: pinController,
               pinTheme: PinTheme(
                 shape: PinCodeFieldShape.underline,
                 fieldWidth: 32,
+                activeColor: AppColors.red,
+                inactiveColor: AppColors.red,
+                selectedColor: AppColors.red,
                 disabledColor: AppColors.red,
+                borderWidth: 1,
+                activeFillColor: Colors.transparent,
+                inactiveFillColor: Colors.transparent,
+                selectedFillColor: Colors.transparent,
               ),
+              backgroundColor: Colors.transparent,
               onChanged: (value) {
                 // setState(() {});
               },

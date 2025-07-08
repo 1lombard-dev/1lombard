@@ -147,7 +147,7 @@ class _AuthPageState extends State<AuthPage> {
               context.loaderOverlay.hide();
               BlocProvider.of<AppBloc>(context).add(
                 const AppEvent.changeState(
-                  state: AppState.inApp(),
+                  state: AppState.createPin(),
                 ),
               );
               context.router.replaceAll([const LauncherRoute()]);

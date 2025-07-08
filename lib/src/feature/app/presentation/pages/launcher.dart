@@ -11,6 +11,8 @@ import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/presentation/pages/base_student.dart';
 import 'package:lombard/src/feature/app/presentation/pages/force_update_page.dart';
 import 'package:lombard/src/feature/auth/bloc/login_cubit.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/pin_code_create_page.dart';
+import 'package:lombard/src/feature/auth/presentation/pages/pin_code_enter_page.dart';
 import 'package:lombard/src/feature/main_feed/bloc/check_token_cubit.dart';
 
 import 'package:lombard/src/feature/main_feed/bloc/get_token_cubit.dart';
@@ -77,6 +79,8 @@ class _LauncherState extends State<Launcher> {
             ),
             child: const BaseStudent(),
           ),
+          createPin: () => const PinCodeCreatePage(),
+          enterPin: () => const PinCodeEnterPage(),
           loading: () => const _Scaffold(
             child: CustomLoadingWidget(),
           ),

@@ -22,54 +22,10 @@ class PinCodeEnterPage extends StatefulWidget {
 class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   final TextEditingController pinController = TextEditingController();
   bool isPinCorrect = true;
-  bool isBiommericsEnabled = false;
-  bool loadRx = false;
+  bool isBiometricsEnabled = false;
   String userName = '';
 
-  Future<void> checkPin(TextEditingController controller) async {
-    final UserDTO? userDTO = context.repository.authRepository.cacheUser();
-    userName = userDTO!.fullname!;
-    if (controller.text.length == 4) {
-      final pin = context.repository.authDao.pinCode.value;
-
-      if (pin == controller.text) {
-        await Future.delayed(const Duration(milliseconds: 200));
-
-        // Сначала обновляем состояние приложения
-        BlocProvider.of<AppBloc>(context).add(
-          const AppEvent.changeState(state: AppState.inApp()),
-        );
-
-        // Затем заменяем роуты
-        context.router.replaceAll([const LauncherRoute()]);
-      } else {
-        setState(() => isPinCorrect = false);
-
-        await Future.delayed(const Duration(seconds: 1));
-
-        controller.clear();
-
-        setState(() => isPinCorrect = true);
-      }
-    }
-  }
-
-  void setPin(String value, int index, TextEditingController pinController) async {
-    // index == 9
-    //     ? isBiommericsEnabled.value
-    //         ? authenticate()
-    //         : null
-    // :
-    index == 11
-        ? pinController.text.isNotEmpty
-            ? pinController.text = pinController.text.substring(0, pinController.text.length - 1)
-            : null
-        : pinController.text.length < 4
-            ? pinController.text = pinController.value.text + value
-            : null;
-  }
-
-  List<String> numbers = [
+  final List<String> numbers = [
     '1',
     '2',
     '3',
@@ -85,25 +41,65 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    final UserDTO? userDTO = context.repository.authRepository.cacheUser();
+    userName = userDTO?.fullname ?? '';
+  }
+
+  Future<void> checkPin(String input) async {
+    final savedPin = context.repository.authDao.pinCode.value;
+
+    if (input == savedPin) {
+      await Future.delayed(const Duration(milliseconds: 200));
+      BlocProvider.of<AppBloc>(context).add(const AppEvent.changeState(state: AppState.inApp()));
+      context.router.replaceAll([const LauncherRoute()]);
+    } else {
+      setState(() => isPinCorrect = false);
+      await Future.delayed(const Duration(seconds: 1));
+      pinController.clear();
+      setState(() => isPinCorrect = true);
+    }
+  }
+
+  void onKeyPressed(String value, int index) async {
+    if (index == 9) {
+      // Биометрия (пока не реализована)
+      return;
+    }
+
+    if (index == 11) {
+      if (pinController.text.isNotEmpty) {
+        pinController.text = pinController.text.substring(0, pinController.text.length - 1);
+        setState(() {});
+      }
+      return;
+    }
+
+    if (pinController.text.length < 4) {
+      pinController.text += value;
+      setState(() {});
+      if (pinController.text.length == 4) {
+        await checkPin(pinController.text);
+      }
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    checkPin(pinController);
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          splashRadius: 20,
-          onPressed: () {
-            BlocProvider.of<AppBloc>(context).add(
-              const AppEvent.changeState(
-                state: AppState.notAuthorized(),
-              ),
-            );
-            context.router.replaceAll([const LauncherRoute()]);
-          },
-          icon: const Icon(
-            Icons.clear,
-            color: AppColors.red,
-          ),
-        ),
+        leading: const SizedBox(),
+        // leading: IconButton(
+        //   splashRadius: 20,
+        //   onPressed: () {
+        //     BlocProvider.of<AppBloc>(context).add(
+        //       const AppEvent.changeState(state: AppState.notAuthorized()),
+        //     );
+        //     context.router.replaceAll([const LauncherRoute()]);
+        //   },
+        //   icon: const Icon(Icons.clear, color: AppColors.red),
+        // ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -112,61 +108,10 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
           height: 20,
         ),
       ),
-      bottomSheet: GridView.builder(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 67,
-          vertical: 30,
-        ),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 90,
-          childAspectRatio: 1,
-          crossAxisSpacing: 24,
-          mainAxisSpacing: 16,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) => InkWell(
-          borderRadius: BorderRadius.circular(188),
-          splashColor: AppColors.red.withOpacity(0.3),
-          highlightColor: AppColors.white,
-          onTap: () {
-            setState(() {});
-            setPin(numbers[index], index, pinController);
-          },
-          child: Container(
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(188),
-              border: Border.all(
-                color: AppColors.red,
-              ),
-            ),
-            child: index == 9
-                ? SvgPicture.asset(Assets.icons.fingerprint.path,
-                    color:
-                        // controller.isBiommericsEnabled.value
-                        //     ?
-                        AppColors.red
-                    // : Colors.grey,
-                    )
-                : index == 11
-                    ? const Icon(
-                        Icons.backspace,
-                        color: AppColors.red,
-                      )
-                    : LombardText(
-                        numbers[index],
-                        fontSize: 36,
-                        fontWeight: FontWeight.w400,
-                        color: AppColors.red,
-                      ),
-          ),
-        ),
-      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          const SizedBox(height: 20),
           Container(
             width: 54,
             height: 54,
@@ -189,28 +134,76 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
             fontSize: 16,
             fontWeight: FontWeight.w500,
           ),
+          const SizedBox(height: 24),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 106,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 106),
             child: PinCodeTextField(
               appContext: context,
               length: 4,
-              enabled: false,
               controller: pinController,
               pinTheme: PinTheme(
                 shape: PinCodeFieldShape.underline,
                 fieldWidth: 32,
+                activeColor: AppColors.red,
+                inactiveColor: AppColors.red,
+                selectedColor: AppColors.red,
                 disabledColor: AppColors.red,
+                borderWidth: 1,
+                activeFillColor: Colors.transparent,
+                inactiveFillColor: Colors.transparent,
+                selectedFillColor: Colors.transparent,
               ),
-              onChanged: (value) {},
+              backgroundColor: Colors.transparent,
+              onChanged: (_) {},
             ),
           ),
+          const SizedBox(height: 12),
           LombardText(
             isPinCorrect ? 'Введите 4-х значный код для \nбыстрого доступа к приложению' : 'Неверный код',
             color: isPinCorrect ? AppColors.black : Colors.red,
           ),
         ],
+      ),
+      bottomSheet: GridView.builder(
+        padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 30),
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 90,
+          childAspectRatio: 1,
+          crossAxisSpacing: 24,
+          mainAxisSpacing: 16,
+        ),
+        itemCount: 12,
+        itemBuilder: (context, index) {
+          final label = numbers[index];
+          return InkWell(
+            borderRadius: BorderRadius.circular(188),
+            splashColor: AppColors.red.withOpacity(0.3),
+            highlightColor: AppColors.white,
+            onTap: () => onKeyPressed(label, index),
+            child: Container(
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(188),
+                border: Border.all(color: AppColors.red),
+              ),
+              child: index == 9
+                  ? SvgPicture.asset(
+                      Assets.icons.fingerprint.path,
+                      color: AppColors.red,
+                    )
+                  : index == 11
+                      ? const Icon(Icons.backspace, color: AppColors.red)
+                      : LombardText(
+                          label,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.red,
+                        ),
+            ),
+          );
+        },
       ),
     );
   }

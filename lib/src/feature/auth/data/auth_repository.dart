@@ -15,6 +15,8 @@ abstract interface class IAuthRepository {
 
   Future sendDeviceToken();
 
+  String? get pinCode;
+
   Future setPinCode({required String pincode});
 
   Future<void> clearUser();
@@ -47,6 +49,9 @@ class AuthRepositoryImpl implements IAuthRepository {
 
   @override
   bool get isAuthenticated => _authDao.userId.value != null;
+
+  @override
+  String? get pinCode => _authDao.pinCode.value;
 
   @override
   UserDTO? cacheUser() {
