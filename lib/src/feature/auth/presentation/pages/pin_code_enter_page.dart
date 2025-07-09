@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 import 'package:lombard/src/core/utils/extensions/context_extension.dart';
@@ -21,53 +22,80 @@ class PinCodeEnterPage extends StatefulWidget {
 
 class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   final TextEditingController pinController = TextEditingController();
+  final LocalAuthentication auth = LocalAuthentication();
+
   bool isPinCorrect = true;
-  bool isBiometricsEnabled = false;
   String userName = '';
 
   final List<String> numbers = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '',
-    '0',
-    'backspace',
+    '1', '2', '3',
+    '4', '5', '6',
+    '7', '8', '9',
+    '', '0', 'backspace',
   ];
 
   @override
   void initState() {
     super.initState();
+
     final UserDTO? userDTO = context.repository.authRepository.cacheUser();
     userName = userDTO?.fullname ?? '';
+
+    // Автоматически запрашивает Face ID / Fingerprint
+    authenticateWithBiometricsIfAvailable();
+  }
+
+  Future<void> authenticateWithBiometricsIfAvailable() async {
+    final canCheckBiometrics = await auth.canCheckBiometrics;
+    final isDeviceSupported = await auth.isDeviceSupported();
+    final biometrics = await auth.getAvailableBiometrics();
+
+    if (!canCheckBiometrics || !isDeviceSupported || biometrics.isEmpty) return;
+
+    try {
+      if (biometrics.contains(BiometricType.face)) {
+        final authenticated = await auth.authenticate(
+          localizedReason: 'Войдите с помощью Face ID',
+          options: const AuthenticationOptions(biometricOnly: true),
+        );
+        if (authenticated && mounted) {
+          _enterApp();
+        }
+      } else if (biometrics.contains(BiometricType.fingerprint)) {
+        final authenticated = await auth.authenticate(
+          localizedReason: 'Войдите с помощью отпечатка пальца',
+          options: const AuthenticationOptions(biometricOnly: true),
+        );
+        if (authenticated && mounted) {
+          _enterApp();
+        }
+      }
+    } catch (e) {
+      debugPrint('Ошибка биометрии: $e');
+    }
+  }
+
+  void _enterApp() {
+    BlocProvider.of<AppBloc>(context).add(const AppEvent.changeState(state: AppState.inApp()));
+    context.router.replaceAll([const LauncherRoute()]);
   }
 
   Future<void> checkPin(String input) async {
     final savedPin = context.repository.authDao.pinCode.value;
-
     if (input == savedPin) {
       await Future.delayed(const Duration(milliseconds: 200));
-      BlocProvider.of<AppBloc>(context).add(const AppEvent.changeState(state: AppState.inApp()));
-      context.router.replaceAll([const LauncherRoute()]);
+      if (!mounted) return;
+      _enterApp();
     } else {
       setState(() => isPinCorrect = false);
       await Future.delayed(const Duration(seconds: 1));
+      if (!mounted) return;
       pinController.clear();
       setState(() => isPinCorrect = true);
     }
   }
 
   void onKeyPressed(String value, int index) async {
-    if (index == 9) {
-      // Биометрия (пока не реализована)
-      return;
-    }
-
     if (index == 11) {
       if (pinController.text.isNotEmpty) {
         pinController.text = pinController.text.substring(0, pinController.text.length - 1);
@@ -90,16 +118,6 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const SizedBox(),
-        // leading: IconButton(
-        //   splashRadius: 20,
-        //   onPressed: () {
-        //     BlocProvider.of<AppBloc>(context).add(
-        //       const AppEvent.changeState(state: AppState.notAuthorized()),
-        //     );
-        //     context.router.replaceAll([const LauncherRoute()]);
-        //   },
-        //   icon: const Icon(Icons.clear, color: AppColors.red),
-        // ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -159,7 +177,9 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
           ),
           const SizedBox(height: 12),
           LombardText(
-            isPinCorrect ? 'Введите 4-х значный код для \nбыстрого доступа к приложению' : 'Неверный код',
+            isPinCorrect
+                ? 'Введите 4-х значный код для \nбыстрого доступа к приложению'
+                : 'Неверный код',
             color: isPinCorrect ? AppColors.black : Colors.red,
           ),
         ],
