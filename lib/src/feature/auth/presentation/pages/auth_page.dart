@@ -278,6 +278,7 @@ class _AuthPageState extends State<AuthPage> {
                                     children: [
                                       Expanded(
                                         child: CustomButton(
+                                          height: 60,
                                           onPressed: enabled
                                               ? () {
                                                   FocusScope.of(context).unfocus();
@@ -297,6 +298,7 @@ class _AuthPageState extends State<AuthPage> {
                                       const Gap(20),
                                       Expanded(
                                         child: CustomButton(
+                                          height: 60,
                                           onPressed: _showRegistrationWebView,
                                           style: CustomButtonStyles.mainButtonStyle(
                                             context,

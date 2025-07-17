@@ -10,18 +10,18 @@ import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/profile/bloc/logout_cubit.dart';
 
-class LogoutBottomSheet extends StatefulWidget {
+class ForgotPincodeBottomSheet extends StatefulWidget {
   final BuildContext parentContext;
-  const LogoutBottomSheet({
+  const ForgotPincodeBottomSheet({
     super.key,
     required this.parentContext,
   });
 
   @override
-  State<LogoutBottomSheet> createState() => _CustomAlertState();
+  State<ForgotPincodeBottomSheet> createState() => _CustomAlertState();
 }
 
-class _CustomAlertState extends State<LogoutBottomSheet> {
+class _CustomAlertState extends State<ForgotPincodeBottomSheet> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -39,6 +39,7 @@ class _CustomAlertState extends State<LogoutBottomSheet> {
             },
             loaded: () {
               BlocProvider.of<AppBloc>(context).add(const AppEvent.exiting());
+              widget.parentContext.router.maybePop();
               widget.parentContext.router.replaceAll([
                 const LauncherRoute(),
               ]);
@@ -58,7 +59,7 @@ class _CustomAlertState extends State<LogoutBottomSheet> {
             children: [
               const Gap(8),
               Text(
-                context.localized.logOutApp,
+                context.localized.restoreThePINCode,
                 style: AppTextStyles.fs20w700,
                 textAlign: TextAlign.center,
               ),

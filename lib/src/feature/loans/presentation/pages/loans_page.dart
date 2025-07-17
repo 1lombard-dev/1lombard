@@ -95,7 +95,7 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) => DefaultTabController(
         length: 2,
         child: Scaffold(
-          backgroundColor: AppColors.backgroundInput,
+          backgroundColor: AppColors.white,
           appBar: AppBar(
             title: Container(
               decoration: const BoxDecoration(color: AppColors.white),
@@ -146,9 +146,16 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                     loaded: (tickets) {
                       return tickets.isEmpty || tickets[0].status == 'error'
                           ? Center(
-                              child: Text(
-                                context.localized.thereNoActiveTickets,
-                                style: AppTextStyles.fs24w700,
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    Assets.images.find.path,
+                                  ),
+                                  Text(
+                                    context.localized.thereNoActiveTickets,
+                                    style: AppTextStyles.fs24w700,
+                                  ),
+                                ],
                               ),
                             )
                           : ListView.separated(
@@ -174,9 +181,14 @@ class _LoanPageState extends State<_LoanPage> with SingleTickerProviderStateMixi
                     loadedArchive: (tickets) {
                       return tickets.isEmpty || tickets[0].status == 'error'
                           ? Center(
-                              child: Text(
-                                context.localized.noPurchasedTickets,
-                                style: AppTextStyles.fs24w700,
+                              child: Column(
+                                children: [
+                                  Image.asset(Assets.images.find.path),
+                                  Text(
+                                    context.localized.noPurchasedTickets,
+                                    style: AppTextStyles.fs24w700,
+                                  ),
+                                ],
                               ),
                             )
                           : ListView.separated(

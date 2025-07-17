@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lombard/src/core/theme/resources.dart';
 
-
 class LombardText extends StatelessWidget {
   const LombardText(
     this.text, {
     super.key,
-    this.fontSize = 14,
+    this.fontSize = 18,
     this.fontWeight = FontWeight.w400,
     this.color = AppColors.black,
     this.textAlign = TextAlign.center,

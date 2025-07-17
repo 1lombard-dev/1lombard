@@ -9,7 +9,9 @@ import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/bloc/app_bloc.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/auth/models/user_dto.dart';
+import 'package:lombard/src/feature/auth/presentation/widgets/forgot_pincode_bottom_sheet.dart';
 import 'package:lombard/src/feature/auth/presentation/widgets/nsk_text.dart';
+import 'package:lombard/src/feature/profile/bloc/logout_cubit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 @RoutePage()
@@ -28,10 +30,18 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   String userName = '';
 
   final List<String> numbers = [
-    '1', '2', '3',
-    '4', '5', '6',
-    '7', '8', '9',
-    '', '0', 'backspace',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '',
+    '0',
+    'backspace',
   ];
 
   @override
@@ -117,10 +127,30 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const SizedBox(),
+        leading: IconButton(
+          splashRadius: 20,
+          onPressed: () {
+            showDialog(
+              context: context,
+              useRootNavigator: false,
+              // barrierDismissible: true,
+              builder: (BuildContext context) {
+                return BlocProvider(
+                  create: (context) => LogoutCubit(),
+                  child: ForgotPincodeBottomSheet(
+                    parentContext: context,
+                  ),
+                );
+              },
+            );
+          },
+          icon: const Icon(
+            Icons.clear,
+            color: AppColors.red,
+          ),
+        ),
         centerTitle: true,
         elevation: 0,
-        backgroundColor: Colors.transparent,
         title: Image.asset(
           Assets.images.logoHeader.path,
           height: 20,
@@ -177,9 +207,7 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
           ),
           const SizedBox(height: 12),
           LombardText(
-            isPinCorrect
-                ? 'Введите 4-х значный код для \nбыстрого доступа к приложению'
-                : 'Неверный код',
+            isPinCorrect ? 'Введите 4-х значный код для \nбыстрого доступа к приложению' : 'Неверный код',
             color: isPinCorrect ? AppColors.black : Colors.red,
           ),
         ],

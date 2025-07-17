@@ -246,7 +246,9 @@ class _ProfilesPageState extends State<_ProfilesPage> {
                             Material(
                               color: Colors.transparent,
                               child: InkWell(
-                                onTap: () {},
+                                onTap: () {
+                                  context.router.push(const FaqRoute());
+                                },
                                 child: Padding(
                                   padding: const EdgeInsets.only(top: 20, bottom: 10),
                                   child: Row(
@@ -265,8 +267,8 @@ class _ProfilesPageState extends State<_ProfilesPage> {
                               ),
                             ),
                             const Divider(),
-                            const Gap(40),
-                            Center(
+                            Material(
+                              color: Colors.transparent,
                               child: InkWell(
                                 onTap: () {
                                   showDialog(
@@ -283,10 +285,17 @@ class _ProfilesPageState extends State<_ProfilesPage> {
                                     },
                                   );
                                 },
-                                child: Text(
-                                  context.localized.exit,
-                                  style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
-                                  textAlign: TextAlign.center,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(top: 20, bottom: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        context.localized.exit,
+                                        style: AppTextStyles.fs20w600.copyWith(color: AppColors.red),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

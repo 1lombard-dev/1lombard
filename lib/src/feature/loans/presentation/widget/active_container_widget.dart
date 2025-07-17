@@ -164,6 +164,7 @@ class ActiveContainerWidget extends StatelessWidget {
                   children: [
                     Expanded(
                       child: CustomButton(
+                        height: 60,
                         onPressed: () {
                           context.router
                               .push(PaymentInformationRoute(ticketsDTO: ticketsDTO, paymentType: 'Пролонгация'));
@@ -178,6 +179,7 @@ class ActiveContainerWidget extends StatelessWidget {
                     const Gap(17),
                     Expanded(
                       child: CustomButton(
+                        height: 60,
                         onPressed: () {
                           context.router.push(PaymentInformationRoute(ticketsDTO: ticketsDTO, paymentType: 'Выкуп'));
                         },

@@ -155,6 +155,7 @@ class _PaymentInformationPageState extends State<PaymentInformationPage> {
                   );
                 },
                 child: CustomButton(
+                  height: 60,
                   onPressed: () {
                     BlocProvider.of<GetPaymentCubit>(context).getPayment(
                       paymentType: widget.paymentType == 'Пролонгация' ? '1' : '2',

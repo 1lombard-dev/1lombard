@@ -11,7 +11,6 @@ import 'package:lombard/src/core/utils/extensions/context_extension.dart';
 import 'package:lombard/src/feature/app/router/app_router.dart';
 import 'package:lombard/src/feature/main_feed/bloc/main_cubit.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/image_slider_widget.dart';
-import 'package:lombard/src/feature/main_feed/presentation/widget/main_list_container_widget.dart';
 import 'package:lombard/src/feature/main_feed/presentation/widget/main_row_container.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -44,7 +43,6 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<MainCubit>(context).getFAQ();
     BlocProvider.of<MainCubit>(context).getMainPageBanner();
     BlocProvider.of<MainCubit>(context).getGoldList();
   }
@@ -116,98 +114,96 @@ class _MainPageState extends State<MainPage> {
                     },
                     child: SingleChildScrollView(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           if (bannerList != [])
                             ImageSliderWidget(
                               banners: bannerList,
                             ),
+                          const Gap(21),
                           Container(
-                            decoration: const BoxDecoration(color: AppColors.white),
-                            width: double.infinity,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 11).copyWith(bottom: 15),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Наша расценка на ${DateFormat('dd.MM.yy').format(DateTime.now())}',
-                                    style: AppTextStyles.fs16w500.copyWith(color: AppColors.black),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  const Gap(17),
-                                  SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      children: goldDTO
-                                          .where(
-                                            (item) =>
-                                                item.sample == '999.9' || item.sample == '750' || item.sample == '585',
-                                          )
-                                          .toList()
-                                          .asMap()
-                                          .entries
-                                          .map((entry) {
-                                        final index = entry.key;
-                                        final item = entry.value;
-
-                                        return Padding(
-                                          padding: EdgeInsets.only(right: 16.0, left: index == 0 ? 16 : 0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(),
-                                              borderRadius: BorderRadius.circular(5),
-                                            ),
-                                            child: Material(
-                                              borderRadius: BorderRadius.circular(5),
-                                              color: Colors.transparent,
-                                              child: InkWell(
-                                                onTap: () {
-                                                  AutoTabsRouter.of(context).setActiveIndex(1);
-                                                },
-                                                borderRadius: BorderRadius.circular(5),
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                                                  child: Column(
-                                                    children: [
-                                                      Text(
-                                                        'AU ${item.sample}',
-                                                        style: AppTextStyles.fs14w500.copyWith(
-                                                          color: AppColors.black,
-                                                        ),
-                                                      ),
-                                                      const Gap(5),
-                                                      Container(
-                                                        decoration: const BoxDecoration(
-                                                          color: AppColors.red,
-                                                        ),
-                                                        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                                                        child: Text(
-                                                          '${item.price} ₸',
-                                                          style: AppTextStyles.fs14w600.copyWith(
-                                                            color: AppColors.white,
-                                                            fontWeight: FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Наша расценка на ${DateFormat('dd.MM.yy').format(DateTime.now())}',
+                                  style: AppTextStyles.fs16w500,
+                                ),
+                                const Gap(12),
+                                Wrap(
+                                  spacing: 12,
+                                  runSpacing: 12,
+                                  children: goldDTO
+                                      .where((e) => ['999.9', '750', '585'].contains(e.sample))
+                                      .map(
+                                        (item) => Container(
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(12),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: Colors.black12,
+                                                blurRadius: 6,
+                                                offset: Offset(0, 2),
+                                              ),
+                                            ],
+                                          ),
+                                          child: Material(
+                                            color: Colors.transparent,
+                                            borderRadius: BorderRadius.circular(12),
+                                            child: InkWell(
+                                              borderRadius: BorderRadius.circular(12),
+                                              onTap: () {
+                                                AutoTabsRouter.of(context).setActiveIndex(1);
+                                              },
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(12),
+                                                child: Column(
+                                                  children: [
+                                                    Text('AU ${item.sample}', style: AppTextStyles.fs14w500),
+                                                    const Gap(6),
+                                                    Text(
+                                                      '${item.price} ₸',
+                                                      style: AppTextStyles.fs14w600.copyWith(color: Colors.red),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ),
                                           ),
-                                        );
-                                      }).toList(),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                              ],
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15).copyWith(bottom: 30),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20, vertical: 15).copyWith(bottom: 30, top: 35),
                             child: Container(
-                              decoration: BoxDecoration(color: AppColors.white, borderRadius: BorderRadius.circular(5)),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 6,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
                               padding: const EdgeInsets.only(left: 21, top: 16, bottom: 11, right: 21),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,35 +234,6 @@ class _MainPageState extends State<MainPage> {
                                 ],
                               ),
                             ),
-                          ),
-                          Column(
-                            children: [
-                              Center(
-                                child: Text(
-                                  context.localized.answersToYourQuestions,
-                                  style: AppTextStyles.fs16w700,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                              const Gap(20),
-
-                              // Обернули в SizedBox с фиксированной высотой, чтобы ListView работал внутри Column
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: faq.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(bottom: index == faq.length - 1 ? 0 : 15),
-                                    child: MainListContainerWidget(
-                                      title: faq[index].title ?? 'ERROR',
-                                      introtext: faq[index].introtext ?? 'ERROR',
-                                    ),
-                                  );
-                                },
-                              ),
-                              const Gap(50),
-                            ],
                           ),
                         ],
                       ),

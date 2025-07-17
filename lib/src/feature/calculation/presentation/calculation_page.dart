@@ -134,39 +134,35 @@ class _CalculationPageState extends State<CalculationPage> {
                                   return Padding(
                                     padding: EdgeInsets.only(right: 16.0, left: index == 0 ? 16 : 0),
                                     child: Container(
+                                      width: 100,
                                       decoration: BoxDecoration(
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(5),
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(12),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color: Colors.black12,
+                                            blurRadius: 6,
+                                            offset: Offset(0, 2),
+                                          ),
+                                        ],
                                       ),
                                       child: Material(
-                                        borderRadius: BorderRadius.circular(5),
                                         color: Colors.transparent,
+                                        borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
-                                          onTap: () {},
-                                          borderRadius: BorderRadius.circular(5),
+                                          borderRadius: BorderRadius.circular(12),
+                                          onTap: () {
+                                            AutoTabsRouter.of(context).setActiveIndex(1);
+                                          },
                                           child: Padding(
-                                            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                                            padding: const EdgeInsets.all(12),
                                             child: Column(
                                               children: [
+                                                Text('AU ${item.sample}', style: AppTextStyles.fs14w500),
+                                                const Gap(6),
                                                 Text(
-                                                  'AU ${item.sample}',
-                                                  style: AppTextStyles.fs14w500.copyWith(
-                                                    color: AppColors.black,
-                                                  ),
-                                                ),
-                                                const Gap(5),
-                                                Container(
-                                                  decoration: const BoxDecoration(
-                                                    color: AppColors.red,
-                                                  ),
-                                                  padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
-                                                  child: Text(
-                                                    '${item.price} ₸',
-                                                    style: AppTextStyles.fs14w600.copyWith(
-                                                      color: AppColors.white,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
+                                                  '${item.price} ₸',
+                                                  style: AppTextStyles.fs14w600.copyWith(color: Colors.red),
                                                 ),
                                               ],
                                             ),
@@ -312,6 +308,7 @@ class _CalculationPageState extends State<CalculationPage> {
                                 const Divider(),
                                 const Gap(23),
                                 CustomButton(
+                                  height: 60,
                                   onPressed: () {
                                     _calculate();
                                   },

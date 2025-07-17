@@ -53,7 +53,7 @@ class _MainListContainerWidgetState extends State<MainListContainerWidget> with 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 19.0),
+      padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -61,9 +61,7 @@ class _MainListContainerWidgetState extends State<MainListContainerWidget> with 
         ),
         child: Material(
           color: Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
           child: InkWell(
-            borderRadius: BorderRadius.circular(10),
             onTap: _toggleExpand,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 21),

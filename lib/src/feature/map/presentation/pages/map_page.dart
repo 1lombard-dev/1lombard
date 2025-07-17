@@ -154,24 +154,36 @@ class _MapPageState extends State<MapPage> with AutomaticKeepAliveClientMixin {
                           child: Column(
                             children: [
                               FloatingActionButton(
+                                backgroundColor: Colors.red,
                                 mini: true,
                                 heroTag: 'zoom_in',
                                 onPressed: () => _mapController?.animateCamera(CameraUpdate.zoomIn()),
-                                child: const Icon(Icons.add),
+                                child: const Icon(
+                                  Icons.add,
+                                  color: Colors.white,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               FloatingActionButton(
+                                backgroundColor: Colors.red,
                                 mini: true,
                                 heroTag: 'zoom_out',
                                 onPressed: () => _mapController?.animateCamera(CameraUpdate.zoomOut()),
-                                child: const Icon(Icons.remove),
+                                child: const Icon(
+                                  Icons.remove,
+                                  color: Colors.white,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               FloatingActionButton(
+                                backgroundColor: Colors.red,
                                 mini: true,
                                 heroTag: 'my_location',
                                 onPressed: _initLocation,
-                                child: const Icon(Icons.my_location),
+                                child: const Icon(
+                                  Icons.my_location,
+                                  color: Colors.white,
+                                ),
                               ),
                             ],
                           ),

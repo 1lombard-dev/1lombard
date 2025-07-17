@@ -243,6 +243,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                 children: [
                   Expanded(
                     child: CustomButton(
+                      height: 60,
                       onPressed: () {
                         context.router
                             .push(PaymentInformationRoute(ticketsDTO: widget.ticketsDTO, paymentType: 'Пролонгация'));
@@ -259,6 +260,7 @@ class _LoansDetailPageState extends State<LoansDetailPage> {
                   const Gap(17),
                   Expanded(
                     child: CustomButton(
+                      height: 60,
                       onPressed: () {
                         context.router
                             .push(PaymentInformationRoute(ticketsDTO: widget.ticketsDTO, paymentType: 'Выкуп'));
