@@ -151,9 +151,6 @@ class _CalculationPageState extends State<CalculationPage> {
                                         borderRadius: BorderRadius.circular(12),
                                         child: InkWell(
                                           borderRadius: BorderRadius.circular(12),
-                                          onTap: () {
-                                            AutoTabsRouter.of(context).setActiveIndex(1);
-                                          },
                                           child: Padding(
                                             padding: const EdgeInsets.all(12),
                                             child: Column(
