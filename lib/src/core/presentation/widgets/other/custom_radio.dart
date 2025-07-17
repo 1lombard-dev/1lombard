@@ -31,7 +31,12 @@ class _CustomRadioState extends State<CustomRadio> {
         shape: BoxShape.circle,
       ),
       child: Center(
-        child: selected ? const Icon(Icons.radio_button_checked) : const Icon(Icons.radio_button_off),
+        child: selected
+            ? const Icon(
+                Icons.radio_button_checked,
+                color: Colors.red,
+              )
+            : const Icon(Icons.radio_button_off),
       ),
     );
   }
