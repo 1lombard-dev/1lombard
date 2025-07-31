@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Приложению необходим доступ к вашей камере, чтобы сделать фотографию или аватарку</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Why is my app authenticating using face id?</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to show nearby branches.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
@@ -36,16 +38,14 @@
 	<string>We need your permission to use the microphone.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Приложению необходим доступ к вашей галерее, чтобы сохранить фото карт пожеланий</string>
-	<key>NSFaceIDUsageDescription</key>
-<string>Why is my app authenticating using face id?</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Приложению необходим доступ к вашей фотографии, чтобы загрузить фотографии для аватара</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>fetch</string>
 		<string>remote-notification</string>
+		<string>fetch</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -53,6 +53,8 @@
 	<string>Main</string>
 	<key>UIStatusBarHidden</key>
 	<false/>
+	<key>UIStatusBarStyle</key>
+	<string></string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

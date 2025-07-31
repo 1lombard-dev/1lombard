@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:gap/gap.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:lombard/src/core/constant/generated/assets.gen.dart';
 import 'package:lombard/src/core/theme/resources.dart';
@@ -210,48 +211,51 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
             isPinCorrect ? 'Введите 4-х значный код для \nбыстрого доступа к приложению' : 'Неверный код',
             color: isPinCorrect ? AppColors.black : Colors.red,
           ),
-        ],
-      ),
-      bottomSheet: GridView.builder(
-        padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 30),
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 90,
-          childAspectRatio: 1,
-          crossAxisSpacing: 24,
-          mainAxisSpacing: 16,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) {
-          final label = numbers[index];
-          return InkWell(
-            borderRadius: BorderRadius.circular(188),
-            splashColor: AppColors.red.withOpacity(0.3),
-            highlightColor: AppColors.white,
-            onTap: () => onKeyPressed(label, index),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(188),
-                border: Border.all(color: AppColors.red),
-              ),
-              child: index == 9
-                  ? SvgPicture.asset(
-                      Assets.icons.fingerprint.path,
-                      color: AppColors.red,
-                    )
-                  : index == 11
-                      ? const Icon(Icons.backspace, color: AppColors.red)
-                      : LombardText(
-                          label,
-                          fontSize: 36,
-                          fontWeight: FontWeight.w400,
-                          color: AppColors.red,
-                        ),
+          const Gap(
+            26,
+          ),
+          GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 30),
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 90,
+              childAspectRatio: 1,
+              crossAxisSpacing: 24,
+              mainAxisSpacing: 16,
             ),
-          );
-        },
+            itemCount: 12,
+            itemBuilder: (context, index) {
+              final label = numbers[index];
+              return InkWell(
+                borderRadius: BorderRadius.circular(188),
+                splashColor: AppColors.red.withOpacity(0.3),
+                highlightColor: AppColors.white,
+                onTap: () => onKeyPressed(label, index),
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(188),
+                    border: Border.all(color: AppColors.red),
+                  ),
+                  child: index == 9
+                      ? SvgPicture.asset(
+                          Assets.icons.fingerprint.path,
+                          color: AppColors.red,
+                        )
+                      : index == 11
+                          ? const Icon(Icons.backspace, color: AppColors.red)
+                          : LombardText(
+                              label,
+                              fontSize: 36,
+                              fontWeight: FontWeight.w400,
+                              color: AppColors.red,
+                            ),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

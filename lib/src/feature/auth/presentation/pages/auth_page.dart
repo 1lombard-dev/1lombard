@@ -295,22 +295,22 @@ class _AuthPageState extends State<AuthPage> {
                                           ),
                                         ),
                                       ),
-                                      const Gap(20),
-                                      Expanded(
-                                        child: CustomButton(
-                                          height: 60,
-                                          onPressed: _showRegistrationWebView,
-                                          style: CustomButtonStyles.mainButtonStyle(
-                                            context,
-                                            backgroundColor: Colors.white,
-                                            side: const BorderSide(color: AppColors.barrierColor),
-                                          ),
-                                          child: Text(
-                                            context.localized.registration,
-                                            style: AppTextStyles.fs16w600.copyWith(color: AppColors.black),
-                                          ),
-                                        ),
-                                      ),
+                                      // const Gap(20),
+                                      // Expanded(
+                                      //   child: CustomButton(
+                                      //     height: 60,
+                                      //     onPressed: _showRegistrationWebView,
+                                      //     style: CustomButtonStyles.mainButtonStyle(
+                                      //       context,
+                                      //       backgroundColor: Colors.white,
+                                      //       side: const BorderSide(color: AppColors.barrierColor),
+                                      //     ),
+                                      //     child: Text(
+                                      //       context.localized.registration,
+                                      //       style: AppTextStyles.fs16w600.copyWith(color: AppColors.black),
+                                      //     ),
+                                      //   ),
+                                      // ),
                                     ],
                                   );
                                 },

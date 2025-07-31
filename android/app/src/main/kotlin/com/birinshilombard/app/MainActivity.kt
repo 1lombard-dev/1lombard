@@ -1,4 +1,4 @@
-package com.lombardFlutter
+package com.birinshilombard.app
 
 import io.flutter.embedding.android.FlutterActivity
 
