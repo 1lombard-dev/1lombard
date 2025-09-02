@@ -87,7 +87,9 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
   }
 
   void _enterApp() {
-    BlocProvider.of<AppBloc>(context).add(const AppEvent.changeState(state: AppState.inApp()));
+    BlocProvider.of<AppBloc>(context).add(
+      const AppEvent.changeState(state: AppState.inApp()),
+    );
     context.router.replaceAll([const LauncherRoute()]);
   }
 
@@ -124,6 +126,50 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
     }
   }
 
+  Widget _buildKeypad() {
+    return GridView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 30),
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 90,
+        childAspectRatio: 1,
+        crossAxisSpacing: 24,
+        mainAxisSpacing: 16,
+      ),
+      itemCount: 12,
+      itemBuilder: (context, index) {
+        final label = numbers[index];
+        return InkWell(
+          borderRadius: BorderRadius.circular(188),
+          splashColor: AppColors.red.withOpacity(0.3),
+          highlightColor: AppColors.white,
+          onTap: () => onKeyPressed(label, index),
+          child: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(188),
+              border: Border.all(color: AppColors.red),
+            ),
+            child: index == 9
+                ? SvgPicture.asset(
+                    Assets.icons.fingerprint.path,
+                    color: AppColors.red,
+                  )
+                : index == 11
+                    ? const Icon(Icons.backspace, color: AppColors.red)
+                    : LombardText(
+                        label,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w400,
+                        color: AppColors.red,
+                      ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -134,7 +180,6 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
             showDialog(
               context: context,
               useRootNavigator: false,
-              // barrierDismissible: true,
               builder: (BuildContext context) {
                 return BlocProvider(
                   create: (context) => LogoutCubit(),
@@ -157,105 +202,74 @@ class _PinCodeEnterPageState extends State<PinCodeEnterPage> {
           height: 20,
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 20),
-          Container(
-            width: 54,
-            height: 54,
-            padding: const EdgeInsets.all(2.57),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              border: Border.all(color: AppColors.black, width: 1),
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(50),
-                color: AppColors.lightGrey,
-              ),
-              child: const Icon(Icons.person),
-            ),
-          ),
-          const SizedBox(height: 10),
-          LombardText(
-            '$userName, \nЗдравствуйте!',
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
-          const SizedBox(height: 24),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 106),
-            child: PinCodeTextField(
-              appContext: context,
-              length: 4,
-              controller: pinController,
-              pinTheme: PinTheme(
-                shape: PinCodeFieldShape.underline,
-                fieldWidth: 32,
-                activeColor: AppColors.red,
-                inactiveColor: AppColors.red,
-                selectedColor: AppColors.red,
-                disabledColor: AppColors.red,
-                borderWidth: 1,
-                activeFillColor: Colors.transparent,
-                inactiveFillColor: Colors.transparent,
-                selectedFillColor: Colors.transparent,
-              ),
-              backgroundColor: Colors.transparent,
-              onChanged: (_) {},
-            ),
-          ),
-          const SizedBox(height: 12),
-          LombardText(
-            isPinCorrect ? 'Введите 4-х значный код для \nбыстрого доступа к приложению' : 'Неверный код',
-            color: isPinCorrect ? AppColors.black : Colors.red,
-          ),
-          const Gap(
-            26,
-          ),
-          GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 30),
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 90,
-              childAspectRatio: 1,
-              crossAxisSpacing: 24,
-              mainAxisSpacing: 16,
-            ),
-            itemCount: 12,
-            itemBuilder: (context, index) {
-              final label = numbers[index];
-              return InkWell(
-                borderRadius: BorderRadius.circular(188),
-                splashColor: AppColors.red.withOpacity(0.3),
-                highlightColor: AppColors.white,
-                onTap: () => onKeyPressed(label, index),
-                child: Container(
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(188),
-                    border: Border.all(color: AppColors.red),
-                  ),
-                  child: index == 9
-                      ? SvgPicture.asset(
-                          Assets.icons.fingerprint.path,
-                          color: AppColors.red,
-                        )
-                      : index == 11
-                          ? const Icon(Icons.backspace, color: AppColors.red)
-                          : LombardText(
-                              label,
-                              fontSize: 36,
-                              fontWeight: FontWeight.w400,
-                              color: AppColors.red,
-                            ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isSmall = constraints.maxHeight < 600;
+
+          final content = Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+              Container(
+                width: 54,
+                height: 54,
+                padding: const EdgeInsets.all(2.57),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(50),
+                  border: Border.all(color: AppColors.black, width: 1),
                 ),
-              );
-            },
-          ),
-        ],
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: AppColors.lightGrey,
+                  ),
+                  child: const Icon(Icons.person),
+                ),
+              ),
+              const SizedBox(height: 10),
+              LombardText(
+                '$userName, \nЗдравствуйте!',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+              const SizedBox(height: 24),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 106),
+                child: PinCodeTextField(
+                  appContext: context,
+                  length: 4,
+                  controller: pinController,
+                  pinTheme: PinTheme(
+                    shape: PinCodeFieldShape.underline,
+                    fieldWidth: 32,
+                    activeColor: AppColors.red,
+                    inactiveColor: AppColors.red,
+                    selectedColor: AppColors.red,
+                    disabledColor: AppColors.red,
+                    borderWidth: 1,
+                    activeFillColor: Colors.transparent,
+                    inactiveFillColor: Colors.transparent,
+                    selectedFillColor: Colors.transparent,
+                  ),
+                  backgroundColor: Colors.transparent,
+                  onChanged: (_) {},
+                ),
+              ),
+              const SizedBox(height: 12),
+              LombardText(
+                isPinCorrect ? 'Введите 4-х значный код для \nбыстрого доступа к приложению' : 'Неверный код',
+                color: isPinCorrect ? AppColors.black : Colors.red,
+              ),
+              const Gap(26),
+              if (!isSmall)
+                Expanded(child: _buildKeypad()) // на нормальном экране
+              else
+                _buildKeypad(), // на маленьком
+            ],
+          );
+
+          return isSmall ? SingleChildScrollView(child: content) : content;
+        },
       ),
     );
   }

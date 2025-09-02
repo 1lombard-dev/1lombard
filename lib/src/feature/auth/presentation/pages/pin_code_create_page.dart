@@ -198,44 +198,59 @@ class _PinCodeCreatePageState extends State<PinCodeCreatePage> {
               onChanged: (_) {},
             ),
           ),
-          const Spacer(flex: 3),
+          const Spacer(flex: 4),
         ],
       ),
-      bottomSheet: GridView.builder(
-        shrinkWrap: true,
-        padding: const EdgeInsets.symmetric(horizontal: 67, vertical: 40),
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-          maxCrossAxisExtent: 83,
-          childAspectRatio: 1,
-          crossAxisSpacing: 44,
-          mainAxisSpacing: 20,
-        ),
-        itemCount: 12,
-        itemBuilder: (context, index) {
-          final label = numbers[index];
-          if (index == 9) return const SizedBox(); // пустая кнопка
+      bottomSheet: LayoutBuilder(
+        builder: (context, constraints) {
+          final screenWidth = constraints.maxWidth;
+          final buttonSize = screenWidth * 0.18; // размер кнопки от ширины экрана
+          final spacing = screenWidth * 0.07; // отступы между кнопками
 
-          return InkWell(
-            borderRadius: BorderRadius.circular(188),
-            splashColor: AppColors.red.withOpacity(0.3),
-            highlightColor: AppColors.white,
-            onTap: () => setPin(label, index),
-            child: Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(188),
-                border: Border.all(color: AppColors.red),
-              ),
-              child: index == 11
-                  ? const Icon(Icons.backspace, color: AppColors.red)
-                  : LombardText(
-                      label,
-                      fontSize: 36,
-                      fontWeight: FontWeight.w400,
-                      color: AppColors.red,
-                    ),
+          return GridView.builder(
+            shrinkWrap: true,
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.15,
+              vertical: screenWidth * 0.08,
             ),
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: buttonSize,
+              childAspectRatio: 1,
+              crossAxisSpacing: spacing,
+              mainAxisSpacing: spacing * 0.5,
+            ),
+            itemCount: 12,
+            itemBuilder: (context, index) {
+              final label = numbers[index];
+              if (index == 9) return const SizedBox(); // пустая кнопка
+
+              return InkWell(
+                borderRadius: BorderRadius.circular(100),
+                splashColor: AppColors.red.withOpacity(0.3),
+                highlightColor: AppColors.white,
+                onTap: () => setPin(label, index),
+                child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    border: Border.all(color: AppColors.red),
+                  ),
+                  child: index == 11
+                      ? Icon(
+                          Icons.backspace,
+                          color: AppColors.red,
+                          size: buttonSize * 0.35, // иконка тоже адаптивная
+                        )
+                      : LombardText(
+                          label,
+                          fontSize: buttonSize * 0.4, // цифры меньше на маленьком экране
+                          fontWeight: FontWeight.w400,
+                          color: AppColors.red,
+                        ),
+                ),
+              );
+            },
           );
         },
       ),
